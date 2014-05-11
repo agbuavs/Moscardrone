@@ -184,6 +184,15 @@ void loop(){
     for (int y = Serial.available(); y == 0; y--) { 
       Serial.read(); //Clear out any residual junk 
     } 
+    /*
+    Serial.println(PID_p);
+    Serial.println(PID_i);
+    Serial.println(PID_d);
+    Serial.println(PID_p_div);
+    Serial.println(PID_i_div);
+    Serial.println(PID_d_div);
+    Serial.println("+++++++++++++++++++");
+    */
   }
   
   //Prepare payload for transmission to quadcopter
