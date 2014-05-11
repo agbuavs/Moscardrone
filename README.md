@@ -8,7 +8,7 @@ I am doing this project in my spare time. I hope the code will be useful to anyo
 
 I am using 2 Arduino Uno boards and 2 nRF24l01 transceivers, one pair for the quadcopter segment and another for the ground segment.
 
-Currently, I implemented just the MPU6050 sensor board (gyroscope and accelerometer). Implementation of GPS, barometer, ultrasonics and FPV might be done in the future.
+Currently, I implemented only the MPU6050 sensor board (gyroscope and accelerometer). Implementation of GPS, barometer, ultrasonics and FPV might be done in the future.
 
 
-I will post information and comments about the project in my website: http://agbuavs.wordpress.com/moscardrone/
+I will post information and comments about the project in my website: http://agbuavs.wordpress.com
