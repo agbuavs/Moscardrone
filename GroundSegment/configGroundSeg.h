@@ -1,7 +1,9 @@
+#define GUI_CONF //uncomment if you are going to use Processing GUI to calibrate PIDs instead of serial monitor
+
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
 //#define DEBUG_POTS
-#define DEBUG_TELEMETRY
+//#define DEBUG_TELEMETRY
 
 
 /* The following definitions must be a copy from those at configQuadSeg.h ! */

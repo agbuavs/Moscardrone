@@ -57,7 +57,6 @@ int counter = 0; //used to serial com with pc. (printing in every cycle saturate
 #define ID_local 1
 //Quadcopter segment identifier (change it on both here and at Quadcopter code in order to achieve communication)
 int ID_remote = 0;
-
 int led = 13;
 int blinking = 0;
 unsigned long startT = 0;
@@ -107,6 +106,8 @@ double PID_Z_p, PID_Z_i, PID_Z_d;
 int PIN_TX = 9; //blue
 int PIN_RX = 2; //yellow
 
+double lastGUIpacket = 0;
+byte ackSent = 0;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -133,7 +134,7 @@ void setup(){
   Mirf.setTADDR((byte *)"QuadcopterSegment");    //Set remote segment name
   Mirf.payload = RF_PACKET_SIZE; //shall be the same length on quadcopter segment.
   Mirf.config();
-  Serial.println("Iniciando ... ");
+  //Serial.println("Iniciando ... ");
 }
 
 
@@ -143,7 +144,7 @@ void setup(){
 
 void loop(){
   
-  //Read x from potentiometers
+  //Read values from potentiometers
   joy_x = analogRead(A0);
   joy_y = analogRead(A1);
   joy_z = analogRead(A2);
@@ -155,6 +156,14 @@ void loop(){
   }
   
   //Read PID tuning commands from serial. 
+  #ifdef GUI_CONF //Processing GUI is used to calibrate PIDs. Float values can be used
+
+  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
+    receiveDataFromGUI();   
+  }  
+  
+  #else //Old dirty way (typing integer commands over Arduino serial monitor)
+  
   //  Command format => "PID_ID,p,p_div,i,i_div,d,d_div:", where...
   //  - axis is an integer meaning 1:pitch_angle, 2:roll_angle, 3:pitch_rate, 4:roll_rate, 5:yaw_rate
   //  - p,d and i are integers for PID tunning
@@ -194,6 +203,8 @@ void loop(){
     Serial.println("+++++++++++++++++++");
     */
   }
+
+  #endif
   
   //Prepare payload for transmission to quadcopter
   prepareDataToQuadcopter();
