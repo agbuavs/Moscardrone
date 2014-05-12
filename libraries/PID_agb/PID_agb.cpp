@@ -103,6 +103,34 @@ void PID::SetTunings(double Kp, double Ki, double Kd)
       kd = (0 - kd);
    }
 }
+
+
+/* SetTuning(...)**************************************************************
+ * This function allows the controller's dynamic performance to be adjusted. 
+ * on just one isolated PID term (kp, ki or kd)
+ ******************************************************************************/ 
+void PID::SetTuning(unsigned char PID_term, double val)
+{
+	if (val < 0) return;
+	
+	double SampleTimeInSec = ((double)SampleTime)/1000; 
+
+	switch (PID_term) {
+		case 1:
+			kp = val;
+			dispKp = kp;
+			break;
+		case 2:
+			ki = val;
+			dispKi = ki;
+			break;
+		case 3:
+			kd = val;
+			dispKd = kd;
+			break;
+	}
+}
+
   
 /* SetSampleTime(...) *********************************************************
  * sets the period, in Milliseconds, at which the calculation is performed	
@@ -195,6 +223,22 @@ void PID::SetControllerDirection(int Direction)
 double PID::GetKp(){ return  dispKp; }
 double PID::GetKi(){ return  dispKi;}
 double PID::GetKd(){ return  dispKd;}
+double PID::GetValue(unsigned char PID_term)
+{
+	if (PID_term < 0) return(-1);
+	
+	switch (PID_term) {
+		case 1:
+			return  dispKp;
+			break;
+		case 2:
+			return  dispKi;
+			break;
+		case 3:
+			return  dispKd;
+			break;
+	}
+}
 int PID::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
 int PID::GetDirection(){ return controllerDirection;}
 

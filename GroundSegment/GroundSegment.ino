@@ -25,10 +25,11 @@
     Throttle is the mean power for the 4 motors. 
       (Throttle for each motor will be calculated from mean throttle command and 3 PIDs outputs)
       
-  It is possible to tune PIDs using serial communications from a computer. 
+  It is possible to tune PIDs using serial communications from a computer.
+  Currently, I am building a GUI to do this, so the format might change. 
   //  Command format => "PID_ID,p,p_div,i,i_div,d,d_div:", where...
   //  - axis is an integer meaning 1:pitch_angle, 2:roll_angle, 3:pitch_rate, 4:roll_rate, 5:yaw_rate
-  //  - p,d and i are integers for PID tunning
+  //  - p,d and i are integers for PID tuning
   //  - p_div, i_div and d_div are integers to compute float values at quadcopter segment(I'm not dealing with sending floats with Mirf library)
   
 */
@@ -89,12 +90,14 @@ byte data_tx[RF_PACKET_SIZE]; //Prepare payload to send to quadcopter
 //Wireless PID settings. Variables used to import data from serial and send it to quadcopter.
 int PID_change = 0; //update only PID requested axis
 int PID_change_ACK = 0; //used to know if quad has received PID change command
+
 int PID_p = 0;
 int PID_i = 0;
 int PID_d = 0;
 int PID_p_div = 1; //this can't ever be 0!
 int PID_i_div = 1; //this can't ever be 0!
 int PID_d_div = 1; //this can't ever be 0!
+
 //variables to monitor PID commands sent to quadcopter.
 double PID_X_angle_p, PID_X_angle_i, PID_X_angle_d;
 double PID_Y_angle_p, PID_Y_angle_i, PID_Y_angle_d;
@@ -106,8 +109,26 @@ double PID_Z_p, PID_Z_i, PID_Z_d;
 int PIN_TX = 9; //blue
 int PIN_RX = 2; //yellow
 
+//Variables used in communication with GUI
 double lastGUIpacket = 0;
 byte ackSent = 0;
+//(for transmission)
+union {                // This Data structure lets us take the byte array
+  byte asBytes[4];     // sent from processing and easily convert it to a float array
+  float asFloat;       // 
+}                      // 
+PID_value;             //
+byte PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the future, it can be GPS, barometer, etc)
+byte PID_term = 0;     //P, I or D
+//(for recepcion of acks from quadcopter)
+union {                
+  byte asBytes[4];     
+  float asDouble;        
+}                       
+PID_value_ACK;          
+byte PID_id_ACK = 0;
+byte PID_term_ACK = 0;
+
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -134,7 +155,6 @@ void setup(){
   Mirf.setTADDR((byte *)"QuadcopterSegment");    //Set remote segment name
   Mirf.payload = RF_PACKET_SIZE; //shall be the same length on quadcopter segment.
   Mirf.config();
-  //Serial.println("Iniciando ... ");
 }
 
 
@@ -166,7 +186,7 @@ void loop(){
   
   //  Command format => "PID_ID,p,p_div,i,i_div,d,d_div:", where...
   //  - axis is an integer meaning 1:pitch_angle, 2:roll_angle, 3:pitch_rate, 4:roll_rate, 5:yaw_rate
-  //  - p,d and i are integers for PID tunning
+  //  - p,d and i are integers for PID tuning
   //  - p_div, i_div and d_div are integers to compute float values at quadcopter segment (I'm not dealing with sending floats with Mirf library)
   if (Serial.available()>6) {
     PID_change = 0;
@@ -209,7 +229,7 @@ void loop(){
   //Prepare payload for transmission to quadcopter
   prepareDataToQuadcopter();
   
-  //Send RC and PID tunning data to Quadcopter
+  //Send RC and PID tuning data to Quadcopter
   sendData(data_tx);
   
   #ifdef DEBUG_POTS //These values can be monitored with Graph (Processing sketch)

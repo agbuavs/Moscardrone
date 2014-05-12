@@ -46,34 +46,80 @@ int receiveData(byte* data) {
     Mot3 = MIN_PWM_THROTTLE + ((double)(data[14])*(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)/256);
     Mot4 = MIN_PWM_THROTTLE + ((double)(data[15])*(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)/256);
     
-    PID_change_ACK = data[16];
+    #ifdef GUI_CONF
+    
+    PID_id_ACK = data[16];
+    PID_term_ACK = data[17];
+    switch (PID_id_ACK) {
+      case 1: //Pitch PID_angle tuning
+        PID_value_ACK.asBytes[0] = data[18];
+        PID_value_ACK.asBytes[1] = data[19];
+        PID_value_ACK.asBytes[2] = data[20];
+        PID_value_ACK.asBytes[3] = data[21];
+        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        break;
+      case 2: //Roll PID_angle tuning
+        PID_value_ACK.asBytes[0] = data[18];
+        PID_value_ACK.asBytes[1] = data[19];
+        PID_value_ACK.asBytes[2] = data[20];
+        PID_value_ACK.asBytes[3] = data[21];
+        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        break;
+      case 3: //Pitch rate PID tuning
+        PID_value_ACK.asBytes[0] = data[18];
+        PID_value_ACK.asBytes[1] = data[19];
+        PID_value_ACK.asBytes[2] = data[20];
+        PID_value_ACK.asBytes[3] = data[21];
+        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        break;
+      case 4: //Roll rate PID tuning
+        PID_value_ACK.asBytes[0] = data[18];
+        PID_value_ACK.asBytes[1] = data[19];
+        PID_value_ACK.asBytes[2] = data[20];
+        PID_value_ACK.asBytes[3] = data[21];
+        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        break;
+      case 5: //Yaw rate PID tuning
+        PID_value_ACK.asBytes[0] = data[18];
+        PID_value_ACK.asBytes[1] = data[19];
+        PID_value_ACK.asBytes[2] = data[20];
+        PID_value_ACK.asBytes[3] = data[21];
+        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        break;
+    }      
+    
+    #else
+    
+    PID_change_ACK = data[16];    
     switch (PID_change_ACK) {
-      case 1: //Pitch PID_angle tunning
+      case 1: //Pitch PID_angle tuning
         PID_X_angle_p = ((double)data[17])/data[20];
-        PID_X_angle_i = ((double)data[18])/data[21];
+        PID_X_angle_i = ((double)data[18])/data[21];tuning
         PID_X_angle_d = ((double)data[19])/data[22];
         break;
-      case 2: //Roll PID_angle tunning
+      case 2: //Roll PID_angle tuning
         PID_Y_angle_p = ((double)data[17])/data[20];
         PID_Y_angle_i = ((double)data[18])/data[21];
         PID_Y_angle_d = ((double)data[19])/data[22];
         break;
-      case 3: //Pitch PID tunning
+      case 3: //Pitch rate PID tuning
         PID_X_p = ((double)data[17])/data[20];
         PID_X_i = ((double)data[18])/data[21];
         PID_X_d = ((double)data[19])/data[22];
         break;
-      case 4: //Roll PID tunning
+      case 4: //Roll rate PID tuning
         PID_Y_p = ((double)data[17])/data[20];
         PID_Y_i = ((double)data[18])/data[21];
         PID_Y_d = ((double)data[19])/data[22];
         break;
-      case 5: //Yaw rate PID tunning
+      case 5: //Yaw rate PID tuning
         PID_Z_p = ((double)data[17])/data[20];
         PID_Z_i = ((double)data[18])/data[21];
         PID_Z_d = ((double)data[19])/data[22];
         break;
     }    
+    
+    #endif
     
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_TELEMETRY
@@ -163,6 +209,7 @@ int sendData(byte* data) {
 }
 
 
+
 void prepareDataToQuadcopter() {  
   data_tx[0] = ID_local;  
   data_tx[1] = nseq_tx;
@@ -172,6 +219,19 @@ void prepareDataToQuadcopter() {
   data_tx[3] = map(joy_y,joy_y_min,joy_y_max,255,0);  
   data_tx[4] = map(joy_z,joy_z_min,joy_z_max,255,0);
   data_tx[5] = map(joy_t,joy_t_min,joy_t_max,255,0);
+  
+  #ifdef GUI_CONF
+  
+  data_tx[6] = PID_id;
+  data_tx[7] = PID_term;
+  data_tx[8] = PID_value.asBytes[0];
+  data_tx[9] = PID_value.asBytes[1];
+  data_tx[10] = PID_value.asBytes[2];
+  data_tx[11] = PID_value.asBytes[3];
+  data_tx[12] = 0; //not used
+  
+  #else //(old dirty way)
+  
   data_tx[6] = PID_change;
   data_tx[7] = PID_p;
   data_tx[8] = PID_p_div;
@@ -179,4 +239,6 @@ void prepareDataToQuadcopter() {
   data_tx[10] = PID_i_div;
   data_tx[11] = PID_d;
   data_tx[12] = PID_d_div;  
+
+  #endif
 }

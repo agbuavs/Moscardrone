@@ -34,9 +34,38 @@ int receiveData(byte* data) {
     joy_x = int(data[2]);
     joy_y = int(data[3]);
     joy_z = int(data[4]);
-    joy_t = int(data[5]);
+    joy_t = int(data[5]);    
     
-    //Check if there is an order to change PID tunning parameters
+    #ifdef GUI_CONF
+    
+    PID_id = data[6];
+    PID_change = PID_id;
+    PID_term = data[7];
+    PID_value.asBytes[0] = data[8];
+    PID_value.asBytes[1] = data[9];
+    PID_value.asBytes[2] = data[10];
+    PID_value.asBytes[3] = data[11];
+    switch(PID_id) {
+      case 1: //Pitch PID_angle tuning
+        PID_X_angle.SetTuning(PID_id, PID_value.asDouble);
+        break;
+      case 2: //Roll PID_angle tuning
+        PID_Y_angle.SetTuning(PID_id, PID_value.asDouble);
+        break;
+      case 3: //Pitch PID tuning
+        PID_X.SetTuning(PID_id, PID_value.asDouble);
+        break;
+      case 4: //Roll PID tuning
+        PID_Y.SetTuning(PID_id, PID_value.asDouble);
+        break;
+      case 5: //Yaw rate PID tuning
+        PID_Z.SetTuning(PID_id, PID_value.asDouble);
+        break;     
+    }
+        
+    #else
+    
+    //Check if there is an order to change PID tuning parameters
     PID_change = data[6];
     double kp = 0;
     double ki = 0;
@@ -57,22 +86,25 @@ int receiveData(byte* data) {
       kd = (double)(PID_d)/PID_d_div;
     }  
     switch (PID_change) {
-      case 1: //Pitch PID_angle tunning
+      case 1: //Pitch PID_angle tuning
         PID_X_angle.SetTunings(kp, ki, kd);
         break;
-      case 2: //Roll PID_angle tunning
+      case 2: //Roll PID_angle tuning
         PID_Y_angle.SetTunings(kp, ki, kd);
         break;
-      case 3: //Pitch PID tunning
+      case 3: //Pitch PID tuning
         PID_X.SetTunings(kp, ki, kd);
         break;
-      case 4: //Roll PID tunning
+      case 4: //Roll PID tuning
         PID_Y.SetTunings(kp, ki, kd);
         break;
-      case 5: //Yaw rate PID tunning
+      case 5: //Yaw rate PID tuning
         PID_Z.SetTunings(kp, ki, kd);
         break;  
     }
+    
+    #endif
+    
     if (PID_change!=0)
       PID_change_ACK = PID_change; //keep track of last PID params changed to send ack to GS.
     
@@ -129,6 +161,8 @@ int sendData(byte* data) {
   return(EXIT); 
 }
 
+
+
 void prepareDataToGroundSegment(){
   data_tx[0] = ID_local;
   data_tx[1] = nseq_tx;
@@ -147,29 +181,78 @@ void prepareDataToGroundSegment(){
   data_tx[13] = (int) (((double)Mot2 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot2 value
   data_tx[14] = (int) (((double)Mot3 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot3 value
   data_tx[15] = (int) (((double)Mot4 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot4 value
+  
+  #ifdef GUI_CONF
+  
+  data_tx[16] = PID_id; // (== PID_change_ACK)
+  data_tx[17] = PID_term;
+  union {                
+    byte asBytes[4];        
+    double asDouble;     
+  } double_byte; 
+  switch (PID_change_ACK) {
+      case 1: //Pitch PID_angle tuning ACK
+        double_byte.asDouble = PID_X_angle.GetValue(PID_term);
+        data_tx[18] = double_byte.asBytes[0];
+        data_tx[19] = double_byte.asBytes[1];
+        data_tx[20] = double_byte.asBytes[2];
+        data_tx[21] = double_byte.asBytes[3];
+        break;
+      case 2: //Roll PID_angle tuning ACK
+        double_byte.asDouble = PID_Y_angle.GetValue(PID_term);
+        data_tx[18] = double_byte.asBytes[0];
+        data_tx[19] = double_byte.asBytes[1];
+        data_tx[20] = double_byte.asBytes[2];
+        data_tx[21] = double_byte.asBytes[3];
+        break;
+      case 3: //Pitch rate PID tuning ACK
+        double_byte.asDouble = PID_X.GetValue(PID_term);
+        data_tx[18] = double_byte.asBytes[0];
+        data_tx[19] = double_byte.asBytes[1];
+        data_tx[20] = double_byte.asBytes[2];
+        data_tx[21] = double_byte.asBytes[3];
+        break;
+      case 4: //Roll rate PID tuning ACK
+        double_byte.asDouble = PID_Y.GetValue(PID_term);
+        data_tx[18] = double_byte.asBytes[0];
+        data_tx[19] = double_byte.asBytes[1];
+        data_tx[20] = double_byte.asBytes[2];
+        data_tx[21] = double_byte.asBytes[3];
+        break;
+      case 5: //Yaw rate PID tuning ACK
+        double_byte.asDouble = PID_Z.GetValue(PID_term);
+        data_tx[18] = double_byte.asBytes[0];
+        data_tx[19] = double_byte.asBytes[1];
+        data_tx[20] = double_byte.asBytes[2];
+        data_tx[21] = double_byte.asBytes[3];
+        break;
+  } 
+  
+  #else
+  
   data_tx[16] = PID_change_ACK;
   switch (PID_change_ACK) {
-      case 1: //Pitch PID_angle tunning ACK
+      case 1: //Pitch PID_angle tuning ACK
         data_tx[17] = (int)(PID_p_div*PID_X_angle.GetKp());
         data_tx[18] = (int)(PID_i_div*PID_X_angle.GetKi());
         data_tx[19] = (int)(PID_d_div*PID_X_angle.GetKd());
         break;
-      case 2: //Roll PID_angle tunning ACK
+      case 2: //Roll PID_angle tuning ACK
         data_tx[17] = (int)(PID_p_div*PID_Y_angle.GetKp());
         data_tx[18] = (int)(PID_i_div*PID_Y_angle.GetKi());
         data_tx[19] = (int)(PID_d_div*PID_Y_angle.GetKd());
         break;
-      case 3: //Pitch PID tunning ACK
+      case 3: //Pitch PID tuning ACK
         data_tx[17] = (int)(PID_p_div*PID_X.GetKp());
         data_tx[18] = (int)(PID_i_div*PID_X.GetKi());
         data_tx[19] = (int)(PID_d_div*PID_X.GetKd());
         break;
-      case 4: //Roll PID tunning ACK
+      case 4: //Roll PID tuning ACK
         data_tx[17] = (int)(PID_p_div*PID_Y.GetKp());
         data_tx[18] = (int)(PID_i_div*PID_Y.GetKi());
         data_tx[19] = (int)(PID_d_div*PID_Y.GetKd());
         break;
-      case 5: //Yaw rate PID tunning ACK
+      case 5: //Yaw rate PID tuning ACK
         data_tx[17] = (int)(PID_p_div*PID_Z.GetKp());
         data_tx[18] = (int)(PID_i_div*PID_Z.GetKi());
         data_tx[19] = (int)(PID_d_div*PID_Z.GetKd());
@@ -178,4 +261,6 @@ void prepareDataToGroundSegment(){
   data_tx[20] = PID_p_div;
   data_tx[21] = PID_i_div;
   data_tx[22] = PID_d_div;
+  
+  #endif
 }

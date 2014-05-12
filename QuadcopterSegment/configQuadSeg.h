@@ -1,5 +1,13 @@
+// ****** Global configuration ****** //
+#define GUI_CONF //uncomment if you are going to use Processing GUI to calibrate PIDs instead of serial monitor
+          //once it is done, every line of code left out of this definition should be erased
+#define I_AM_QUADCOPTER
+//#define I_AM_GROUNDSTATION
+
+
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
+//They must be commented if we are using ConfGUI.
 //#define DEBUG_IMU //Configure Processing drawing sketch in accordance.
 //#define DEBUG_RX
 //#define DEBUG_PID
@@ -12,7 +20,7 @@
 #define QUADP  //Plus config.
 
 // ****** ESC control ****** //
-//#define ESC_CALIBRATION_ON //If not defined, normal function. If defined, no PID tunning, just ESC calibration
+//#define ESC_CALIBRATION_ON //If not defined, normal function. If defined, no PID tuning, just ESC calibration
 //Signal Pins for ESCs
 #define ESC1  3
 #define ESC2  5
@@ -64,7 +72,7 @@
 // ****** PID definitions ****** //
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
 #define PID_SAMPLETIME 10 //You can use DEBUG_TIMING to know how much time it takes in loop() code
-//PID tunnings by default
+//PID tunings by default
 #define KpX_angle 1.
 #define KiX_angle 0.
 #define KdX_angle 0.

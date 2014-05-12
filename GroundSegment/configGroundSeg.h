@@ -1,7 +1,13 @@
+// ****** Global configuration ****** //
 #define GUI_CONF //uncomment if you are going to use Processing GUI to calibrate PIDs instead of serial monitor
+          //once it is done, every line of code left out of this definition should be erasedtuning
+//#define I_AM_QUADCOPTER
+#define I_AM_GROUNDSTATION
+
 
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
+//They must be commented if we are using ConfGUI.
 //#define DEBUG_POTS
 //#define DEBUG_TELEMETRY
 
@@ -41,7 +47,7 @@
 // ****** PID definitions ****** //
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
 #define PID_SAMPLETIME 10 //You can use DEBUG_TIMING to know how much time it takes in loop() code
-//PID tunnings by default
+//PID tunings by default
 #define KpX_angle 1.
 #define KiX_angle 0.
 #define KdX_angle 0.

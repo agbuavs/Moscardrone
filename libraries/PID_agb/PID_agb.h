@@ -35,6 +35,8 @@ class PID
     void SetTunings(double, double,       // * While most users will set the tunings once in the 
                     double);         	  //   constructor, this function gives the user the option
                                           //   of changing tunings during runtime for Adaptive control
+    void SetTuning(unsigned char, double);      	  // * This function is the same as the one above, but for
+										  //   isolated P,I or D changes.
 	void SetControllerDirection(int);	  // * Sets the Direction, or "Action" of the controller. DIRECT
 										  //   means the output will increase when error is positive. REVERSE
 										  //   means the opposite.  it's very unlikely that this will be needed
@@ -47,7 +49,8 @@ class PID
   //Display functions ****************************************************************
 	double GetKp();						  // These functions query the pid for interal values.
 	double GetKi();						  //  they were created mainly for the pid front-end,
-	double GetKd();						  // where it's important to know what is actually 
+	double GetKd();						  // where it's important to know what is actually
+	double GetValue(unsigned char);
 	int GetMode();						  //  inside the PID.
 	int GetDirection();					  //
 

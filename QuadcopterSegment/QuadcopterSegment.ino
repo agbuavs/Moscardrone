@@ -81,7 +81,7 @@ double SetpointY_angle, InputY_angle, OutputY_angle;
 double SetpointX, InputX, OutputX;
 double SetpointY, InputY, OutputY;
 double SetpointZ, InputZ, OutputZ;
-//PID tunning parameters received from ground segment
+//PID tuning parameters received from ground segment
 int PID_p = 0;
 int PID_i = 0;
 int PID_d = 0;
@@ -156,7 +156,19 @@ int PIN_EMERG = 4; //green.
 boolean blinkABORT = false;
 unsigned long time_last_loop = 0;
 
-
+//Variables used in communication with GUI
+double lastGUIpacket = 0;
+byte ackSent = 0;
+union {                // This Data structure lets us take the byte array
+  byte asBytes[4];     // sent from processing and easily convert it to a float array
+  float asFloat;       // 
+  double asDouble;     //
+}                      // 
+PID_value;             //
+byte PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the future, it can be GPS, barometer, etc)
+byte PID_term = 0;     //P, I or D
+byte PID_id_ACK = 0;
+byte PID_term_ACK = 0;
 
 ////////////////////////////////////////////////////////////////////////
 ///////  Initial Setup
