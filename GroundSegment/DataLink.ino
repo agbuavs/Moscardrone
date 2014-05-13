@@ -94,7 +94,7 @@ int receiveData(byte* data) {
     switch (PID_change_ACK) {
       case 1: //Pitch PID_angle tuning
         PID_X_angle_p = ((double)data[17])/data[20];
-        PID_X_angle_i = ((double)data[18])/data[21];tuning
+        PID_X_angle_i = ((double)data[18])/data[21];
         PID_X_angle_d = ((double)data[19])/data[22];
         break;
       case 2: //Roll PID_angle tuning

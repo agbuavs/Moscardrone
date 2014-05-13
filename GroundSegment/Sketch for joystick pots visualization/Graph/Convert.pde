@@ -1,6 +1,6 @@
 //convert all axis
 int minAngle = 0;
-int maxAngle = 255;
+int maxAngle = 1024;
 
 void convert() {   
   /* convert the x-axis */

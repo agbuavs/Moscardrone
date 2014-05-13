@@ -15,7 +15,7 @@ float[] T = new float[600];
 void setup() {  
   size(600, 255);
   println(arduino.list()); // Use this to print connected serial devices
-  arduino = new Serial(this, "COM16", 9600); //2nd parameter = serial port being used
+  arduino = new Serial(this, "COM16", 115200); //2nd parameter = serial port being used
   arduino.bufferUntil('\n'); // Buffer until line feed
 
   for (int i=0;i<600;i++) { // center all variables    
