@@ -9,6 +9,7 @@ Serial myPort;
 String outputFileName = ""; // if you'd like to output data to 
 // a file, specify the path here
 
+String textWarning = "First of all, calibrate joystick.\nCalibration done when light turns green";
 String textInstructions = "Write PID values and type enter\n to send them to Arduino\nFeedback will be printed on the wright column";
 
 //GUI items frame definition:
@@ -101,6 +102,7 @@ void draw() {
   background(0);
   fill(255);
   text(textInstructions, 300,180);
+  text(textWarning, 300, 80);
   text("To Quad",X_commands,Y_commands);
   text("From Quad",X_feedback,Y_feedback);
 }
@@ -164,7 +166,7 @@ void serialEvent(Serial myPort)
   String read = myPort.readString();
   //myPort.clear();
   String[] s = split(read, " ");
-  //println(read);
+  println(read);
   
   if (parseInt(s[1])==1) PID_P_ack.setText(s[2]);
   if (parseInt(s[1])==2) PID_I_ack.setText(s[2]);

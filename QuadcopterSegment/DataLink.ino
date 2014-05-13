@@ -36,7 +36,7 @@ int receiveData(byte* data) {
     joy_z = int(data[4]);
     joy_t = int(data[5]);    
     
-    #ifdef GUI_CONF
+    #ifdef GUI_CONF_OVER_RF
     
     PID_id = data[6];
     PID_change = PID_id;
@@ -45,23 +45,7 @@ int receiveData(byte* data) {
     PID_value.asBytes[1] = data[9];
     PID_value.asBytes[2] = data[10];
     PID_value.asBytes[3] = data[11];
-    switch(PID_id) {
-      case 1: //Pitch PID_angle tuning
-        PID_X_angle.SetTuning(PID_id, PID_value.asDouble);
-        break;
-      case 2: //Roll PID_angle tuning
-        PID_Y_angle.SetTuning(PID_id, PID_value.asDouble);
-        break;
-      case 3: //Pitch PID tuning
-        PID_X.SetTuning(PID_id, PID_value.asDouble);
-        break;
-      case 4: //Roll PID tuning
-        PID_Y.SetTuning(PID_id, PID_value.asDouble);
-        break;
-      case 5: //Yaw rate PID tuning
-        PID_Z.SetTuning(PID_id, PID_value.asDouble);
-        break;     
-    }
+    calibratePID(PID_id,PID_term,PID_value.asDouble);
         
     #else
     
@@ -182,7 +166,7 @@ void prepareDataToGroundSegment(){
   data_tx[14] = (int) (((double)Mot3 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot3 value
   data_tx[15] = (int) (((double)Mot4 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot4 value
   
-  #ifdef GUI_CONF
+  #ifdef GUI_CONF_OVER_RF
   
   data_tx[16] = PID_id; // (== PID_change_ACK)
   data_tx[17] = PID_term;

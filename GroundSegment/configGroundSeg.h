@@ -1,8 +1,6 @@
 // ****** Global configuration ****** //
 #define GUI_CONF //uncomment if you are going to use Processing GUI to calibrate PIDs instead of serial monitor
           //once it is done, every line of code left out of this definition should be erasedtuning
-//#define I_AM_QUADCOPTER
-#define I_AM_GROUNDSTATION
 
 
 // ****** Debugging options ****** //

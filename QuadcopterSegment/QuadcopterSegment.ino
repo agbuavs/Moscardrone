@@ -165,10 +165,12 @@ union {                // This Data structure lets us take the byte array
   double asDouble;     //
 }                      // 
 PID_value;             //
-byte PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the future, it can be GPS, barometer, etc)
-byte PID_term = 0;     //P, I or D
-byte PID_id_ACK = 0;
-byte PID_term_ACK = 0;
+unsigned char PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the future, it can be GPS, barometer, etc)
+unsigned char PID_term = 0;     //P, I or D
+unsigned char PID_id_ACK = 0;
+unsigned char PID_term_ACK = 0;
+
+
 
 ////////////////////////////////////////////////////////////////////////
 ///////  Initial Setup
@@ -234,6 +236,13 @@ void setup(){
 
 void loop(){
 
+  //Read PID tuning commands from serial. 
+  #ifdef GUI_CONF_OVER_SERIAL //Processing GUI is used to calibrate PIDs. Float values can be used
+  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
+    receiveDataFromGUI();   
+  }  
+  #endif
+  
   //Read data from IMU and operate to get angles
   computeIMU();
 

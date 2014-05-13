@@ -20,20 +20,24 @@ void receiveDataFromGUI() {
   PID_value.asBytes[3] = Serial.read();
   Serial.flush();
   
-  #ifdef I_AM_QUADCOPTER
-  sendAckToGUI(PID_id, PID_term, PID_value.asFloat);
-  #endif
+  //This piece of code doesn't exist in Ground Segment code...
+  calibratePID(PID_id, PID_term, PID_value.asDouble);
+  double val = PID_Y.GetValue(PID_term);
+  sendAckToGUI(PID_id, PID_term, val);
+  //..........................................................
   
   lastGUIpacket = millis();
   
 }
 
 
-void sendAckToGUI(byte id, byte term, float value) {
+void sendAckToGUI(unsigned char id, unsigned char term, float value) {
   Serial.print(id);
   Serial.print(" ");
   Serial.print(term);
   Serial.print(" ");
   Serial.println(value);
 }
+
+
 

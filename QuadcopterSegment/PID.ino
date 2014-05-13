@@ -44,6 +44,35 @@ void initializePIDs() {
 
 
 
+void calibratePID(unsigned char PID_id, unsigned char PID_term, double value) {
+  
+  Serial.print("PID ");
+  Serial.print(PID_id);
+  Serial.print(" term ");
+  Serial.print(PID_term);
+  Serial.print(" changing to ");
+  Serial.println(value);
+  
+  switch(PID_id) {
+    case 1: //Pitch PID_angle tuning
+      PID_X_angle.SetTuning(PID_term, value);
+      break;
+    case 2: //Roll PID_angle tuning
+      PID_Y_angle.SetTuning(PID_term, value);
+      break;
+    case 3: //Pitch PID tuning
+      PID_X.SetTuning(PID_term, value);
+      break;
+    case 4: //Roll PID tuning
+      PID_Y.SetTuning(PID_term, value);
+      break;
+    case 5: //Yaw rate PID tuning
+      PID_Z.SetTuning(PID_term, value);
+      break;        
+  }
+}
+
+
 
 int computeInputs() {
 //Do necessary calculations on IMU data to get PIDs inputs

@@ -20,10 +20,6 @@ void receiveDataFromGUI() {
   PID_value.asBytes[3] = Serial.read();
   Serial.flush();
   
-  #ifdef I_AM_QUADCOPTER
-  sendAckToGUI(PID_id, PID_term, PID_value.asFloat);
-  #endif
-  
   lastGUIpacket = millis();
   
 }
