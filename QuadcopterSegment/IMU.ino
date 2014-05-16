@@ -37,6 +37,7 @@ int computeIMU() {
     Serial.print(gyroXangle); Serial.print("\t");
     Serial.print(gyroYangle); Serial.print("\t");
     Serial.print(gyroZangle); Serial.print("\t");    
+    
     Serial.print(accXangle); Serial.print("\t");
     Serial.print(accYangle); Serial.print("\t");
     Serial.print(accZangle); Serial.print("\t");
@@ -44,6 +45,7 @@ int computeIMU() {
     Serial.print(compAngleX); Serial.print("\t");
     Serial.print(compAngleY); Serial.print("\t");
     Serial.print(compAngleZ); Serial.print("\t");
+    
     //Serial.print(kalAngleY); Serial.print("\t");
     //Serial.print(kalAngleX); Serial.print("\t");
     //Serial.print(kalAngleZ); Serial.print("\t");   

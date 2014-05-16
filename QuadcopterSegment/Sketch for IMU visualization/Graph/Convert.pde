@@ -107,7 +107,24 @@ void convert() {
     kalmanZ[kalmanZ.length-1] = map(float(stringKalmanZ), minAngle, maxAngle, 0, height);
   }
   
+ 
   
+  /* convert the gyro x-axis change rate */
+  if (stringGyroRateX != null) {    
+    // trim off any whitespace:
+    stringGyroRateX = trim(stringGyroRateX);
+    // convert to an float and map to the screen height, then save in buffer:   
+    gyroRateX[gyroRateX.length-1] = map(float(stringGyroRateX), -maxRate, maxRate, 0, height);
+  }
+  
+  /* convert the gyro y-axis change rate */
+  if (stringGyroRateY != null) {    
+    // trim off any whitespace:
+    stringGyroRateY = trim(stringGyroRateY);
+    // convert to an float and map to the screen height, then save in buffer:   
+    gyroRateY[gyroRateY.length-1] = map(float(stringGyroRateY), -maxRate, maxRate, 0, height);
+  }  
+    
   /* convert the gyro z-axis change rate */
   if (stringGyroRateZ != null) {    
     // trim off any whitespace:

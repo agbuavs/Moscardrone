@@ -1,5 +1,30 @@
-void drawGyroZ() {
+void drawGyroRate() {
   
+  /* draw gyroRate over x-axis */
+  noFill();
+  stroke(255,0,0); // red
+  // redraw everything
+  beginShape();
+  for(int i = 0; i<gyroRateX.length;i++)
+    vertex(i,gyroRateX[i]);
+  endShape();
+  // put all data one array back
+  for(int i = 1; i<gyroRateX.length;i++)
+    gyroRateX[i-1] = gyroRateX[i]; 
+    
+  /* draw gyroRate over y-axis */  
+  noFill();
+  stroke(0,255,0); // green 
+  // redraw everything
+  beginShape();
+  for(int i = 0; i<gyroRateY.length;i++)
+    vertex(i,gyroRateY[i]);
+  endShape();
+  // put all data one array back
+  for(int i = 1; i<gyroRateY.length;i++)
+    gyroRateY[i-1] = gyroRateY[i];
+    
+  /* draw gyroRate over z-axis */  
   noFill();
   stroke(0,0,255); // blue
   // redraw everything

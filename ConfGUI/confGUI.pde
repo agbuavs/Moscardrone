@@ -17,10 +17,12 @@ int margin = 20;
 int PIDboxSizeX = 80;
 int PIDboxSizeY = 40;
 int X_commands = 20;
-int Y_commands = 70;
+int Y_commands = 120;
 int X_feedback = X_commands + PIDboxSizeX + margin;
 int Y_feedback = Y_commands;
 
+DropdownList PID_selection;
+String PID_select_label = "Select PID to calibrate";
 controlP5.Textfield PID_P,PID_I,PID_D,PID_P_ack,PID_I_ack,PID_D_ack;
 String PID_P_label = "P";
 String PID_P_ack_label = "P ack";
@@ -30,10 +32,15 @@ String PID_D_label = "D";
 String PID_D_ack_label = "D ack";
 
 
+boolean CONNECTED = false;
+
+
 void setup() {
   println(Serial.list());                                           // * Initialize Serial
-  myPort = new Serial(this, Serial.list()[2], 115200);                //   Communication with
-  myPort.bufferUntil(10); 
+  if (CONNECTED) {
+    myPort = new Serial(this, Serial.list()[2], 115200);        
+    myPort.bufferUntil(10); 
+  }
   
   size(700,400);
   
@@ -42,6 +49,13 @@ void setup() {
   text("To Arduino",20,50);
   
   cp5 = new ControlP5(this);
+  
+  // create a DropdownList for PID identifier selection
+  PID_selection = cp5.addDropdownList(PID_select_label)
+          .setPosition(X_commands, Y_commands - margin - 80)
+          ;
+          
+  customize(PID_selection);
   
   PID_P = cp5.addTextfield(PID_P_label)
      .setPosition(X_commands,Y_commands + margin)
@@ -142,9 +156,11 @@ void controlEvent(ControlEvent theEvent) {
   }
   
   //Send the PID term identifier information and value to Arduino over serial
+  if (CONNECTED) {
   myPort.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
   myPort.write(PID_term); // P, I or D ?
   myPort.write(floatToByteArray(value)); //This makes the conversion from float string to byte array
+  }
   /*
   println(PID_id);   // angleX, angleY, rateX, rateY or rateZ
   println(PID_term); // P, I or D ?
@@ -172,4 +188,27 @@ void serialEvent(Serial myPort)
   if (parseInt(s[1])==2) PID_I_ack.setText(s[2]);
   if (parseInt(s[1])==3) PID_D_ack.setText(s[2]);
 
+}
+
+
+void customize(DropdownList ddl) {
+  // a convenience function to customize a DropdownList
+  ddl.setBackgroundColor(color(190));
+  ddl.setItemHeight(15);
+  ddl.setBarHeight(15);
+  ddl.captionLabel().set("PID id election");
+  ddl.captionLabel().style().marginTop = 3;
+  ddl.captionLabel().style().marginLeft = 3;
+  ddl.valueLabel().style().marginTop = 3;
+  
+  //Add possible PID identifiers
+  ddl.addItem("Pitch Angle", 1);
+  ddl.addItem("Roll Angle", 2);
+  ddl.addItem("Pitch Rate", 3);
+  ddl.addItem("Roll Rate", 4);
+  ddl.addItem("Yaw Rate", 5);
+  
+  //ddl.scroll(0);
+  ddl.setColorBackground(color(60));
+  ddl.setColorActive(color(255, 128));
 }

@@ -17,6 +17,8 @@ String stringKalmanX;
 String stringKalmanY;
 String stringKalmanZ;
 
+String stringGyroRateX;
+String stringGyroRateY;
 String stringGyroRateZ;
 
 float[] gyroX = new float[600];
@@ -35,30 +37,33 @@ float[] kalmanX = new float[600];
 float[] kalmanY = new float[600];
 float[] kalmanZ = new float[600];
 
+float[] gyroRateX = new float[600];
+float[] gyroRateY = new float[600];
 float[] gyroRateZ = new float[600];
 
 
 void setup() {  
   size(600, 400);
   println(arduino.list()); // Use this to print connected serial devices
-  arduino = new Serial(this, "COM19", 9600); //2nd parameter = serial port being used
+  arduino = new Serial(this, "COM19", 115200); //2nd parameter = serial port being used
   arduino.bufferUntil('\n'); // Buffer until line feed
 
   for (int i=0;i<600;i++) { // center all variables    
     gyroX[i] = height/2;
     gyroY[i] = height/2;
+    gyroZ[i] = height/2;
     accX[i] = height/2;
     accY[i] = height/2;
+    accZ[i] = height/2;
     compX[i] = height/2;     
     compY[i] = height/2; 
+    compZ[i] = height/2;
     kalmanX[i] = height/2; 
     kalmanY[i] = height/2;
-    
-    accZ[i] = height/2;
-    gyroZ[i] = height/2;
-    compZ[i] = height/2; 
     kalmanZ[i] = height/2;
     
+    gyroRateX[i] = height/2;
+    gyroRateY[i] = height/2;
     gyroRateZ[i] = height/2;
   }
 }
@@ -80,14 +85,15 @@ void draw()
 
   
   convert();
-  drawAxisX();
+  //drawAxisX();
   //drawAxisY();
   //drawAxisZ(); //not used
-  //drawGyroZ();
+  drawGyroRate();
 }
 
 void serialEvent (Serial arduino) {
   // get the ASCII strings:
+  /*
   stringGyroX = arduino.readStringUntil('\t');
   stringGyroY = arduino.readStringUntil('\t');
   stringGyroZ = arduino.readStringUntil('\t');
@@ -95,15 +101,17 @@ void serialEvent (Serial arduino) {
   stringAccX = arduino.readStringUntil('\t');
   stringAccY = arduino.readStringUntil('\t');
   stringAccZ = arduino.readStringUntil('\t');
-  
+  */
   stringCompX = arduino.readStringUntil('\t');
   stringCompY = arduino.readStringUntil('\t'); 
   stringCompZ = arduino.readStringUntil('\t');
-  
+  /*
   stringKalmanX = arduino.readStringUntil('\t');
   stringKalmanY = arduino.readStringUntil('\t');
   stringKalmanZ = arduino.readStringUntil('\t');
-  
+  */
+  stringGyroRateX = arduino.readStringUntil('\t');
+  stringGyroRateY = arduino.readStringUntil('\t');
   stringGyroRateZ = arduino.readStringUntil('\t');
   
   arduino.clear(); // Clear buffer
@@ -114,15 +122,24 @@ void serialEvent (Serial arduino) {
 
 //Print on serial
 void printAxis() {
+  /*
   print(stringGyroX);
   print(stringGyroY);
+  print(stringGyroZ);
 
   print(stringAccX);
   print(stringAccY);
-
+  print(stringAccZ);
+  */
   print(stringCompX);
   print(stringCompY);
-
+  print(stringCompZ);
+  /*
   print(stringKalmanX);
   print(stringKalmanY);
+  print(stringKalmanZ);
+  */
+  print(stringGyroRateX);
+  print(stringGyroRateY);
+  print(stringGyroRateZ);
 }
