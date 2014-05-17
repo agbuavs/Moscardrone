@@ -21,14 +21,13 @@ byte[] floatToByteArray(float input)
   int index=0;
   byte[] b = new byte[4];
   byte[] out = new byte[len];
-  ByteBuffer buf = ByteBuffer.wrap(b);
   
+  ByteBuffer buf = ByteBuffer.wrap(b);  
   buf.position(0);
   buf.putFloat(input);
+  
   for(int j=0;j<4;j++) out[j]=b[3-j];
   
   return out;
 }
-
-
 

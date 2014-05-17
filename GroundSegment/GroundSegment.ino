@@ -106,6 +106,7 @@ double PID_Y_p, PID_Y_i, PID_Y_d;
 double PID_Z_p, PID_Z_i, PID_Z_d;
 
 //PIN display declarations
+int LED_CALIBRATE_OK = 10;
 int PIN_TX = 9; //blue
 int PIN_RX = 2; //yellow
 
@@ -142,6 +143,7 @@ void setup(){
   //LEDs off at start
   digitalWrite(PIN_TX,LOW);
   digitalWrite(PIN_RX,LOW);
+  analogWrite(LED_CALIBRATE_OK,0);
   
   //Init variables used to monitor PID settings from quadcopter
   initPIDmonValues();
@@ -225,6 +227,9 @@ void loop(){
   }
 
   #endif
+
+  //Joystick pot measures transformed to ignore little movements around the center
+  transformJoystickValues();
   
   //Prepare payload for transmission to quadcopter
   prepareDataToQuadcopter();
@@ -233,7 +238,7 @@ void loop(){
   sendData(data_tx);
   
   #ifdef DEBUG_POTS //These values can be monitored with Graph (Processing sketch)
-    if (counter == 100) { //(printing in every cycle saturates Matlab graphing sketch)
+    //if (counter == 100) { //(printing in every cycle saturates Matlab graphing sketch)
       counter = 1;
       //(optional) print the results to the serial monitor: 
       Serial.print(joy_x); Serial.print("\t");        
@@ -241,8 +246,8 @@ void loop(){
       Serial.print(joy_z); Serial.print("\t");
       Serial.print(joy_t); Serial.print("\t");
       Serial.print("\r\n");
-    }
-    else counter++; 
+    //}
+    //else counter++; 
   #endif
   
   //Receive data (if there is anything in buffer) from remote control
@@ -283,6 +288,15 @@ int calibrateJoystick () {
  if (joy_t_min > joy_t)
    joy_t_min = joy_t;
  
+ //Calibration done?
+ if ((joy_x_max - joy_x_min > MIN_RANGE_TO_CALIBRATE) && (joy_y_max - joy_y_min > MIN_RANGE_TO_CALIBRATE) && (joy_z_max - joy_z_min > MIN_RANGE_TO_CALIBRATE) && (joy_t_max - joy_t_min > MIN_RANGE_TO_CALIBRATE))
+ {
+   JOY_calibrated = 1;
+   analogWrite(LED_CALIBRATE_OK,255);
+ }
+ else
+   analogWrite(LED_CALIBRATE_OK,0);
+ 
  return(0);
 }
 
@@ -297,4 +311,24 @@ void initPIDmonValues() {
   PID_X_p = KpX; PID_X_i = KiX; PID_X_d = KdX;
   PID_Y_p = KpY; PID_Y_i = KiY; PID_Y_d = KdY;
   PID_Z_p = KpZ; PID_Z_i = KiZ; PID_Z_d = KdZ;
+}
+
+
+void transformJoystickValues() {  //not used
+   
+  if ( abs( joy_x - (joy_x_max + joy_x_min)/2 ) < MIN_JOY_DETECTABLE_SHIFT ) joy_x = (joy_x_max + joy_x_min)/2;
+  else {
+   if (joy_x > (joy_x_max + joy_x_min)/2) joy_x = joy_x - MIN_JOY_DETECTABLE_SHIFT;
+   if (joy_x < (joy_x_max + joy_x_min)/2) joy_x = joy_x + MIN_JOY_DETECTABLE_SHIFT;
+  }
+  if ( abs( joy_y - (joy_y_max + joy_y_min)/2 ) < MIN_JOY_DETECTABLE_SHIFT ) joy_y = (joy_y_max + joy_y_min)/2;
+  else {
+   if (joy_y > (joy_y_max + joy_y_min)/2) joy_y = joy_y - MIN_JOY_DETECTABLE_SHIFT;
+   if (joy_y < (joy_y_max + joy_y_min)/2) joy_y = joy_y + MIN_JOY_DETECTABLE_SHIFT;
+  }
+  if ( abs( joy_z - (joy_z_max + joy_z_min)/2 ) < MIN_JOY_DETECTABLE_SHIFT ) joy_z = (joy_z_max + joy_z_min)/2;
+  else {
+   if (joy_z > (joy_z_max + joy_z_min)/2) joy_z = joy_z - MIN_JOY_DETECTABLE_SHIFT;
+   if (joy_z < (joy_z_max + joy_z_min)/2) joy_z = joy_z + MIN_JOY_DETECTABLE_SHIFT;
+  }
 }

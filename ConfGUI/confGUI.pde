@@ -14,7 +14,7 @@ String textInstructions = "Write PID values and type enter\n to send them to Ard
 
 //GUI items frame definition:
 int margin = 20;
-int PIDboxSizeX = 80;
+int PIDboxSizeX = 100;
 int PIDboxSizeY = 40;
 int X_commands = 20;
 int Y_commands = 120;
@@ -31,8 +31,13 @@ String PID_I_ack_label = "I ack";
 String PID_D_label = "D";
 String PID_D_ack_label = "D ack";
 
+//Set to false when you only want to see the GUI format.
+boolean CONNECTED = true;
 
-boolean CONNECTED = false;
+//best values 
+//(2014-05-16 trials) : P 1.3, I 0.01, D 0.55
+//(2014-05-17 trials) : P 1.1, I 0.0175, D 0.45
+//maybe it's necessary to change format to add decimal numbers.
 
 
 void setup() {
@@ -42,7 +47,7 @@ void setup() {
     myPort.bufferUntil(10); 
   }
   
-  size(700,400);
+  size(800,400);
   
   PFont font = createFont("arial",20);
   
@@ -138,13 +143,14 @@ void controlEvent(ControlEvent theEvent) {
             );
   }  
   
-  byte PID_id = 4;      //This will be choosable in GUI (angleX, angleY, rateX, rateY or rateZ)....
+  byte PID_id = 2;      //This will be choosable in GUI (angleX, angleY, rateX, rateY or rateZ)....
   byte PID_term = 0;
   float value = 0;
   String a = theEvent.getName();
   if (a.equals("P")) {
      PID_term = 1;
      value = float(PID_P.getText());
+     //println(value);
   }
   if (a.equals("I")) {
      PID_term = 2;
@@ -161,11 +167,11 @@ void controlEvent(ControlEvent theEvent) {
   myPort.write(PID_term); // P, I or D ?
   myPort.write(floatToByteArray(value)); //This makes the conversion from float string to byte array
   }
-  /*
+  
   println(PID_id);   // angleX, angleY, rateX, rateY or rateZ
   println(PID_term); // P, I or D ?
   println(floatToByteArray(value)); //This makes the conversion from float string to byte array
-  */
+  
 }
 
 

@@ -36,7 +36,7 @@ void sendAckToGUI(unsigned char id, unsigned char term, float value) {
   Serial.print(" ");
   Serial.print(term);
   Serial.print(" ");
-  Serial.println(value);
+  Serial.println(value,4);
 }
 
 

@@ -7,7 +7,12 @@
 //At most, one of them can be uncommented. The rest must be commented.
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_POTS
+//#define DEBUG_RC_COMMANDS
 //#define DEBUG_TELEMETRY
+
+// ****** Joystick setup ***** //
+#define MIN_JOY_DETECTABLE_SHIFT 80 //less shift from center in pot measurements are ignored
+#define MIN_RANGE_TO_CALIBRATE 600  //min difference between max and min detected values to consider JOY_calibrated
 
 
 /* The following definitions must be a copy from those at configQuadSeg.h ! */
@@ -20,7 +25,7 @@
 #define TIME_BETWEEN_2_TX_Q2G 200 //Time left between 2 transmissions from Quad to Ground. Must be larger than needed time to print data over serial port.
 
 //Milliseconds left between start and first PID computation. Used to arm motors.
-#define TIME_TO_ARM 20000 
+#define TIME_TO_ARM 10000 
 
 //Throttle absolute range
 #define MIN_PWM_THROTTLE 1000

@@ -35,8 +35,8 @@ void initializePIDs() {
   PID_Z.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   
   //sets the period, in Milliseconds, at which the calculation is performed
-  PID_X_angle.SetSampleTime(PID_SAMPLETIME);
-  PID_Y_angle.SetSampleTime(PID_SAMPLETIME);
+  PID_X_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
+  PID_Y_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
   PID_X.SetSampleTime(PID_SAMPLETIME);
   PID_Y.SetSampleTime(PID_SAMPLETIME);
   PID_Z.SetSampleTime(PID_SAMPLETIME);
@@ -106,15 +106,20 @@ int computeSetpoints() {
   int joy_y = 0;        // ROLL angle 
   int joy_z = 0;        // YAW gyro rate
   OUTPUTS:
-  double SetpointX, SetpointY, SetpointZ;
+  double SetpointX, SetpointY, SetpointZ, SetpointX_angle, SetpointY_angle;
   */
   
   //Map values received from joystick (0 to 255) to defined angle margins
+  #ifdef RATE_MODE
+  SetpointX = map(joy_x, 0, 255, -LIMIT_GYRO_X_RATE, LIMIT_GYRO_X_RATE);
+  SetpointY = map(joy_y, 0, 255, -LIMIT_GYRO_Y_RATE, LIMIT_GYRO_Y_RATE);
+  #else
   SetpointX_angle = map(joy_x, 0, 255, MIN_PITCH_ANGLE, MAX_PITCH_ANGLE);
   SetpointY_angle = map(joy_y, 0, 255, MIN_ROLL_ANGLE, MAX_ROLL_ANGLE);
   //SetpointX & SetpointY come from PID_X/Y_angle Outputs (see main loop)
+  #endif  
   SetpointZ = map(joy_z, 0, 255, -LIMIT_GYRO_Z_RATE, LIMIT_GYRO_Z_RATE);
-  
+
   return(0);
 }
 

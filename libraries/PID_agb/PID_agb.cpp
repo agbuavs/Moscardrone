@@ -117,16 +117,16 @@ void PID::SetTuning(unsigned char PID_term, double val)
 
 	switch (PID_term) {
 		case 1:
+			dispKp = val;
 			kp = val;
-			dispKp = kp;
 			break;
 		case 2:
-			ki = val;
-			dispKi = ki;
+			dispKi = val;
+			ki = val * SampleTimeInSec;
 			break;
 		case 3:
-			kd = val;
-			dispKd = kd;
+			dispKd = val;
+			kd = val / SampleTimeInSec;
 			break;
 	}
 }

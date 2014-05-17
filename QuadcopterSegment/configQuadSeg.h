@@ -2,7 +2,7 @@
 #define GUI_CONF_OVER_RF //uncomment if you are going to use Processing GUI to calibrate PIDs instead of serial monitor
 //#define GUI_CONF_OVER_SERIAL
           //once it is done, every line of code left out of this definition should be erased
-
+//#define RATE_MODE
 
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
@@ -33,7 +33,9 @@
 #define MAX_PITCH_ANGLE 210
 #define MIN_ROLL_ANGLE 150
 #define MAX_ROLL_ANGLE 210
-#define LIMIT_GYRO_Z_RATE 50
+#define LIMIT_GYRO_X_RATE 100
+#define LIMIT_GYRO_Y_RATE LIMIT_GYRO_X_RATE
+#define LIMIT_GYRO_Z_RATE 100
 
 
 /* The following definitions must be copied at configGroundSeg.h ! */
@@ -46,7 +48,7 @@
 #define TIME_BETWEEN_2_TX_Q2G 200 //Time left between 2 transmissions from Quad to Ground. Must be larger than needed time to print data over serial port.
 
 //Milliseconds left between start and first PID computation. Used to arm motors.
-#define TIME_TO_ARM 20000 
+#define TIME_TO_ARM 10000 
 
 //Throttle absolute range
 #define MIN_PWM_THROTTLE 1000
@@ -61,7 +63,7 @@
 #define MAX_PWM_PID_OUTPUT 300.  // (== MAX_PWM_THROTTLE - MAX_HORIZ_THROTTLE)
 
 // Gyro rate limits given by PID_angle to gyro rate PIDs
-#define MAX_ANGLE_PID_OUTPUT 200 //maximun rate physically reachable is +-250.
+#define MAX_ANGLE_PID_OUTPUT 50 //maximun rate physically reachable is +-250.
 #define MIN_ANGLE_PID_OUTPUT -MAX_ANGLE_PID_OUTPUT
 
 // ****** GYROSCOPE constants ****** //
@@ -70,7 +72,8 @@
 
 // ****** PID definitions ****** //
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
-#define PID_SAMPLETIME 10 //You can use DEBUG_TIMING to know how much time it takes in loop() code
+#define PID_SAMPLETIME 8 //You can use DEBUG_TIMING to know how much time it takes in loop() code
+#define PID_SAMPLETIME_ANGLE 48
 //PID tunings by default
 #define KpX_angle 0.
 #define KiX_angle 0.

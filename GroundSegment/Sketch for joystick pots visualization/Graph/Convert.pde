@@ -1,6 +1,7 @@
 //convert all axis
 int minAngle = 0;
-int maxAngle = 1024;
+//int maxAngle = 1024; //debug potentiometer measurements
+int maxAngle = 255; //debug bytes sent over RF
 
 void convert() {   
   /* convert the x-axis */

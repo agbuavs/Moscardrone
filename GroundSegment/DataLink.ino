@@ -220,6 +220,16 @@ void prepareDataToQuadcopter() {
   data_tx[4] = map(joy_z,joy_z_min,joy_z_max,255,0);
   data_tx[5] = map(joy_t,joy_t_min,joy_t_max,255,0);
   
+  #ifdef DEBUG_RC_COMMANDS
+  
+  Serial.print(data_tx[2]); Serial.print("\t");        
+  Serial.print(data_tx[3]); Serial.print("\t");
+  Serial.print(data_tx[4]); Serial.print("\t");
+  Serial.print(data_tx[5]); Serial.print("\t");
+  Serial.print("\r\n");
+  
+  #endif
+  
   #ifdef GUI_CONF
   
   data_tx[6] = PID_id;

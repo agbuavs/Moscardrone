@@ -22,6 +22,8 @@ void receiveDataFromGUI() {
   
   lastGUIpacket = millis();
   
+  //sendAckToGUI(PID_id,PID_term,PID_value.asFloat);
+  
 }
 
 
@@ -30,6 +32,6 @@ void sendAckToGUI(byte id, byte term, float value) {
   Serial.print(" ");
   Serial.print(term);
   Serial.print(" ");
-  Serial.println(value);
+  Serial.println(value,4);
 }
 

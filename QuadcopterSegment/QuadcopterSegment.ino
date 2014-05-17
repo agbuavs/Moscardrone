@@ -94,8 +94,10 @@ int PID_change_ACK = 0; //this indicates the last PID been changed.
 //Specify the links and initial tuning parameters
 PID PID_X_angle(&InputX_angle, &OutputX_angle, &SetpointX_angle, KpX_angle, KiX_angle, KdX_angle, DIRECT);
 PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, KpY_angle, KiY_angle, KdY_angle, DIRECT);
+//PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, 0.5, 0.01, 0.1, DIRECT);
 PID PID_X(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
-PID PID_Y(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
+//PID PID_Y(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
+PID PID_Y(&InputY, &OutputY, &SetpointY, 1.1, 2.1875, 0.0036, DIRECT); //(1.1, 0.0175, 0.45, 8ms)
 PID PID_Z(&InputZ, &OutputZ, &SetpointZ, KpZ, KiZ, KdZ, DIRECT);
 
 // IMU declararion and data
@@ -269,8 +271,10 @@ void loop(){
       if (millis() > (double)TIME_TO_ARM) { //Compute PIDs in order to get outputs
         PID_X_angle.Compute();
         PID_Y_angle.Compute();
+        #ifndef RATE_MODE  //If RATE_MODE, joystick X,Y commands are for controling Gyro Rates.
         SetpointX = OutputX_angle; //This is 0 if you set Kp,Ki,Kd to 0 in angle PIDs
         SetpointY = OutputY_angle;
+        #endif
         PID_X.Compute();
         PID_Y.Compute();
         PID_Z.Compute();
