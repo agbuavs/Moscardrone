@@ -94,10 +94,10 @@ int PID_change_ACK = 0; //this indicates the last PID been changed.
 //Specify the links and initial tuning parameters
 PID PID_X_angle(&InputX_angle, &OutputX_angle, &SetpointX_angle, KpX_angle, KiX_angle, KdX_angle, DIRECT);
 PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, KpY_angle, KiY_angle, KdY_angle, DIRECT);
-//PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, 0.5, 0.01, 0.1, DIRECT);
+//PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, 0.9, 0.02, 0.05, DIRECT);
 PID PID_X(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
-//PID PID_Y(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
-PID PID_Y(&InputY, &OutputY, &SetpointY, 1.1, 2.1875, 0.0036, DIRECT); //(1.1, 0.0175, 0.45, 8ms)
+PID PID_Y(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
+//PID PID_Y(&InputY, &OutputY, &SetpointY, 1.1, 2.1875, 0.0036, DIRECT);
 PID PID_Z(&InputZ, &OutputZ, &SetpointZ, KpZ, KiZ, KdZ, DIRECT);
 
 // IMU declararion and data
@@ -156,7 +156,9 @@ int PIN_TX = 9; //blue
 int PIN_RX = 2; //yellow
 int PIN_EMERG = 4; //green.
 boolean blinkABORT = false;
-unsigned long time_last_loop = 0;
+double time_last_loop = 0;
+double mean_cycle_time = 0;
+int counter = 0;
 
 //Variables used in communication with GUI
 double lastGUIpacket = 0;
@@ -199,6 +201,7 @@ void setup(){
   Mirf.setTADDR((byte *)"GroundSegment");    //Set remote segment name
   Mirf.payload = RF_PACKET_SIZE; //shall be the same length on ground segment.
   Mirf.config();
+  
   Serial.println("Listening to RF...");
 
   // initialize IMU device
@@ -351,7 +354,18 @@ void loop(){
   
   //print time elapsed during loop. Necessary to know minimum cycle time for datalink
   #ifdef DEBUG_TIMING
-    Serial.println(millis()-time_last_loop);
+  
+  if(counter == 1000) {    
+    Serial.println(mean_cycle_time,6);
+    mean_cycle_time = 0;
     time_last_loop = millis();
+    counter = 0;
+  }
+  else {
+    double aux = millis()-time_last_loop;
+    mean_cycle_time = mean_cycle_time + aux/1000;    
+    time_last_loop = millis();
+    counter++;
+  }
   #endif
 }

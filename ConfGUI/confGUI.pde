@@ -6,6 +6,9 @@ import controlP5.*;
 ControlP5 cp5;
 Serial myPort;
 
+//Set to false when you only want to see the GUI format.
+boolean CONNECTED = false;
+
 String outputFileName = ""; // if you'd like to output data to 
 // a file, specify the path here
 
@@ -31,12 +34,11 @@ String PID_I_ack_label = "I ack";
 String PID_D_label = "D";
 String PID_D_ack_label = "D ack";
 
+byte joystickMode = 0; // rate=0 / angle=1
+
 //PID calibration widgets
 byte PID_id = 0;
 byte PID_term = 0;
-
-//Set to false when you only want to see the GUI format.
-boolean CONNECTED = false;
 
 //best values 
 //(2014-05-16 trials) : P 1.3, I 0.01, D 0.55
@@ -58,6 +60,15 @@ void setup() {
   text("To Arduino",20,50);
   
   cp5 = new ControlP5(this);
+  
+  // create a toggle to control angle/rate mode
+  // and change the default look to a (on/off) switch look
+  cp5.addToggle("toggle")
+     .setPosition(X_commands + PIDboxSizeX + margin,Y_commands - margin - 80)
+     .setSize(50,20)
+     .setValue(true)
+     .setMode(ControlP5.SWITCH)
+     ;
   
   // create a DropdownList for PID identifier selection
   PID_selection = cp5.addDropdownList(PID_select_label)
@@ -128,6 +139,11 @@ void draw() {
   text(textWarning, 300, 80);
   text("To Quad",X_commands,Y_commands);
   text("From Quad",X_feedback,Y_feedback);
+  if (joystickMode==0)
+    text("Rate Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);
+  else
+    text("Angle Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);
+  
 }
 
 
@@ -227,4 +243,25 @@ void customize(DropdownList ddl) {
   //ddl.scroll(0);
   ddl.setColorBackground(color(60));
   ddl.setColorActive(color(255, 128));
+}
+
+
+void toggle(boolean theFlag) {
+  if(theFlag==true) {
+    joystickMode = 0;
+    println("mode toggle changes to RATE mode");
+  } else {
+    joystickMode = 1;
+    println("mode toggle changes to ANGLE mode");
+  } 
+  
+  //Here shall be the message creation and delivery to GS
+  //There must be some feedback from QS through GS, 
+  //  which shall be catch in serialEvent
+  //  and make some light change color or something.
+  
+  
+  /* 
+    code missing
+  */
 }

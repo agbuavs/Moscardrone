@@ -12,6 +12,7 @@
 
 void receiveDataFromGUI() {
   
+  //There will be several types of message. PID tuning is just one of them...  
   PID_id = Serial.read();   // angleX, angleY, rateX, rateY or rateZ
   PID_term = Serial.read(); // P, I or D ? 
   PID_value.asBytes[0] = Serial.read();

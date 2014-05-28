@@ -1,13 +1,13 @@
 // ****** Global configuration ****** //
 #define GUI_CONF_OVER_RF //uncomment if you are going to use Processing GUI to calibrate PIDs instead of serial monitor
-//#define GUI_CONF_OVER_SERIAL
-          //once it is done, every line of code left out of this definition should be erased
-//#define RATE_MODE
+          //once it is done and tested, every line of code left out of this definition should be erased
+//#define GUI_CONF_OVER_SERIAL 
+//#define RATE_MODE //this should be used just as default value. Mode angle/rate will be selected on GUI
 
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
 //They must be commented if we are using ConfGUI.
-//#define DEBUG_IMU //Configure Processing drawing sketch in accordance.
+#define DEBUG_IMU //Configure Processing drawing sketch in accordance to see IMU data.
 //#define DEBUG_RX
 //#define DEBUG_PID
 //#define DEBUG_TELEMETRY
@@ -72,8 +72,8 @@
 
 // ****** PID definitions ****** //
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
-#define PID_SAMPLETIME 8 //You can use DEBUG_TIMING to know how much time it takes in loop() code
-#define PID_SAMPLETIME_ANGLE 48
+#define PID_SAMPLETIME 5 //You can use DEBUG_TIMING to know how much time it takes in loop() code
+#define PID_SAMPLETIME_ANGLE 30
 //PID tunings by default
 #define KpX_angle 0.
 #define KiX_angle 0.
