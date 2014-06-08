@@ -61,11 +61,12 @@ bool PID::Compute()
       if(ITerm > outMax) ITerm = outMax;
       else if(ITerm < outMin) ITerm= outMin;
       //double dInput = (input - lastInput);//commented by agb
-	  double dInput = 0;//added by agb
-	  if (lastError != 1000) dInput = (error - lastError); //added by agb
+	  double dError = 0;//added by agb
+	  if (lastError != 1000) dError = (error - lastError); //added by agb
 	  
       /*Compute PID Output*/
-      double output = kp * error + ITerm - kd * dInput;      
+      //double output = kp * error + ITerm - kd * dInput;//commented by agb
+      double output = kp * error + ITerm + kd * dError;    //added by agb   
 	  if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
 	  *myOutput = output;

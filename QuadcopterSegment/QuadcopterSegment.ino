@@ -71,7 +71,6 @@
 #define ID_local 1
 //Ground segment identifier
 int ID_remote = 0;
-
 #define LED_PIN 13
 boolean blinkState = false;
 
@@ -94,11 +93,15 @@ int PID_change_ACK = 0; //this indicates the last PID been changed.
 //Specify the links and initial tuning parameters
 PID PID_X_angle(&InputX_angle, &OutputX_angle, &SetpointX_angle, KpX_angle, KiX_angle, KdX_angle, DIRECT);
 PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, KpY_angle, KiY_angle, KdY_angle, DIRECT);
-//PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, 0.9, 0.02, 0.05, DIRECT);
 PID PID_X(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
 PID PID_Y(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
-//PID PID_Y(&InputY, &OutputY, &SetpointY, 1.1, 2.1875, 0.0036, DIRECT);
 PID PID_Z(&InputZ, &OutputZ, &SetpointZ, KpZ, KiZ, KdZ, DIRECT);
+/*
+PID PID_X_angle(&InputX_angle, &OutputX_angle, &SetpointX_angle, 0.4, 0.01, 0.04, DIRECT);
+PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, 0.4, 0.01, 0.04, DIRECT);
+PID PID_X(&InputX, &OutputX, &SetpointX, 1.1, 2.1875, 0.0036, DIRECT);
+PID PID_Y(&InputY, &OutputY, &SetpointY, 1.1, 2.1875, 0.0036, DIRECT);
+*/
 
 // IMU declararion and data
 MPU6050 accelgyro;
@@ -131,6 +134,7 @@ int joy_t = 5;        // THROTTLE average for 4 motors. More than 2 to wait for 
 //margins to control if ESC calibration is done
 int min_joy_t_rx = 255;
 int max_joy_t_rx = 0;
+int joystickMode = DEFAULT_JOY_MODE;
 
 //ESCs controls (individual motor throttle) 
 int Mot1,Mot2,Mot3,Mot4;
@@ -173,7 +177,9 @@ unsigned char PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the
 unsigned char PID_term = 0;     //P, I or D
 unsigned char PID_id_ACK = 0;
 unsigned char PID_term_ACK = 0;
-
+//The next are variables used to configure other things than PIDs with ConfGUI.
+byte addMSG_type = 0;
+byte addMSG_data = 0;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -272,12 +278,12 @@ void loop(){
    
     #ifndef ESC_CALIBRATION_ON //To calibrate ESCs, no PIDs nor gyros are needed.
       if (millis() > (double)TIME_TO_ARM) { //Compute PIDs in order to get outputs
-        PID_X_angle.Compute();
-        PID_Y_angle.Compute();
-        #ifndef RATE_MODE  //If RATE_MODE, joystick X,Y commands are for controling Gyro Rates.
-        SetpointX = OutputX_angle; //This is 0 if you set Kp,Ki,Kd to 0 in angle PIDs
-        SetpointY = OutputY_angle;
-        #endif
+        if (joystickMode == JOY_MODE_ANGLE) { //If rate mode, joystick X,Y commands control Gyro Rates.
+          PID_X_angle.Compute();
+          PID_Y_angle.Compute();
+          SetpointX = OutputX_angle; //This is 0 if you set Kp,Ki,Kd to 0 in angle PIDs
+          SetpointY = OutputY_angle;
+        }
         PID_X.Compute();
         PID_Y.Compute();
         PID_Z.Compute();

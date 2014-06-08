@@ -46,6 +46,13 @@ int receiveData(byte* data) {
     PID_value.asBytes[2] = data[10];
     PID_value.asBytes[3] = data[11];
     calibratePID(PID_id,PID_term,PID_value.asDouble);
+    addMSG_type = data[12];
+    addMSG_data = data[13];
+    switch (addMSG_type) {
+      case (PT_JOY_MODE):
+        joystickMode = addMSG_data;
+        break;
+    }
         
     #else
     
@@ -211,6 +218,8 @@ void prepareDataToGroundSegment(){
         data_tx[21] = double_byte.asBytes[3];
         break;
   } 
+  data_tx[22] = addMSG_type;
+  data_tx[23] = addMSG_data;
   
   #else
   

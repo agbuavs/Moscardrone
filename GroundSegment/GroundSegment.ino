@@ -93,7 +93,6 @@ byte data_tx[RF_PACKET_SIZE]; //Prepare payload to send to quadcopter
 //Wireless PID settings. Variables used to import data from serial and send it to quadcopter.
 int PID_change = 0; //update only PID requested axis
 int PID_change_ACK = 0; //used to know if quad has received PID change command
-
 int PID_p = 0;
 int PID_i = 0;
 int PID_d = 0;
@@ -132,6 +131,11 @@ union {
 PID_value_ACK;          
 byte PID_id_ACK = 0;
 byte PID_term_ACK = 0;
+//The next are variables used to configure other things than PIDs with ConfGUI.
+byte addMSG_type = 0;
+byte addMSG_data = 0;
+byte addMSG_type_ACK = 0;
+byte addMSG_data_ACK = 0;
 
 
 

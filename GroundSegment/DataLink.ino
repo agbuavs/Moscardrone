@@ -86,7 +86,9 @@ int receiveData(byte* data) {
         PID_value_ACK.asBytes[3] = data[21];
         sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
-    }      
+    } 
+    addMSG_type_ACK = data[22];
+    addMSG_data_ACK = data[23]; 
     
     #else
     
@@ -118,8 +120,6 @@ int receiveData(byte* data) {
         PID_Z_d = ((double)data[19])/data[22];
         break;
     }    
-    
-    #endif
     
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_TELEMETRY
@@ -168,6 +168,8 @@ int receiveData(byte* data) {
       //Serial.print(Mot3); Serial.print("\t");        
       Serial.print(Mot4); Serial.print("\t");
       Serial.print("\r\n");
+    #endif
+    
     #endif
     
     //Keep in mind last reception. (Communication loss control)
@@ -220,14 +222,12 @@ void prepareDataToQuadcopter() {
   data_tx[4] = map(joy_z,joy_z_min,joy_z_max,255,0);
   data_tx[5] = map(joy_t,joy_t_min,joy_t_max,255,0);
   
-  #ifdef DEBUG_RC_COMMANDS
-  
+  #ifdef DEBUG_RC_COMMANDS  
   Serial.print(data_tx[2]); Serial.print("\t");        
   Serial.print(data_tx[3]); Serial.print("\t");
   Serial.print(data_tx[4]); Serial.print("\t");
   Serial.print(data_tx[5]); Serial.print("\t");
-  Serial.print("\r\n");
-  
+  Serial.print("\r\n");  
   #endif
   
   #ifdef GUI_CONF
@@ -238,7 +238,8 @@ void prepareDataToQuadcopter() {
   data_tx[9] = PID_value.asBytes[1];
   data_tx[10] = PID_value.asBytes[2];
   data_tx[11] = PID_value.asBytes[3];
-  data_tx[12] = 0; //not used
+  data_tx[12] = addMSG_type;
+  data_tx[13] = addMSG_data;
   
   #else //(old dirty way)
   
