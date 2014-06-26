@@ -65,7 +65,7 @@
 #define MAX_PWM_PID_OUTPUT 300.  // (== MAX_PWM_THROTTLE - MAX_HORIZ_THROTTLE)
 
 // Gyro rate limits given by PID_angle to gyro rate PIDs
-#define MAX_ANGLE_PID_OUTPUT 50 //maximun rate physically reachable is +-250.
+#define MAX_ANGLE_PID_OUTPUT 150 //maximun rate physically reachable is +-250.
 #define MIN_ANGLE_PID_OUTPUT -MAX_ANGLE_PID_OUTPUT
 
 // ****** GYROSCOPE constants ****** //
@@ -75,21 +75,21 @@
 // ****** PID definitions ****** //
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
 #define PID_SAMPLETIME 5 //You can use DEBUG_TIMING to know how much time it takes in loop() code
-#define PID_SAMPLETIME_ANGLE 30
+#define PID_SAMPLETIME_ANGLE 25
 //PID tunings by default
 /*
-#define KpX_angle 0.4
-#define KiX_angle 0.01
-#define KdX_angle 0.04
-#define KpY_angle 0.4
-#define KiY_angle 0.01
-#define KdY_angle 0.04
+#define KpX_angle 0.6
+#define KiX_angle 0.04
+#define KdX_angle 0.0
+#define KpY_angle 0.6
+#define KiY_angle 0.04
+#define KdY_angle 0.0
 #define KpX 1.1
 #define KiX 2.18
-#define KdX 0.0036
+#define KdX 0.00
 #define KpY 1.1
 #define KiY 2.18
-#define KdY 0.0036
+#define KdY 0.00
 #define KpZ 0.
 #define KiZ 0.
 #define KdZ 0.

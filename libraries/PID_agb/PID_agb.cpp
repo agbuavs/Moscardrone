@@ -31,7 +31,9 @@ PID::PID(double* Input, double* Output, double* Setpoint,
 												//the arduino pwm limits
 
     SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
-
+	nLoops = 0;
+	loopsPerSample = 1;							//by default, PID is computed in every cycle
+	
     PID::SetControllerDirection(ControllerDirection);
     PID::SetTunings(Kp, Ki, Kd);
 
@@ -51,13 +53,16 @@ bool PID::Compute()
    if(!inAuto) return false;
    unsigned long now = millis();
    unsigned long timeChange = (now - lastTime);
-   if(timeChange>=SampleTime)
+   //if(timeChange>=SampleTime)
+   nLoops++;
+   if (nLoops >= loopsPerSample)
    {
+	  nLoops = 0;
       /*Compute all the working error variables*/
 	  double input = *myInput;
       double error = *mySetpoint - input;
       if (ki == 0) ITerm = 0; //condition added by agb.
-	  else ITerm+= (ki * error);	  
+	  else ITerm+= (ki * timeChange * error);	  
       if(ITerm > outMax) ITerm = outMax;
       else if(ITerm < outMin) ITerm= outMin;
       //double dInput = (input - lastInput);//commented by agb
@@ -66,13 +71,13 @@ bool PID::Compute()
 	  
       /*Compute PID Output*/
       //double output = kp * error + ITerm - kd * dInput;//commented by agb
-      double output = kp * error + ITerm + kd * dError;    //added by agb   
+      double output = kp * error + ITerm + kd /timeChange * dError;    //added by agb   
 	  if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
 	  *myOutput = output;
 	  
       /*Remember some variables for next time*/
-      lastInput = input; 
+      //lastInput = input; //commented by agb
 	  lastError = error;//added by agb
       lastTime = now;
 	  return true;
@@ -94,15 +99,17 @@ void PID::SetTunings(double Kp, double Ki, double Kd)
    
    double SampleTimeInSec = ((double)SampleTime)/1000;  
    kp = Kp;
-   ki = Ki * SampleTimeInSec;
-   kd = Kd / SampleTimeInSec;
- 
+   //ki = Ki * SampleTimeInSec;
+   //kd = Kd / SampleTimeInSec;
+   ki = Ki;
+   kd = Kd;
+   
   if(controllerDirection ==REVERSE)
-   {
+  {
       kp = (0 - kp);
       ki = (0 - ki);
       kd = (0 - kd);
-   }
+  }
 }
 
 
@@ -123,11 +130,13 @@ void PID::SetTuning(unsigned char PID_term, double val)
 			break;
 		case 2:
 			dispKi = val;
-			ki = val * SampleTimeInSec;
+			//ki = val * SampleTimeInSec;
+			ki = val;
 			break;
 		case 3:
 			dispKd = val;
-			kd = val / SampleTimeInSec;
+			//kd = val / SampleTimeInSec;
+			kd = val;
 			break;
 	}
 }
@@ -135,6 +144,7 @@ void PID::SetTuning(unsigned char PID_term, double val)
   
 /* SetSampleTime(...) *********************************************************
  * sets the period, in Milliseconds, at which the calculation is performed	
+ * IT IS NOT USED. SAMPLE TIME IS DEFINED BY NUMBER OF LOOP CYCLES
  ******************************************************************************/
 void PID::SetSampleTime(int NewSampleTime)
 {
@@ -145,6 +155,17 @@ void PID::SetSampleTime(int NewSampleTime)
       ki *= ratio;
       kd /= ratio;
       SampleTime = (unsigned long)NewSampleTime;
+   }
+}
+
+/* SetLoopsPerSample(...) *********************************************************
+ * sets the period, in number of loop cycles, at which the calculation is performed	
+ ******************************************************************************/
+void PID::SetLoopsPerSample(int NewSampleTime)
+{
+   if (NewSampleTime > 0)
+   {
+	  loopsPerSample = NewSampleTime;
    }
 }
  

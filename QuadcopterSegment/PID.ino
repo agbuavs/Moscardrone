@@ -35,11 +35,16 @@ void initializePIDs() {
   PID_Z.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   
   //sets the period, in Milliseconds, at which the calculation is performed
+  PID_X_angle.SetLoopsPerSample(5);
+  PID_Y_angle.SetLoopsPerSample(5);
+  //rate PIDs are set at 1 loop cycle per sample by default (PID library)
+  /*
   PID_X_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
   PID_Y_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
   PID_X.SetSampleTime(PID_SAMPLETIME);
   PID_Y.SetSampleTime(PID_SAMPLETIME);
   PID_Z.SetSampleTime(PID_SAMPLETIME);
+  */
 }
 
 

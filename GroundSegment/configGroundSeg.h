@@ -40,7 +40,7 @@
 #define MAX_PWM_PID_OUTPUT 300.  // (== MAX_PWM_THROTTLE - MAX_HORIZ_THROTTLE)
 
 // Gyro rate limits given by PID_angle to gyro rate PIDs
-#define MAX_ANGLE_PID_OUTPUT 200 //maximun rate physically reachable is +-250.
+#define MAX_ANGLE_PID_OUTPUT 150 //maximun rate physically reachable is +-250.
 #define MIN_ANGLE_PID_OUTPUT -MAX_ANGLE_PID_OUTPUT
 
 // ****** GYROSCOPE constants ****** //

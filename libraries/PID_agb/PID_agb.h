@@ -43,8 +43,9 @@ class PID
 										  //   once it is set in the constructor.
     void SetSampleTime(int);              // * sets the frequency, in Milliseconds, with which 
                                           //   the PID calculation is performed.  default is 100
-										  
-										  
+										  //
+	void SetLoopsPerSample(int);              // * sets the frequency, in number of loop cycles, with which 
+                                          //   the PID calculation is performed.  default is 1									  
 										  
   //Display functions ****************************************************************
 	double GetKp();						  // These functions query the pid for interal values.
@@ -77,6 +78,8 @@ class PID
 	double lastError; //added by agb
 
 	unsigned long SampleTime;
+	int loopsPerSample;
+	int nLoops;
 	double outMin, outMax;
 	bool inAuto;
 };
