@@ -116,8 +116,8 @@ int computeSetpoints() {
   
   //Map values received from joystick (0 to 255) to defined angle margins
   if (joystickMode == JOY_MODE_RATE){
-    SetpointX = map(joy_x, 0, 255, -LIMIT_GYRO_X_RATE, LIMIT_GYRO_X_RATE);
-    SetpointY = map(joy_y, 0, 255, -LIMIT_GYRO_Y_RATE, LIMIT_GYRO_Y_RATE);
+    SetpointX = map(joy_x, 0, 255, -LIMIT_GYRO_XY_RATE, LIMIT_GYRO_XY_RATE);
+    SetpointY = map(joy_y, 0, 255, -LIMIT_GYRO_XY_RATE, LIMIT_GYRO_XY_RATE);
   }
   if (joystickMode == JOY_MODE_ANGLE){
     SetpointX_angle = map(joy_x, 0, 255, MIN_PITCH_ANGLE, MAX_PITCH_ANGLE);

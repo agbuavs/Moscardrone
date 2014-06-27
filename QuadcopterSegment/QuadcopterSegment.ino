@@ -96,12 +96,6 @@ PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, KpY_angle, KiY_
 PID PID_X(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
 PID PID_Y(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 PID PID_Z(&InputZ, &OutputZ, &SetpointZ, KpZ, KiZ, KdZ, DIRECT);
-/*
-PID PID_X_angle(&InputX_angle, &OutputX_angle, &SetpointX_angle, 0.4, 0.01, 0.04, DIRECT);
-PID PID_Y_angle(&InputY_angle, &OutputY_angle, &SetpointY_angle, 0.4, 0.01, 0.04, DIRECT);
-PID PID_X(&InputX, &OutputX, &SetpointX, 1.1, 2.1875, 0.0036, DIRECT);
-PID PID_Y(&InputY, &OutputY, &SetpointY, 1.1, 2.1875, 0.0036, DIRECT);
-*/
 
 // IMU declararion and data
 MPU6050 accelgyro;

@@ -35,8 +35,7 @@
 #define MAX_PITCH_ANGLE 210
 #define MIN_ROLL_ANGLE 150
 #define MAX_ROLL_ANGLE 210
-#define LIMIT_GYRO_X_RATE 100
-#define LIMIT_GYRO_Y_RATE LIMIT_GYRO_X_RATE
+#define LIMIT_GYRO_XY_RATE 100
 #define LIMIT_GYRO_Z_RATE 100
 
 
@@ -65,7 +64,7 @@
 #define MAX_PWM_PID_OUTPUT 300.  // (== MAX_PWM_THROTTLE - MAX_HORIZ_THROTTLE)
 
 // Gyro rate limits given by PID_angle to gyro rate PIDs
-#define MAX_ANGLE_PID_OUTPUT 150 //maximun rate physically reachable is +-250.
+#define MAX_ANGLE_PID_OUTPUT LIMIT_GYRO_XY_RATE //maximun rate physically reachable is +-250.
 #define MIN_ANGLE_PID_OUTPUT -MAX_ANGLE_PID_OUTPUT
 
 // ****** GYROSCOPE constants ****** //
@@ -78,17 +77,17 @@
 #define PID_SAMPLETIME_ANGLE 25
 //PID tunings by default
 /*
-#define KpX_angle 0.6
-#define KiX_angle 0.04
-#define KdX_angle 0.0
-#define KpY_angle 0.6
-#define KiY_angle 0.04
-#define KdY_angle 0.0
-#define KpX 1.1
-#define KiX 2.18
+#define KpX_angle 0.75
+#define KiX_angle 0.0
+#define KdX_angle 0.001
+#define KpY_angle 0.75
+#define KiY_angle 0.0
+#define KdY_angle 0.001
+#define KpX 0.7
+#define KiX 0.001
 #define KdX 0.00
-#define KpY 1.1
-#define KiY 2.18
+#define KpY 0.7
+#define KiY 0.001
 #define KdY 0.00
 #define KpZ 0.
 #define KiZ 0.

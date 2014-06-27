@@ -55,7 +55,7 @@ byte PID_term = 0;
 void setup() {
   println(Serial.list());                                           // * Initialize Serial
   if (CONNECTED) {
-    myPort = new Serial(this, Serial.list()[4], 115200);        
+    myPort = new Serial(this, Serial.list()[2], 115200);        
     myPort.bufferUntil(10); 
   }
   
