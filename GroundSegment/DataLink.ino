@@ -8,7 +8,7 @@
   sendData:
     - sends payload, taking care of timing restrictions (in order to avoid channel saturation)
   
-  prepareDataToGroundSegment:
+  prepareDataToQuadcopter:
     - prepares command data to send with sendData(). You shall modify receiveData() in Quadcopter
       code if you change something here and want to keep communications under control.
 */  
@@ -45,9 +45,7 @@ int receiveData(byte* data) {
     Mot2 = MIN_PWM_THROTTLE + ((double)(data[13])*(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)/256);
     Mot3 = MIN_PWM_THROTTLE + ((double)(data[14])*(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)/256);
     Mot4 = MIN_PWM_THROTTLE + ((double)(data[15])*(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)/256);
-    
-    #ifdef GUI_CONF
-    
+        
     PID_id_ACK = data[16];
     PID_term_ACK = data[17];
     switch (PID_id_ACK) {
@@ -90,37 +88,6 @@ int receiveData(byte* data) {
     addMSG_type_ACK = data[22];
     addMSG_data_ACK = data[23]; 
     
-    #else
-    
-    PID_change_ACK = data[16];    
-    switch (PID_change_ACK) {
-      case 1: //Pitch PID_angle tuning
-        PID_X_angle_p = ((double)data[17])/data[20];
-        PID_X_angle_i = ((double)data[18])/data[21];
-        PID_X_angle_d = ((double)data[19])/data[22];
-        break;
-      case 2: //Roll PID_angle tuning
-        PID_Y_angle_p = ((double)data[17])/data[20];
-        PID_Y_angle_i = ((double)data[18])/data[21];
-        PID_Y_angle_d = ((double)data[19])/data[22];
-        break;
-      case 3: //Pitch rate PID tuning
-        PID_X_p = ((double)data[17])/data[20];
-        PID_X_i = ((double)data[18])/data[21];
-        PID_X_d = ((double)data[19])/data[22];
-        break;
-      case 4: //Roll rate PID tuning
-        PID_Y_p = ((double)data[17])/data[20];
-        PID_Y_i = ((double)data[18])/data[21];
-        PID_Y_d = ((double)data[19])/data[22];
-        break;
-      case 5: //Yaw rate PID tuning
-        PID_Z_p = ((double)data[17])/data[20];
-        PID_Z_i = ((double)data[18])/data[21];
-        PID_Z_d = ((double)data[19])/data[22];
-        break;
-    }    
-    
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_TELEMETRY
       Serial.print(nseq_rx); Serial.print("\t");  
@@ -130,32 +97,6 @@ int receiveData(byte* data) {
       //Serial.print(InputX); Serial.print("\t");        
       Serial.print(InputY); Serial.print("\t");
       //Serial.print(InputZ); Serial.print("\t");
-      /*
-      Serial.print("PID_X_angle:\t");
-      Serial.print(PID_X_angle_p); Serial.print("\t"); 
-      Serial.print(PID_X_angle_i); Serial.print("\t"); 
-      Serial.print(PID_X_angle_d); Serial.print("\t");  
-      */
-      Serial.print("PID_Y_angle:\t");
-      Serial.print(PID_Y_angle_p); Serial.print("\t"); 
-      Serial.print(PID_Y_angle_i); Serial.print("\t"); 
-      Serial.print(PID_Y_angle_d); Serial.print("\t"); 
-      /*
-      Serial.print("PID_X:\t");
-      Serial.print(PID_X_p); Serial.print("\t"); 
-      Serial.print(PID_X_i); Serial.print("\t"); 
-      Serial.print(PID_X_d); Serial.print("\t"); 
-      */
-      Serial.print("PID_Y:\t");
-      Serial.print(PID_Y_p); Serial.print("\t"); 
-      Serial.print(PID_Y_i); Serial.print("\t"); 
-      Serial.print(PID_Y_d); Serial.print("\t"); 
-      /*
-      Serial.print("PID_Z:\t");
-      Serial.print(PID_Z_p); Serial.print("\t"); 
-      Serial.print(PID_Z_i); Serial.print("\t"); 
-      Serial.print(PID_Z_d); Serial.print("\t"); 
-      */
       Serial.print("Outputs:\t");
       //Serial.print(OutputX_angle); Serial.print("\t");      
       Serial.print(OutputY_angle); Serial.print("\t"); 
@@ -170,7 +111,6 @@ int receiveData(byte* data) {
       Serial.print("\r\n");
     #endif
     
-    #endif
     
     //Keep in mind last reception. (Communication loss control)
     
@@ -230,8 +170,6 @@ void prepareDataToQuadcopter() {
   Serial.print("\r\n");  
   #endif
   
-  #ifdef GUI_CONF
-  
   data_tx[6] = PID_id;
   data_tx[7] = PID_term;
   data_tx[8] = PID_value.asBytes[0];
@@ -240,16 +178,5 @@ void prepareDataToQuadcopter() {
   data_tx[11] = PID_value.asBytes[3];
   data_tx[12] = addMSG_type;
   data_tx[13] = addMSG_data;
-  
-  #else //(old dirty way)
-  
-  data_tx[6] = PID_change;
-  data_tx[7] = PID_p;
-  data_tx[8] = PID_p_div;
-  data_tx[9] = PID_i;
-  data_tx[10] = PID_i_div;
-  data_tx[11] = PID_d;
-  data_tx[12] = PID_d_div;  
 
-  #endif
 }

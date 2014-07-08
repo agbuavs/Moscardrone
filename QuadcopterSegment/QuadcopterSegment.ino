@@ -80,15 +80,6 @@ double SetpointY_angle, InputY_angle, OutputY_angle;
 double SetpointX, InputX, OutputX;
 double SetpointY, InputY, OutputY;
 double SetpointZ, InputZ, OutputZ;
-//PID tuning parameters received from ground segment
-int PID_p = 0;
-int PID_i = 0;
-int PID_d = 0;
-int PID_p_div = 1; //this can't ever be 0!
-int PID_i_div = 1; //this can't ever be 0!
-int PID_d_div = 1; //this can't ever be 0!
-int PID_change = 0; //this value is received from GS when you want to change some PID params
-int PID_change_ACK = 0; //this indicates the last PID been changed.
 
 //Specify the links and initial tuning parameters
 PID PID_X_angle(&InputX_angle, &OutputX_angle, &SetpointX_angle, KpX_angle, KiX_angle, KdX_angle, DIRECT);
@@ -168,8 +159,9 @@ union {                // This Data structure lets us take the byte array
 }                      // 
 PID_value;             //
 unsigned char PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the future, it can be GPS, barometer, etc)
-unsigned char PID_term = 0;     //P, I or D
-unsigned char PID_id_ACK = 0;
+                                // this value received from GS and it is != 0 when you want to change some PID params
+unsigned char PID_term = 0;     // P, I or D
+unsigned char PID_id_ACK = 0;   // this indicates the last PID been changed.
 unsigned char PID_term_ACK = 0;
 //The next are variables used to configure other things than PIDs with ConfGUI.
 byte addMSG_type = 0;

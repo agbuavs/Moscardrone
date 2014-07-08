@@ -1,6 +1,4 @@
 // ****** Global configuration ****** //
-#define GUI_CONF //uncomment if you are going to use Processing GUI to calibrate PIDs instead of serial monitor
-          //once it is done, every line of code left out of this definition should be erasedtuning
 
 
 // ****** Debugging options ****** //
@@ -49,7 +47,8 @@
 
 // ****** PID definitions ****** //
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
-#define PID_SAMPLETIME 10 //You can use DEBUG_TIMING to know how much time it takes in loop() code
+#define PID_SAMPLETIME 5 //You can use DEBUG_TIMING to know how much time it takes in loop() code
+#define PID_SAMPLETIME_ANGLE 25
 //PID tunings by default
 #define KpX_angle 0.
 #define KiX_angle 0.

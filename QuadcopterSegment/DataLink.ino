@@ -19,7 +19,6 @@ int receiveData(byte* data) {
 //Check if rf24l has something to deliver. Return sequence number to verify communications.
 
   int nseq_rx = 0;
-  PID_change = 0;
   
   if(!Mirf.isSending() && Mirf.dataReady()){
     
@@ -39,7 +38,6 @@ int receiveData(byte* data) {
     #ifdef GUI_CONF_OVER_RF
     
     PID_id = data[6];
-    PID_change = PID_id;
     PID_term = data[7];
     PID_value.asBytes[0] = data[8];
     PID_value.asBytes[1] = data[9];
@@ -54,50 +52,11 @@ int receiveData(byte* data) {
         break;
     }
         
-    #else
-    
-    //Check if there is an order to change PID tuning parameters
-    PID_change = data[6];
-    double kp = 0;
-    double ki = 0;
-    double kd = 0;
-    PID_p = data[7];
-    if (data[8] != 0) {
-      PID_p_div = data[8];
-      kp = (double)(PID_p)/PID_p_div;
-    }    
-    PID_i = data[9];    
-    if (data[10] != 0) {
-      PID_i_div = data[10];
-      ki = (double)(PID_i)/PID_i_div;
-    }
-    PID_d = data[11];
-    if (data[12] != 0) {
-      PID_d_div = data[12];
-      kd = (double)(PID_d)/PID_d_div;
-    }  
-    switch (PID_change) {
-      case 1: //Pitch PID_angle tuning
-        PID_X_angle.SetTunings(kp, ki, kd);
-        break;
-      case 2: //Roll PID_angle tuning
-        PID_Y_angle.SetTunings(kp, ki, kd);
-        break;
-      case 3: //Pitch PID tuning
-        PID_X.SetTunings(kp, ki, kd);
-        break;
-      case 4: //Roll PID tuning
-        PID_Y.SetTunings(kp, ki, kd);
-        break;
-      case 5: //Yaw rate PID tuning
-        PID_Z.SetTunings(kp, ki, kd);
-        break;  
-    }
-    
     #endif
     
-    if (PID_change!=0)
-      PID_change_ACK = PID_change; //keep track of last PID params changed to send ack to GS.
+    PID_id_ACK = 0;
+    if (PID_id!=0)
+      PID_id_ACK = PID_id; //keep track of last PID params changed to send ack to GS.
     
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_RX      
@@ -155,6 +114,9 @@ int sendData(byte* data) {
 
 
 void prepareDataToGroundSegment(){
+  
+  #ifdef GUI_CONF_OVER_RF
+  
   data_tx[0] = ID_local;
   data_tx[1] = nseq_tx;
   //Read and map values from IMU, PID and ESC to send them to ground segment
@@ -173,15 +135,14 @@ void prepareDataToGroundSegment(){
   data_tx[14] = (int) (((double)Mot3 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot3 value
   data_tx[15] = (int) (((double)Mot4 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot4 value
   
-  #ifdef GUI_CONF_OVER_RF
-  
-  data_tx[16] = PID_id; // (== PID_change_ACK)
+  //PID calibrations
+  data_tx[16] = PID_id;
   data_tx[17] = PID_term;
   union {                
     byte asBytes[4];        
     double asDouble;     
   } double_byte; 
-  switch (PID_change_ACK) {
+  switch (PID_id_ACK) {
       case 1: //Pitch PID_angle tuning ACK
         double_byte.asDouble = PID_X_angle.GetValue(PID_term);
         data_tx[18] = double_byte.asBytes[0];
@@ -220,40 +181,6 @@ void prepareDataToGroundSegment(){
   } 
   data_tx[22] = addMSG_type;
   data_tx[23] = addMSG_data;
-  
-  #else
-  
-  data_tx[16] = PID_change_ACK;
-  switch (PID_change_ACK) {
-      case 1: //Pitch PID_angle tuning ACK
-        data_tx[17] = (int)(PID_p_div*PID_X_angle.GetKp());
-        data_tx[18] = (int)(PID_i_div*PID_X_angle.GetKi());
-        data_tx[19] = (int)(PID_d_div*PID_X_angle.GetKd());
-        break;
-      case 2: //Roll PID_angle tuning ACK
-        data_tx[17] = (int)(PID_p_div*PID_Y_angle.GetKp());
-        data_tx[18] = (int)(PID_i_div*PID_Y_angle.GetKi());
-        data_tx[19] = (int)(PID_d_div*PID_Y_angle.GetKd());
-        break;
-      case 3: //Pitch PID tuning ACK
-        data_tx[17] = (int)(PID_p_div*PID_X.GetKp());
-        data_tx[18] = (int)(PID_i_div*PID_X.GetKi());
-        data_tx[19] = (int)(PID_d_div*PID_X.GetKd());
-        break;
-      case 4: //Roll PID tuning ACK
-        data_tx[17] = (int)(PID_p_div*PID_Y.GetKp());
-        data_tx[18] = (int)(PID_i_div*PID_Y.GetKi());
-        data_tx[19] = (int)(PID_d_div*PID_Y.GetKd());
-        break;
-      case 5: //Yaw rate PID tuning ACK
-        data_tx[17] = (int)(PID_p_div*PID_Z.GetKp());
-        data_tx[18] = (int)(PID_i_div*PID_Z.GetKi());
-        data_tx[19] = (int)(PID_d_div*PID_Z.GetKd());
-        break;
-  }       
-  data_tx[20] = PID_p_div;
-  data_tx[21] = PID_i_div;
-  data_tx[22] = PID_d_div;
   
   #endif
 }

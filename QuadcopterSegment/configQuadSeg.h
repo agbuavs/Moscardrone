@@ -77,16 +77,16 @@
 #define PID_SAMPLETIME_ANGLE 25
 //PID tunings by default
 /*
-#define KpX_angle 0.75
+#define KpX_angle 1
 #define KiX_angle 0.0
 #define KdX_angle 0.001
-#define KpY_angle 0.75
+#define KpY_angle 1
 #define KiY_angle 0.0
 #define KdY_angle 0.001
-#define KpX 0.7
+#define KpX 0.5
 #define KiX 0.001
 #define KdX 0.00
-#define KpY 0.7
+#define KpY 0.5
 #define KiY 0.001
 #define KdY 0.00
 #define KpZ 0.

@@ -50,13 +50,15 @@ void receiveDataFromGUI() {
 }
 
 
-void sendAckToGUI(unsigned char id, unsigned char term, float value) {
+void sendAckToGUI(byte id, byte term, float value) {
   Serial.print(id);
   Serial.print(" ");
   Serial.print(term);
   Serial.print(" ");
-  Serial.println(value,4);
+  Serial.print(value,4);
+  Serial.print(" // ");
+  Serial.print(addMSG_type);
+  Serial.print(" ");
+  Serial.println(addMSG_data);
 }
-
-
 

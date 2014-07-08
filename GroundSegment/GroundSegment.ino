@@ -26,12 +26,7 @@
       (Throttle for each motor will be calculated from mean throttle command and 3 PIDs outputs)
       
   It is possible to tune PIDs using serial communications from a computer.
-  Currently, I am building a GUI to do this, so the format might change. 
-  The old fashioned format is used #ifndef GUI_CONF, and it is as follows:
-  //  Command format => "PID_ID,p,p_div,i,i_div,d,d_div:", where...
-  //  - axis is an integer meaning 1:pitch_angle, 2:roll_angle, 3:pitch_rate, 4:roll_rate, 5:yaw_rate
-  //  - p,d and i are integers for PID tuning
-  //  - p_div, i_div and d_div are integers to compute float values at quadcopter segment(I'm not dealing with sending floats with Mirf library)
+  Currently, I am building a GUI to do this, so the format might change.
   
 */
 
@@ -90,23 +85,6 @@ double RX_packets = 0;
 double TX_packets = 0;
 byte data_tx[RF_PACKET_SIZE]; //Prepare payload to send to quadcopter
 
-//Wireless PID settings. Variables used to import data from serial and send it to quadcopter.
-int PID_change = 0; //update only PID requested axis
-int PID_change_ACK = 0; //used to know if quad has received PID change command
-int PID_p = 0;
-int PID_i = 0;
-int PID_d = 0;
-int PID_p_div = 1; //this can't ever be 0!
-int PID_i_div = 1; //this can't ever be 0!
-int PID_d_div = 1; //this can't ever be 0!
-
-//variables to monitor PID commands sent to quadcopter.
-double PID_X_angle_p, PID_X_angle_i, PID_X_angle_d;
-double PID_Y_angle_p, PID_Y_angle_i, PID_Y_angle_d;
-double PID_X_p, PID_X_i, PID_X_d;
-double PID_Y_p, PID_Y_i, PID_Y_d;
-double PID_Z_p, PID_Z_i, PID_Z_d;
-
 //PIN display declarations
 int LED_CALIBRATE_OK = 10;
 int PIN_TX = 9; //blue
@@ -115,7 +93,8 @@ int PIN_RX = 2; //yellow
 //Variables used in communication with GUI
 double lastGUIpacket = 0;
 byte ackSent = 0;
-//(for transmission)
+
+//Wireless PID settings. Variables used to import data from serial and send it to quadcopter
 union {                // This Data structure lets us take the byte array
   byte asBytes[4];     // sent from processing and easily convert it to a float array
   float asFloat;       // 
@@ -129,8 +108,8 @@ union {
   float asDouble;        
 }                       
 PID_value_ACK;          
-byte PID_id_ACK = 0;
-byte PID_term_ACK = 0;
+byte PID_id_ACK = 0;    //used to know if quad has updated PID requested axis
+byte PID_term_ACK = 0;  //used to know if quad has received PID change command
 //The next are variables used to configure other things than PIDs with ConfGUI.
 byte addMSG_type = 0;
 byte addMSG_data = 0;
@@ -151,9 +130,6 @@ void setup(){
   digitalWrite(PIN_TX,LOW);
   digitalWrite(PIN_RX,LOW);
   analogWrite(LED_CALIBRATE_OK,0);
-  
-  //Init variables used to monitor PID settings from quadcopter
-  initPIDmonValues();
   
   //RF setup
   Mirf.spi = &MirfHardwareSpi;
@@ -184,52 +160,10 @@ void loop(){
   //Read PID tuning commands from serial. 
   #ifdef GUI_CONF //Processing GUI is used to calibrate PIDs. Float values can be used
 
-  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
+  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>2)) {
     receiveDataFromGUI();   
   }  
   
-  #else //Old dirty way (typing integer commands over Arduino serial monitor)
-  
-  //  Command format => "PID_ID,p,p_div,i,i_div,d,d_div:", where...
-  //  - axis is an integer meaning 1:pitch_angle, 2:roll_angle, 3:pitch_rate, 4:roll_rate, 5:yaw_rate
-  //  - p,d and i are integers for PID tuning
-  //  - p_div, i_div and d_div are integers to compute float values at quadcopter segment (I'm not dealing with sending floats with Mirf library)
-  if (Serial.available()>6) {
-    PID_change = 0;
-    //char change = Serial.read();
-    int e = Serial.parseInt();
-    int p = Serial.parseInt();
-    int p_div = Serial.parseInt(); //integer diveder for P constant
-    int i = Serial.parseInt();
-    int i_div = Serial.parseInt(); //integer diveder for I constant
-    int d = Serial.parseInt();
-    int d_div = Serial.parseInt(); //integer diveder for D constant
-    int EndChar = Serial.read();
-    if (EndChar == ':') {
-      if ((e==1) || (e==2) || (e==3) || (e==4) || (e==5)) {
-        PID_change = e;
-        PID_p = p;
-        PID_p_div = p_div;
-        PID_i = i;
-        PID_i_div = i_div;
-        PID_d = d;
-        PID_d_div = d_div;
-      }
-    }
-    for (int y = Serial.available(); y == 0; y--) { 
-      Serial.read(); //Clear out any residual junk 
-    } 
-    /*
-    Serial.println(PID_p);
-    Serial.println(PID_i);
-    Serial.println(PID_d);
-    Serial.println(PID_p_div);
-    Serial.println(PID_i_div);
-    Serial.println(PID_d_div);
-    Serial.println("+++++++++++++++++++");
-    */
-  }
-
   #endif
 
   //Joystick pot measures transformed to ignore little movements around the center
@@ -263,24 +197,4 @@ void loop(){
   // after the last reading:
   //delay(2);      
 }
-
-
-
-////////////////////////////////////////////////////////////////////////
-///////  Functions
-////////////////////////////////////////////////////////////////////////
-
-void initPIDmonValues() {
-  PID_X_angle_p = KpX_angle;
-  PID_X_angle_i = KiX_angle;
-  PID_X_angle_d = KdX_angle;
-  PID_Y_angle_p = KpY_angle;
-  PID_Y_angle_i = KiY_angle;
-  PID_Y_angle_d = KdY_angle;
-  PID_X_p = KpX; PID_X_i = KiX; PID_X_d = KdX;
-  PID_Y_p = KpY; PID_Y_i = KiY; PID_Y_d = KdY;
-  PID_Z_p = KpZ; PID_Z_i = KiZ; PID_Z_d = KdZ;
-}
-
-
 
