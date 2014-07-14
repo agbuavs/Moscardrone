@@ -1,5 +1,5 @@
 // ****** Global configuration ****** //
-
+#define GUI_CONF
 
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.

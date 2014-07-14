@@ -55,6 +55,8 @@ class PID
 	int GetMode();						  //  inside the PID.
 	int GetDirection();					  //
 
+	double GetITerm();
+	
   private:
 	void Initialize();
 	

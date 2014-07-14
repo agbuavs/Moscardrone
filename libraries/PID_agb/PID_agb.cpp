@@ -264,3 +264,5 @@ double PID::GetValue(unsigned char PID_term)
 int PID::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
 int PID::GetDirection(){ return controllerDirection;}
 
+
+double PID::GetITerm(){ return  ITerm;}

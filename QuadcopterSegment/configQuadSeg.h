@@ -11,7 +11,7 @@
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_IMU //Configure Processing drawing sketch in accordance to see IMU data.
 //#define DEBUG_RX
-//#define DEBUG_PID
+#define DEBUG_PID
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 

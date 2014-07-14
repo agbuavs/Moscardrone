@@ -160,7 +160,7 @@ void loop(){
   //Read PID tuning commands from serial. 
   #ifdef GUI_CONF //Processing GUI is used to calibrate PIDs. Float values can be used
 
-  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>2)) {
+  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
     receiveDataFromGUI();   
   }  
   

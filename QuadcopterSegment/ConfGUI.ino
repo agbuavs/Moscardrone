@@ -41,7 +41,24 @@ void receiveDataFromGUI() {
   
   //This piece of code doesn't exist in Ground Segment code.............
   calibratePID(PID_id, PID_term, PID_value.asDouble);
-  double val = PID_Y.GetValue(PID_term);
+  double val = 0;
+  switch(PID_id) {
+    case 1:
+      val = PID_X_angle.GetValue(PID_term);
+      break;
+    case 2:
+      val = PID_Y_angle.GetValue(PID_term);
+      break;
+    case 3:
+      val = PID_X.GetValue(PID_term);
+      break;
+    case 4:
+      val = PID_Y.GetValue(PID_term);
+      break;
+    case 5:
+      val = PID_Z.GetValue(PID_term);
+      break;
+  }
   sendAckToGUI(PID_id, PID_term, val);
   //....................................................................
   

@@ -27,6 +27,7 @@
       
   PID default constants are defined in configQuadSeg.h but they can be tuned remotely 
   (using serial port on Ground Segment board) once your quad had been turned on (see DataLink code).
+
 */
 
 
@@ -112,8 +113,8 @@ uint32_t timer;
 uint8_t i2cData[14]; // Buffer for I2C data
 
 //Commands received from GS
-int joy_x = 0;        // PITCH angle
-int joy_y = 0;        // ROLL angle 
+int joy_x = 128;      // PITCH angle
+int joy_y = 128;      // ROLL angle 
 int joy_z = 128;      // YAW gyro rate (half between 0 and 255, since it has sign
 int joy_t = 5;        // THROTTLE average for 4 motors. More than 2 to wait for ESC calibration.
 //margins to control if ESC calibration is done
@@ -157,12 +158,10 @@ union {                // This Data structure lets us take the byte array
   float asFloat;       // 
   double asDouble;     //
 }                      // 
-PID_value;             //
+PID_value;
 unsigned char PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the future, it can be GPS, barometer, etc)
                                 // this value received from GS and it is != 0 when you want to change some PID params
 unsigned char PID_term = 0;     // P, I or D
-unsigned char PID_id_ACK = 0;   // this indicates the last PID been changed.
-unsigned char PID_term_ACK = 0;
 //The next are variables used to configure other things than PIDs with ConfGUI.
 byte addMSG_type = 0;
 byte addMSG_data = 0;
@@ -234,7 +233,7 @@ void setup(){
 void loop(){
 
   //Read PID tuning commands from serial. 
-  #ifdef GUI_CONF_OVER_SERIAL //Processing GUI is used to calibrate PIDs. Float values can be used
+  #ifndef GUI_CONF_OVER_RF //Processing GUI is used to calibrate PIDs. Float values can be used
   if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
     receiveDataFromGUI();   
   }  
@@ -289,12 +288,7 @@ void loop(){
     #endif
     
     #ifdef DEBUG_PID
-      Serial.print(OutputX_angle); Serial.print("\t");
-      Serial.print(OutputY_angle); Serial.print("\t");
-      Serial.print(OutputX); Serial.print("\t");
-      Serial.print(OutputY); Serial.print("\t");
-      Serial.print(OutputZ); Serial.print("\t"); 
-      Serial.print("\r\n"); 
+      printPIDvalues();
     #endif
   
     //Do necessary calculations on PID outputs to get the 4 motor throttle values

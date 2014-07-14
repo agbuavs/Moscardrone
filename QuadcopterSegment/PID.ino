@@ -181,3 +181,41 @@ int computeOutputs() {
   
   return(0);
 }
+
+
+
+
+void printPIDvalues() {
+  
+  Serial.print(InputX_angle); Serial.print("\t");
+  Serial.print(InputY_angle); Serial.print("\t");
+  Serial.print(InputX); Serial.print("\t");
+  Serial.print(InputY); Serial.print("\t");
+  Serial.print(InputZ); Serial.print("\t"); 
+  
+  Serial.print(SetpointX_angle); Serial.print("\t");
+  Serial.print(SetpointY_angle); Serial.print("\t");
+  Serial.print(SetpointX); Serial.print("\t");
+  Serial.print(SetpointY); Serial.print("\t");
+  Serial.print(SetpointZ); Serial.print("\t"); 
+  
+  Serial.print(OutputX_angle); Serial.print("\t");
+  Serial.print(OutputY_angle); Serial.print("\t");
+  Serial.print(OutputX); Serial.print("\t");
+  Serial.print(OutputY); Serial.print("\t");
+  Serial.print(OutputZ); Serial.print("\t"); 
+  
+  Serial.print(PID_X_angle.GetITerm()); Serial.print("\t");
+  Serial.print(PID_Y_angle.GetITerm()); Serial.print("\t");
+  Serial.print(PID_X.GetITerm()); Serial.print("\t");
+  Serial.print(PID_Y.GetITerm()); Serial.print("\t");
+  Serial.print(PID_Z.GetITerm()); Serial.print("\t");
+  
+  Serial.print(Mot1); Serial.print("\t");
+  Serial.print(Mot2); Serial.print("\t");
+  Serial.print(Mot3); Serial.print("\t");        
+  Serial.print(Mot4); Serial.print("\t");
+    
+  Serial.print("\r\n"); 
+  
+}

@@ -54,10 +54,6 @@ int receiveData(byte* data) {
         
     #endif
     
-    PID_id_ACK = 0;
-    if (PID_id!=0)
-      PID_id_ACK = PID_id; //keep track of last PID params changed to send ack to GS.
-    
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_RX      
       Serial.print(data[2]); Serial.print("\t");        
@@ -142,7 +138,7 @@ void prepareDataToGroundSegment(){
     byte asBytes[4];        
     double asDouble;     
   } double_byte; 
-  switch (PID_id_ACK) {
+  switch (PID_id) {
       case 1: //Pitch PID_angle tuning ACK
         double_byte.asDouble = PID_X_angle.GetValue(PID_term);
         data_tx[18] = double_byte.asBytes[0];
