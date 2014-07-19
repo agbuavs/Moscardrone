@@ -4,17 +4,16 @@ import processing.serial.*;
 import controlP5.*;
 
 ControlP5 cp5;
-Serial myPort;
+Serial arduino;
 
 //Define types of messages between ConfGUI and Arduino
 int PT_PID_CHANGE = 100;
 int PT_JOY_MODE = 101;
 
 //Set to false when you only want to see the GUI format.
-boolean CONNECTED = true;
+boolean CONNECTED = false;
 
-String outputFileName = ""; // if you'd like to output data to 
-// a file, specify the path here
+String outputFileName = ""; // if you'd like to output data to a file, specify the path here
 
 String textWarning = "First of all, calibrate joystick.\nCalibration done when light turns green";
 String textInstructions = "Write PID values and type enter\n to send them to Arduino\nFeedback will be printed on the right column";
@@ -25,13 +24,13 @@ int PIDboxSizeX = 100;
 int PIDboxSizeY = 40;
 int PIDackboxSizeX = 40;
 int PIDackboxSizeY = 40;
-int X_commands = 20;
+int X_commands = 120;
 int Y_commands = 120;
 int X_feedback = X_commands + PIDboxSizeX + margin;
 int Y_feedback = Y_commands;
 
 DropdownList PID_selection;
-String PID_select_label = "Select PID to calibrate";
+String PID_select_label = "PID_selection";
 controlP5.Textfield PID_P,PID_I,PID_D,PID_P_ack,PID_I_ack,PID_D_ack;
 controlP5.Textfield PID_Xangle_P_ack, PID_Xangle_I_ack, PID_Xangle_D_ack;
 controlP5.Textfield PID_Yangle_P_ack, PID_Yangle_I_ack, PID_Yangle_D_ack;
@@ -45,6 +44,12 @@ String PID_I_ack_label = "I ack";
 String PID_D_label = "D";
 String PID_D_ack_label = "D ack";
 
+DropdownList PORT_selection;
+String PORT_select_label = "PORT_selection";
+int COM_PORT_id = 0;
+int numberOfPorts = 0;
+String portList [];
+
 byte joystickMode = 0; // rate=0 / angle=1
 
 //PID calibration widgets
@@ -53,13 +58,10 @@ byte PID_term = 0;
 
 
 void setup() {
-  println(Serial.list());                                           // * Initialize Serial
-  if (CONNECTED) {
-    myPort = new Serial(this, Serial.list()[2], 115200);        
-    myPort.bufferUntil(10); 
-  }
+  println(Serial.list());     
+  portList = Serial.list();
   
-  size(800,400);
+  size(900,400);
   
   PFont font = createFont("arial",20);
   PFont font10 = createFont("arial",10);
@@ -68,6 +70,23 @@ void setup() {
   
   cp5 = new ControlP5(this);
   
+  
+  // create a DropdownList for COM port selection        
+  PORT_selection = cp5.addDropdownList(PORT_select_label)
+    .setPosition(margin, margin)
+        ;
+  customizeCOMselection(PORT_selection);
+  
+  cp5.addButton("CONNECT")
+    .setValue(1)
+      .setPosition(20, 100 + margin)          //posición del botón
+        .setSize(90, 40)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;  
+                  
   // create a toggle to control angle/rate mode
   // and change the default look to a (on/off) switch look
   cp5.addToggle("toggle")
@@ -228,25 +247,31 @@ void setup() {
      .setPosition(X_commands, Y_commands + 3*PIDboxSizeY + 4*margin)
      .setSize(80,40)
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-     ;    
-  
+     ;     
   
   textFont(font);
 }
 
 
 void draw() {
+  
+  //Update port list
+  portList = arduino.list();
+  if (numberOfPorts != portList.length) {
+    println(arduino.list());
+    customizeCOMselection(PORT_selection);
+  }
+  
   background(0);
   fill(255);
-  text(textInstructions, 400,180);
-  text(textWarning, 300, 40);
+  text(textWarning, X_commands + PIDboxSizeX + 4*PIDackboxSizeX + margin, 40);
+  text(textInstructions, X_commands + PIDboxSizeX + 4*PIDackboxSizeX + margin + 100, 180);
   text("To Quad",X_commands,Y_commands);
   text("From Quad",X_feedback,Y_feedback);
   if (joystickMode==0)
     text("Rate Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);
   else
-    text("Angle Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);
-  
+    text("Angle Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);  
 }
 
 
@@ -257,99 +282,32 @@ public void clear() {
 }
 
 
-//When typing enter on a PID box, the value shall be sent to Arduino as a byte array
-void controlEvent(ControlEvent theEvent) {
-  if(theEvent.isAssignableFrom(Textfield.class)) {
-    println("controlEvent: accessing a string from controller '"
-            +theEvent.getName()+"': "
-            +theEvent.getStringValue()
-            );
-  }  
-  
-  if(theEvent.isGroup()) {
-    PID_id = (byte)theEvent.group().value();
-  }
-  
-  boolean PID_change = false;
-  PID_term = 0;
-  float value = 0;
-  String a = theEvent.getName();
-  if (a.equals("P")) {
-     PID_term = 1;
-     value = float(PID_P.getText());
-     PID_change = true;
-  }
-  if (a.equals("I")) {
-     PID_term = 2;
-     value = float(PID_I.getText());
-     PID_change = true;
-  }
-  if (a.equals("D"))  {
-     PID_term = 3;
-     value = float(PID_D.getText());
-     PID_change = true;
-  }
-  
-  //Send the PID term identifier information and value to Arduino over serial
-  if (PID_change) {
-    if (CONNECTED) {
-      myPort.write(PT_PID_CHANGE);
-      myPort.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
-      myPort.write(PID_term); // P, I or D ?
-      myPort.write(floatToByteArray(value)); //This makes the conversion from float string to byte array
-    } 
-    println(PT_PID_CHANGE); 
-    println(PID_id);   // angleX, angleY, rateX, rateY or rateZ
-    println(PID_term); // P, I or D ?
-    println(floatToByteArray(value)); //This makes the conversion from float string to byte array
-  }
-}
-
-
-
 public void input(String theText) {
   // automatically receives results from controller input
   println("a textfield event for controller 'input' : "+theText);
 }
 
 
-//take the string the arduino sends us and parse it
-void serialEvent(Serial myPort)
-{
-  String read = myPort.readString();
-  //myPort.clear();
-  String[] s = split(read, " ");
-  println(read);
-
-  switch (parseInt(s[0])) {
-    case 1:
-      if (parseInt(s[1])==1) PID_Xangle_P_ack.setText(s[2]);
-      if (parseInt(s[1])==2) PID_Xangle_I_ack.setText(s[2]);
-      if (parseInt(s[1])==3) PID_Xangle_D_ack.setText(s[2]);
-      break;
-    case 2:
-      if (parseInt(s[1])==1) PID_Yangle_P_ack.setText(s[2]);
-      if (parseInt(s[1])==2) PID_Yangle_I_ack.setText(s[2]);
-      if (parseInt(s[1])==3) PID_Yangle_D_ack.setText(s[2]);
-      break;
-    case 3:
-      if (parseInt(s[1])==1) PID_X_P_ack.setText(s[2]);
-      if (parseInt(s[1])==2) PID_X_I_ack.setText(s[2]);
-      if (parseInt(s[1])==3) PID_X_D_ack.setText(s[2]);
-      break;
-    case 4:
-      if (parseInt(s[1])==1) PID_Y_P_ack.setText(s[2]);
-      if (parseInt(s[1])==2) PID_Y_I_ack.setText(s[2]);
-      if (parseInt(s[1])==3) PID_Y_D_ack.setText(s[2]);
-      break;
-    case 5:
-      if (parseInt(s[1])==1) PID_Z_P_ack.setText(s[2]);
-      if (parseInt(s[1])==2) PID_Z_I_ack.setText(s[2]);
-      if (parseInt(s[1])==3) PID_Z_D_ack.setText(s[2]);
-      break;
-  }
+void toggle(boolean theFlag) {
+  if(theFlag==true) {
+    joystickMode = 0; //JOY_MODE_RATE
+    println("mode toggle changes to RATE mode");
+  } else {
+    joystickMode = 1; //JOY_MODE_ANGLE
+    println("mode toggle changes to ANGLE mode");
+  } 
   
-
+  //Here shall be the message creation and delivery to GS
+  if (CONNECTED) {
+    arduino.write(PT_JOY_MODE);
+    arduino.write(joystickMode);
+  }
+  println(PT_JOY_MODE);
+  println(joystickMode);
+  
+  //There must be some feedback from QS through GS, 
+  //  which shall be catch in serialEvent
+  //  and make some light change color or something.
 }
 
 
@@ -376,24 +334,20 @@ void customize(DropdownList ddl) {
 }
 
 
-void toggle(boolean theFlag) {
-  if(theFlag==true) {
-    joystickMode = 0; //JOY_MODE_RATE
-    println("mode toggle changes to RATE mode");
-  } else {
-    joystickMode = 1; //JOY_MODE_ANGLE
-    println("mode toggle changes to ANGLE mode");
-  } 
-  
-  //Here shall be the message creation and delivery to GS
-  if (CONNECTED) {
-    myPort.write(PT_JOY_MODE);
-    myPort.write(joystickMode);
+void customizeCOMselection(DropdownList p1) {
+  // a convenience function to customize a DropdownList
+  p1.setBackgroundColor(color(190));
+  p1.setItemHeight(15);
+  p1.setBarHeight(15);
+  p1.captionLabel().set("PUERTO COM");
+  p1.captionLabel().style().marginTop = 3;
+  p1.captionLabel().style().marginLeft = 3;
+  p1.valueLabel().style().marginTop = 3;
+  p1.clear();
+  for (int i=0;i<portList.length;i++) {
+    p1.addItem(portList[i], i);
   }
-  println(PT_JOY_MODE);
-  println(joystickMode);
-  
-  //There must be some feedback from QS through GS, 
-  //  which shall be catch in serialEvent
-  //  and make some light change color or something.
+  numberOfPorts = portList.length;
+  p1.setColorBackground(color(60));
+  p1.setColorActive(color(255, 128));
 }

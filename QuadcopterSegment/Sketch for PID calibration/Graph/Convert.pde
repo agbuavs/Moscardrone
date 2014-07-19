@@ -12,7 +12,11 @@ void convert(String stringx,float[] x, int min, int max) {
     // trim off any whitespace:
     stringx = trim(stringx);
     // convert to an float and map to the screen height, then save in buffer:    
-    x[x.length-1] = map(float(stringx), min, max, 0, height);
+    x[x.length-1] = map(float(stringx), min, max, 0, HEIGHT_GRAPH);
+    
+    // put all data one array back
+    for(int i = 1; i<x.length;i++)
+      x[i-1] = x[i]; 
   }
 
 }
