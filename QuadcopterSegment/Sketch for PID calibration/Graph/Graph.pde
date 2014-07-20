@@ -28,6 +28,10 @@ int COM_PORT_id = 0;
 int numberOfPorts = 0;
 String portList [];
 
+Slider MOT1,MOT2,MOT3,MOT4;
+int MIN_PWM_THROTTLE = 1000;
+int MAX_PWM_THROTTLE = 2000;
+
 
 String stringInputX_angle; 
 String stringInputY_angle; 
@@ -118,12 +122,7 @@ void setup() {
     PID_Y_angle_ITerm[i] = HEIGHT_GRAPH/2;
     PID_X_ITerm[i] = HEIGHT_GRAPH/2;
     PID_Y_ITerm[i] = HEIGHT_GRAPH/2;
-    PID_Z_ITerm[i] = HEIGHT_GRAPH/2;
-    
-    Mot1[i] = HEIGHT_GRAPH/2;
-    Mot2[i] = HEIGHT_GRAPH/2;
-    Mot3[i] = HEIGHT_GRAPH/2;
-    Mot4[i] = HEIGHT_GRAPH/2;
+    PID_Z_ITerm[i] = HEIGHT_GRAPH/2; 
   }
   
   cp5 = new ControlP5(this);
@@ -148,7 +147,71 @@ void setup() {
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ;  
+                  ;
+
+   MOT1 = cp5.addSlider("Mot1")
+    .setPosition(500, 20 + HEIGHT_GRAPH)
+      .setSize(25, 100)
+        .setRange(MIN_PWM_THROTTLE, MAX_PWM_THROTTLE)
+          .setValue(MIN_PWM_THROTTLE)
+            .setColorActive(#6A6A6A) 
+              .setColorForeground(#AEAEAE) 
+                ;
+
+  cp5.addTextlabel("Mot1_label")
+    .setText("Mot1")
+      .setPosition(495, 20 + HEIGHT_GRAPH + 100)
+        .setColorValue(0x00000000)
+          .setFont(createFont("Georgia", 11))
+            ; 
+                        
+   MOT2 = cp5.addSlider("Mot2")
+    .setPosition(550, 20 + HEIGHT_GRAPH)
+      .setSize(25, 100)
+        .setRange(MIN_PWM_THROTTLE, MAX_PWM_THROTTLE)
+          .setValue(MIN_PWM_THROTTLE)
+            .setColorActive(#6A6A6A) 
+              .setColorForeground(#AEAEAE) 
+                ;
+
+  cp5.addTextlabel("Mot2_label")
+    .setText("Mot2")
+      .setPosition(545, 20 + HEIGHT_GRAPH + 100)
+        .setColorValue(0x00000000)
+          .setFont(createFont("Georgia", 11))
+            ; 
+                        
+   MOT3 = cp5.addSlider("Mot3")
+    .setPosition(600, 20 + HEIGHT_GRAPH)
+      .setSize(25, 100)
+        .setRange(MIN_PWM_THROTTLE, MAX_PWM_THROTTLE)
+          .setValue(MIN_PWM_THROTTLE)
+            .setColorActive(#6A6A6A) 
+              .setColorForeground(#AEAEAE) 
+                ;
+
+   cp5.addTextlabel("Mot3_label")
+    .setText("Mot3")
+      .setPosition(595, 20 + HEIGHT_GRAPH + 100)
+        .setColorValue(0x00000000)
+          .setFont(createFont("Georgia", 11))
+            ;             
+            
+    MOT4 = cp5.addSlider("Mot4")
+    .setPosition(650, 20 + HEIGHT_GRAPH)
+      .setSize(25, 100)
+        .setRange(MIN_PWM_THROTTLE, MAX_PWM_THROTTLE)
+          .setValue(MIN_PWM_THROTTLE)
+            .setColorActive(#6A6A6A) 
+              .setColorForeground(#AEAEAE) 
+                ;
+
+   cp5.addTextlabel("Mot4_label")
+    .setText("Mot4")
+      .setPosition(645, 20 + HEIGHT_GRAPH + 100)
+        .setColorValue(0x00000000)
+          .setFont(createFont("Georgia", 11))
+            ; 
 }
 
 void draw()
@@ -235,6 +298,18 @@ void draw()
       drawX(OutputZ,RED);
       break;
   }
+  
+  /*
+  convert(stringMot1,Mot1,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
+  convert(stringMot2,Mot2,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
+  convert(stringMot3,Mot3,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
+  convert(stringMot4,Mot4,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
+  */
+  
+  if (stringMot1 != null) MOT1.setValue(float(trim(stringMot1)));
+  if (stringMot2 != null) MOT2.setValue(float(trim(stringMot2)));
+  if (stringMot3 != null) MOT3.setValue(float(trim(stringMot3)));
+  if (stringMot4 != null) MOT4.setValue(float(trim(stringMot4)));
 }
 
 

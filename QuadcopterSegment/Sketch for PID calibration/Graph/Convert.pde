@@ -18,5 +18,4 @@ void convert(String stringx,float[] x, int min, int max) {
     for(int i = 1; i<x.length;i++)
       x[i-1] = x[i]; 
   }
-
 }
