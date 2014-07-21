@@ -141,6 +141,18 @@ void PID::SetTuning(unsigned char PID_term, double val)
 	}
 }
 
+
+/* SetITerm(...)**************************************************************
+ * This function allows to change the Integral term
+ * in order to fix quadcopter physical offsets.
+ ******************************************************************************/ 
+void PID::SetITerm(double val)
+{
+	if (val < 0) return;
+	
+	ITerm = val;
+}
+
   
 /* SetSampleTime(...) *********************************************************
  * sets the period, in Milliseconds, at which the calculation is performed	

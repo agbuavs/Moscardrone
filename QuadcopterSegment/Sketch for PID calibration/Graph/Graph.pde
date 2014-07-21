@@ -17,8 +17,9 @@ int MIN_ROLL_ANGLE = 150;
 int MAX_ROLL_ANGLE = 210;
 int LIMIT_GYRO_XY_RATE = 100;
 int LIMIT_GYRO_Z_RATE = 100;
+/********************************************/
 
-
+//Widget list
 DropdownList PID_selection;
 String PID_select_label = "PID_selection";
 byte PID_id = 0;
@@ -31,8 +32,11 @@ String portList [];
 Slider MOT1,MOT2,MOT3,MOT4;
 int MIN_PWM_THROTTLE = 1000;
 int MAX_PWM_THROTTLE = 2000;
+float meanT = 0;
 
+Textlabel IX_angle, IY_angle, IX, IY, IZ; 
 
+//Serial port inputs
 String stringInputX_angle; 
 String stringInputY_angle; 
 String stringInputX; 
@@ -62,7 +66,7 @@ String stringMot2;
 String stringMot3;         
 String stringMot4; 
 
-
+//Graph vectors
 float[] InputX_angle = new float[WIDTH];
 float[] InputY_angle = new float[WIDTH];
 float[] InputX = new float[WIDTH];
@@ -117,12 +121,6 @@ void setup() {
     OutputX[i] = HEIGHT_GRAPH/2;
     OutputY[i] = HEIGHT_GRAPH/2;
     OutputZ[i] = HEIGHT_GRAPH/2;
-    
-    PID_X_angle_ITerm[i] = HEIGHT_GRAPH/2;
-    PID_Y_angle_ITerm[i] = HEIGHT_GRAPH/2;
-    PID_X_ITerm[i] = HEIGHT_GRAPH/2;
-    PID_Y_ITerm[i] = HEIGHT_GRAPH/2;
-    PID_Z_ITerm[i] = HEIGHT_GRAPH/2; 
   }
   
   cp5 = new ControlP5(this);
@@ -212,6 +210,41 @@ void setup() {
         .setColorValue(0x00000000)
           .setFont(createFont("Georgia", 11))
             ; 
+            
+   IX_angle = cp5.addTextlabel("X_angle_ITerm")
+     .setPosition(220, 20+HEIGHT_GRAPH)
+     .setSize(100,15)
+     .setText("no data")
+     .setColor(0)
+     ;
+     
+   IY_angle = cp5.addTextlabel("Y_angle_ITerm")
+     .setPosition(220, 36+HEIGHT_GRAPH)
+     .setSize(100,15)
+     .setText("no data")
+     .setColor(0)
+     ;
+     
+   IX = cp5.addTextlabel("X_ITerm")
+     .setPosition(220, 52+HEIGHT_GRAPH)
+     .setSize(100,15)
+     .setText("no data")
+     .setColor(0)
+     ;
+     
+   IY = cp5.addTextlabel("Y_ITerm")
+     .setPosition(220, 68+HEIGHT_GRAPH)
+     .setSize(100,15)
+     .setText("no data")
+     .setColor(0)
+     ;
+     
+   IZ = cp5.addTextlabel("Z_ITerm")
+     .setPosition(220, 84+HEIGHT_GRAPH)
+     .setSize(100,15)
+     .setText("no data")
+     .setColor(0)
+     ;
 }
 
 void draw()
@@ -299,28 +332,33 @@ void draw()
       break;
   }
   
-  /*
-  convert(stringMot1,Mot1,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
-  convert(stringMot2,Mot2,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
-  convert(stringMot3,Mot3,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
-  convert(stringMot4,Mot4,MIN_PWM_THROTTLE,MAX_PWM_THROTTLE);
-  */
+  //Show ITerm values
+  if (stringPID_X_angle_ITerm != null) IX_angle.setValue(stringPID_X_angle_ITerm);
+  if (stringPID_Y_angle_ITerm != null) IY_angle.setValue(stringPID_Y_angle_ITerm);
+  if (stringPID_X_ITerm != null) IX.setValue(stringPID_X_ITerm);
+  if (stringPID_Y_ITerm != null) IY.setValue(stringPID_Y_ITerm);
+  if (stringPID_Z_ITerm != null) IZ.setValue(stringPID_Z_ITerm);
+  remarkITerm(PID_id);
   
+  //Edit sliders with Motor values
   if (stringMot1 != null) MOT1.setValue(float(trim(stringMot1)));
   if (stringMot2 != null) MOT2.setValue(float(trim(stringMot2)));
   if (stringMot3 != null) MOT3.setValue(float(trim(stringMot3)));
   if (stringMot4 != null) MOT4.setValue(float(trim(stringMot4)));
+  
+  //Draw mean throttle line
+  meanT = (MOT1.getValue() + MOT2.getValue() + MOT3.getValue() + MOT4.getValue())/4;
+  stroke(50);
+  line(480, 20 + HEIGHT_GRAPH + 100 - int((meanT-1000)/10), 700, 20 + HEIGHT_GRAPH + 100 - int((meanT-1000)/10)); 
 }
 
 
 
-//Print on serial
 void printAxis() {  
    print(stringInputX);
    print(stringInputY);   
    print(stringInputZ); 
 }
-
 
 
 void customizePIDselection(DropdownList ddl) {
@@ -346,6 +384,7 @@ void customizePIDselection(DropdownList ddl) {
 }
 
 
+
 void customizeCOMselection(DropdownList p1) {
   // a convenience function to customize a DropdownList
   p1.setBackgroundColor(color(190));
@@ -362,4 +401,31 @@ void customizeCOMselection(DropdownList p1) {
   numberOfPorts = portList.length;
   p1.setColorBackground(color(60));
   p1.setColorActive(color(255, 128));
+}
+
+
+
+void remarkITerm(int PID_id) {  
+  IX_angle.setColor(0);
+  IY_angle.setColor(0);
+  IX.setColor(0);
+  IY.setColor(0);
+  IZ.setColor(0);  
+  switch(PID_id) {
+    case 1:
+       IX_angle.setColor(#FF0000);
+       break;     
+    case 2:
+       IY_angle.setColor(#FF0000);
+       break;       
+    case 3:
+       IX.setColor(#FF0000);
+       break;       
+    case 4:
+       IY.setColor(#FF0000);
+       break;       
+    case 5:
+       IZ.setColor(#FF0000);
+       break;
+  }
 }

@@ -72,9 +72,11 @@
 
 
 // ****** PID definitions ****** //
+/*
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
 #define PID_SAMPLETIME 5 //You can use DEBUG_TIMING to know how much time it takes in loop() code
 #define PID_SAMPLETIME_ANGLE 25
+*/
 //PID tunings by default
 /*
 #define KpX_angle 1
@@ -92,6 +94,11 @@
 #define KpZ 0.
 #define KiZ 0.
 #define KdZ 0.
+#define X_angle_ITerm 0
+#define Y_angle_ITerm 0
+#define X_ITerm 0
+#define Y_ITerm 0
+#define Z_ITerm 0
 */
 #define KpX_angle 0.
 #define KiX_angle 0.
@@ -108,3 +115,8 @@
 #define KpZ 0.
 #define KiZ 0.
 #define KdZ 0.
+#define X_angle_ITerm 0
+#define Y_angle_ITerm 0
+#define X_ITerm 0
+#define Y_ITerm 0
+#define Z_ITerm 0

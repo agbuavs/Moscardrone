@@ -234,9 +234,9 @@ void loop(){
 
   //Read PID tuning commands from serial. 
   #ifndef GUI_CONF_OVER_RF //Processing GUI is used to calibrate PIDs. Float values can be used
-  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
-    receiveDataFromGUI();   
-  }  
+    if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
+      receiveDataFromGUI();   
+    }  
   #endif
   
   //Read data from IMU and operate to get angles
@@ -288,7 +288,7 @@ void loop(){
     #endif
     
     #ifdef DEBUG_PID
-      printPIDvalues();
+      printPIDvalues(); //Here, Mot values are not truncated yet.
     #endif
   
     //Do necessary calculations on PID outputs to get the 4 motor throttle values
@@ -339,19 +339,18 @@ void loop(){
   digitalWrite(LED_PIN, blinkState);
   
   //print time elapsed during loop. Necessary to know minimum cycle time for datalink
-  #ifdef DEBUG_TIMING
-  
-  if(counter == 1000) {    
-    Serial.println(mean_cycle_time,6);
-    mean_cycle_time = 0;
-    time_last_loop = millis();
-    counter = 0;
-  }
-  else {
-    double aux = millis()-time_last_loop;
-    mean_cycle_time = mean_cycle_time + aux/1000;    
-    time_last_loop = millis();
-    counter++;
-  }
+  #ifdef DEBUG_TIMING  
+    if(counter == 1000) {    
+      Serial.println(mean_cycle_time,6);
+      mean_cycle_time = 0;
+      time_last_loop = millis();
+      counter = 0;
+    }
+    else {
+      double aux = millis()-time_last_loop;
+      mean_cycle_time = mean_cycle_time + aux/1000;    
+      time_last_loop = millis();
+      counter++;
+    }
   #endif
 }

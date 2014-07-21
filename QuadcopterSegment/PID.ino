@@ -45,6 +45,12 @@ void initializePIDs() {
   PID_Y.SetSampleTime(PID_SAMPLETIME);
   PID_Z.SetSampleTime(PID_SAMPLETIME);
   */
+  
+  PID_X_angle.SetITerm(X_angle_ITerm);
+  PID_Y_angle.SetITerm(Y_angle_ITerm);
+  PID_X.SetITerm(X_ITerm);
+  PID_Y.SetITerm(Y_ITerm);
+  PID_Z.SetITerm(Z_ITerm);
 }
 
 
