@@ -24,10 +24,7 @@
     Yaw is a gyroscope change rate setpoint for PID
     Throttle is the mean power for the 4 motors. 
       (Throttle for each motor will be calculated from mean throttle command and 3 PIDs outputs)
-      
-  It is possible to tune PIDs using serial communications from a computer.
-  Currently, I am building a GUI to do this, so the format might change.
-  
+
 */
 
 
@@ -40,6 +37,7 @@
 
 // The following librearies must be installed to use nRF24l module
 #include <SPI.h>
+#include <EEPROM.h>
 #include <Mirf.h>
 #include <nRF24L01.h>
 #include <MirfHardwareSpiDriver.h>
@@ -49,8 +47,6 @@
 ////////////////////////////////////////////////////////////////////////
 ///////  Global variables
 ////////////////////////////////////////////////////////////////////////
-
-int counter = 0; //used to serial com with pc. (printing in every cycle saturates Matlab graphing sketch)
 
 //Ground segment identifier (change it on both here and at Quadcopter code in order to achieve communication)
 #define ID_local 1
@@ -140,6 +136,11 @@ void setup(){
   Mirf.setTADDR((byte *)"QuadcopterSegment");    //Set remote segment name
   Mirf.payload = RF_PACKET_SIZE; //shall be the same length on quadcopter segment.
   Mirf.config();
+  
+  //Load last MAX and MIN values for joy potentiometers
+  /*if ( JoystickPreviouslyCalibrated() == JOY_IS_CAL) {
+    ROMloadJoystickCalibration();
+  }*/
 }
 
 
@@ -157,17 +158,17 @@ void loop(){
     calibrateJoystick();
   }
   
+  //Joystick pot measures transformed to ignore little movements around the center
+  transformJoystickValues();
+  
   //Read PID tuning commands from serial. 
   #ifdef GUI_CONF //Processing GUI is used to calibrate PIDs. Float values can be used
 
-  if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
-    receiveDataFromGUI();   
-  }  
-  
+    if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
+      receiveDataFromGUI();   
+    }  
+    
   #endif
-
-  //Joystick pot measures transformed to ignore little movements around the center
-  transformJoystickValues();
   
   //Prepare payload for transmission to quadcopter
   prepareDataToQuadcopter();
@@ -176,25 +177,19 @@ void loop(){
   sendData(data_tx);
   
   #ifdef DEBUG_POTS //These values can be monitored with Graph (Processing sketch)
-    //if (counter == 100) { //(printing in every cycle saturates Matlab graphing sketch)
-      counter = 1;
-      //(optional) print the results to the serial monitor: 
+
+      //print the results to the serial monitor: 
       Serial.print(joy_x); Serial.print("\t");        
       Serial.print(joy_y); Serial.print("\t");
       Serial.print(joy_z); Serial.print("\t");
       Serial.print(joy_t); Serial.print("\t");
       Serial.print("\r\n");
-    //}
-    //else counter++; 
+
   #endif
   
   //Receive data (if there is anything in buffer) from remote control
   byte data_rx[Mirf.payload];//Buffer for received data  
   last_nseq_rx = receiveData(data_rx);  //function not verified
-  
-  // wait 2 milliseconds before the next loop
-  // for the analog-to-digital converter to settle
-  // after the last reading:
-  //delay(2);      
+     
 }
 

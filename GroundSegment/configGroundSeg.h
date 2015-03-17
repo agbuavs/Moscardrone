@@ -9,9 +9,9 @@
 //#define DEBUG_TELEMETRY
 
 // ****** Joystick setup ***** //
-#define MIN_JOY_DETECTABLE_SHIFT 80 //less shift from center in pot measurements are ignored
+#define MIN_JOY_DETECTABLE_SHIFT 80 //lower shift from center in pot measurements are ignored
 #define MIN_RANGE_TO_CALIBRATE 600  //min difference between max and min detected values to consider JOY_calibrated
-
+#define JOY_IS_CAL 10 //It could be any number different from 0. Used for ROM saving/loading
 
 /* The following definitions must be a copy from those at configQuadSeg.h ! */
 

@@ -1,4 +1,3 @@
-
 import java.nio.ByteBuffer;
 import processing.serial.*;
 import controlP5.*;
@@ -9,14 +8,17 @@ Serial arduino;
 //Define types of messages between ConfGUI and Arduino
 int PT_PID_CHANGE = 100;
 int PT_JOY_MODE = 101;
+int PT_JOY_CAL_SAVE = 102;
 
 //Set to false when you only want to see the GUI format.
 boolean CONNECTED = false;
 
 String outputFileName = ""; // if you'd like to output data to a file, specify the path here
 
-String textWarning = "First of all, calibrate joystick.\nCalibration done when light turns green";
-String textInstructions = "Write PID values and type enter\n to send them to Arduino\nFeedback will be printed on the right column";
+//String textWarning = "First of all, calibrate joystick.\nCalibration done when light turns green";
+//String textInstructions = "Write PID values and type enter\n to send them to Arduino\nFeedback will be printed on the right column";
+String textWarning = "";
+String textInstructions = "";
 
 //GUI items frame definition:
 int margin = 20;
@@ -29,6 +31,18 @@ int Y_commands = 120;
 int X_feedback = X_commands + PIDboxSizeX + margin;
 int Y_feedback = Y_commands;
 
+//Graphs for josytick
+String stringX;
+String stringY;
+String stringZ;
+String stringT;
+int graphYpos = 500; //The graphs are belowfrom Y=graphYpos
+float[] X = new float[600];
+float[] Y = new float[600];
+float[] Z = new float[600];
+float[] T = new float[600];
+
+//Buttons and boxes
 DropdownList PID_selection;
 String PID_select_label = "PID_selection";
 controlP5.Textfield PID_P,PID_I,PID_D,PID_P_ack,PID_I_ack,PID_D_ack;
@@ -61,7 +75,14 @@ void setup() {
   println(Serial.list());     
   portList = Serial.list();
   
-  size(900,400);
+  size(600,graphYpos+255);
+  
+  for (int i=0;i<600;i++) { // center all variables    
+    X[i] = height - graphYpos/2;
+    Y[i] = height - graphYpos/2;
+    Z[i] = height - graphYpos/2;
+    T[i] = height - graphYpos/2;
+  }
   
   PFont font = createFont("arial",20);
   PFont font10 = createFont("arial",10);
@@ -268,10 +289,15 @@ void draw() {
   text(textInstructions, X_commands + PIDboxSizeX + 4*PIDackboxSizeX + margin + 100, 180);
   text("To Quad",X_commands,Y_commands);
   text("From Quad",X_feedback,Y_feedback);
+  text("Joystick RC commands",margin, graphYpos - margin);
   if (joystickMode==0)
     text("Rate Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);
   else
-    text("Angle Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);  
+    text("Angle Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40); 
+  
+  //Joystick visualization 
+  convert();
+  drawAxis(); 
 }
 
 

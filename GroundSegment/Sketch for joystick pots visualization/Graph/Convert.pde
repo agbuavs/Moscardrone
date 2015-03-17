@@ -9,7 +9,7 @@ void convert() {
     // trim off any whitespace:
     stringX = trim(stringX);
     // convert to an float and map to the screen height, then save in buffer:    
-    X[X.length-1] = map(float(stringX), minAngle, maxAngle, height, 0);
+    X[X.length-1] = map(float(stringX), minAngle, maxAngle, height - graphYpos, 0);
   }
   
   /* convert the y-axis */
@@ -17,7 +17,7 @@ void convert() {
     // trim off any whitespace:
     stringY = trim(stringY);
     // convert to an float and map to the screen height, then save in buffer:   
-    Y[Y.length-1] = map(float(stringY), minAngle, maxAngle, height, 0);
+    Y[Y.length-1] = map(float(stringY), minAngle, maxAngle, height - graphYpos, 0);
   }
   
   /* convert the z-axis */
@@ -25,7 +25,7 @@ void convert() {
     // trim off any whitespace:
     stringZ = trim(stringZ);
     // convert to an float and map to the screen height, then save in buffer:   
-    Z[Z.length-1] = map(float(stringZ), minAngle, maxAngle, height, 0);
+    Z[Z.length-1] = map(float(stringZ), minAngle, maxAngle, height - graphYpos, 0);
   }
   
   /* convert the throttle-axis */
@@ -33,6 +33,6 @@ void convert() {
     // trim off any whitespace:
     stringT = trim(stringT);
     // convert to an float and map to the screen height, then save in buffer:   
-    T[T.length-1] = map(float(stringT), minAngle, maxAngle, height, 0);
+    T[T.length-1] = map(float(stringT), minAngle, maxAngle, height - graphYpos, 0);
   }
 }

@@ -5,7 +5,7 @@ void drawAxis() {
   // redraw everything
   beginShape();
   for(int i = 0; i<X.length;i++)
-    vertex(i,X[i]);
+    vertex(i,graphYpos+X[i]);
   endShape();
   // put all data one array back
   for(int i = 1; i<X.length;i++)
@@ -17,7 +17,7 @@ void drawAxis() {
   // redraw everything
   beginShape();
   for(int i = 0; i<Y.length;i++)
-    vertex(i,Y[i]);
+    vertex(i,graphYpos+Y[i]);
   endShape();
   // put all data one array back
   for(int i = 1; i<Y.length;i++)
@@ -30,7 +30,7 @@ void drawAxis() {
   // redraw everything
   beginShape();
   for(int i = 0; i<Z.length;i++)
-    vertex(i,Z[i]);
+    vertex(i,graphYpos+Z[i]);
   endShape();
   // put all data one array back
   for(int i = 1; i<Z.length;i++)
@@ -43,7 +43,7 @@ void drawAxis() {
   // redraw everything
   beginShape();
   for(int i = 0; i<T.length;i++)
-    vertex(i,T[i]);
+    vertex(i,graphYpos+T[i]);
   endShape();
   // put all data one array back
   for(int i = 1; i<T.length;i++)

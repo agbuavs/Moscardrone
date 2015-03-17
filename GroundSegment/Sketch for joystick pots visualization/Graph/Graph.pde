@@ -5,7 +5,7 @@ String stringX;
 String stringY;
 String stringZ;
 String stringT;
-
+int graphYpos = 0;
 float[] X = new float[600];
 float[] Y = new float[600];
 float[] Z = new float[600];
@@ -13,16 +13,16 @@ float[] T = new float[600];
 
 
 void setup() {  
-  size(600, 255);
+  size(600, graphYpos+255);
   println(arduino.list()); // Use this to print connected serial devices
-  arduino = new Serial(this, Serial.list()[2], 115200); //2nd parameter = serial port being used
+  arduino = new Serial(this, "COM16", 115200); //2nd parameter = serial port being used
   arduino.bufferUntil('\n'); // Buffer until line feed
 
   for (int i=0;i<600;i++) { // center all variables    
-    X[i] = height/2;
-    Y[i] = height/2;
-    Z[i] = height/2;
-    T[i] = height/2;
+    X[i] = height - graphYpos/2;
+    Y[i] = height - graphYpos/2;
+    Z[i] = height - graphYpos/2;
+    T[i] = height - graphYpos/2;
   }
 }
 
@@ -47,6 +47,7 @@ void draw()
 
 void serialEvent (Serial arduino) {
   // get the ASCII strings:
+  potMeasures = arduino.readStringUntil('\t');
   stringX = arduino.readStringUntil('\t');
   stringY = arduino.readStringUntil('\t'); 
   stringZ = arduino.readStringUntil('\t');

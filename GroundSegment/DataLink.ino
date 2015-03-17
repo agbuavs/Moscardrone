@@ -170,6 +170,10 @@ void prepareDataToQuadcopter() {
   Serial.print("\r\n");  
   #endif
   
+  #ifdef GUI_CONF
+  send4ValuesToGUI(data_tx[2],data_tx[3],data_tx[4],data_tx[5]); //Pot values can be monitored with ConfGUI (Processing)
+  #endif
+  
   data_tx[6] = PID_id;
   data_tx[7] = PID_term;
   data_tx[8] = PID_value.asBytes[0];

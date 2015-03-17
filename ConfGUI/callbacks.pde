@@ -101,5 +101,12 @@ void serialEvent(Serial arduino)
       if (parseInt(s[1])==2) PID_Z_I_ack.setText(s[2]);
       if (parseInt(s[1])==3) PID_Z_D_ack.setText(s[2]);
       break;
+      
+    case 10: //pot measures
+      stringX = s[1];
+      stringY = s[2];
+      stringZ = s[3];
+      stringT = s[4];
+      break;
   }
 }

@@ -14,6 +14,7 @@
 //Define types of messages between ConfGUI and Arduino
 #define PT_PID_CHANGE 100
 #define PT_JOY_MODE 101
+#define PT_JOY_CAL_SAVE 102
 
 byte PT = 0; //Packet Type. It gets a new value every time GS receives a msg from ConfGUI.
 
@@ -37,6 +38,10 @@ void receiveDataFromGUI() {
       addMSG_type = PT_JOY_MODE;
       addMSG_data = Serial.read();
       break;
+      
+    case PT_JOY_CAL_SAVE:
+      ROMsaveJoystickCalibration();
+      break;
   }
   Serial.flush();  
   
@@ -45,10 +50,8 @@ void receiveDataFromGUI() {
 
 
 void sendAckToGUI(byte id, byte term, float value) {
-  Serial.print(id);
-  Serial.print(" ");
-  Serial.print(term);
-  Serial.print(" ");
+  Serial.print(id);     Serial.print(" ");
+  Serial.print(term);   Serial.print(" ");
   Serial.print(value,4);
   Serial.print(" // ");
   Serial.print(addMSG_type_ACK);
@@ -56,3 +59,24 @@ void sendAckToGUI(byte id, byte term, float value) {
   Serial.println(addMSG_data_ACK);
 }
 
+
+void sendJoyValuesToGUI() {
+  
+  Serial.print("10"); Serial.print(" ");    
+  Serial.print(joy_x); Serial.print(" ");        
+  Serial.print(joy_y); Serial.print(" ");
+  Serial.print(joy_z); Serial.print(" ");
+  Serial.print(joy_t); Serial.print("\r\n");
+  
+}
+
+
+void send4ValuesToGUI(byte x, byte y, byte z, byte t) {
+  
+  Serial.print("10"); Serial.print(" ");    
+  Serial.print(x); Serial.print(" ");        
+  Serial.print(y); Serial.print(" ");
+  Serial.print(z); Serial.print(" ");
+  Serial.print(t); Serial.print("\r\n");
+  
+}
