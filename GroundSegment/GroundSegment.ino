@@ -138,9 +138,9 @@ void setup(){
   Mirf.config();
   
   //Load last MAX and MIN values for joy potentiometers
-  /*if ( JoystickPreviouslyCalibrated() == JOY_IS_CAL) {
+  if ( JoystickPreviouslyCalibrated() == JOY_IS_CAL) {
     ROMloadJoystickCalibration();
-  }*/
+  }
 }
 
 
@@ -164,7 +164,8 @@ void loop(){
   //Read PID tuning commands from serial. 
   #ifdef GUI_CONF //Processing GUI is used to calibrate PIDs. Float values can be used
 
-    if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
+    //if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
+    if ((millis()-lastGUIpacket) > 500)  {
       receiveDataFromGUI();   
     }  
     

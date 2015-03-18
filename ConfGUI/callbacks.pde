@@ -66,14 +66,62 @@ void controlEvent(ControlEvent theEvent) {
 }
 
 
+//Change Rate or Angle mode
+void toggle(boolean theFlag) {
+  if(theFlag==true) {
+    joystickMode = 0; //JOY_MODE_RATE
+    println("mode toggle changes to RATE mode");
+  } else {
+    joystickMode = 1; //JOY_MODE_ANGLE
+    println("mode toggle changes to ANGLE mode");
+  } 
+  
+  //Here shall be the message creation and delivery to GS
+  if (CONNECTED) {
+    arduino.write(PT_JOY_MODE);
+    arduino.write(joystickMode);
+  }
+  println(PT_JOY_MODE);
+  println(joystickMode);
+  
+  //There must be some feedback from QS through GS, 
+  //  which shall be catch in serialEvent
+  //  and make some light change color or something.
+}
 
-//take the string the arduino sends us and parse it
+
+//Clear PID inputs
+public void clear() {
+  cp5.get(Textfield.class,PID_P_label).clear();
+  cp5.get(Textfield.class,PID_I_label).clear();
+  cp5.get(Textfield.class,PID_D_label).clear();
+}
+
+
+//clear joystick calibration
+public void Clear_Cal () {
+  if (CONNECTED) {
+        arduino.write(PT_JOY_CAL_CLEAR);
+        println(PT_JOY_CAL_CLEAR);
+  } 
+}
+
+//save joystick calibration
+public void Save_Cal () {
+  if (CONNECTED) {
+        arduino.write(PT_JOY_CAL_SAVE);
+        println(PT_JOY_CAL_SAVE);
+  } 
+}
+
+
+//take the string the arduino sends and parse it
 void serialEvent(Serial arduino)
 {
   String read = arduino.readString();
   //arduino.clear();
   String[] s = split(read, " ");
-  println(read);
+  //println(read);
 
   switch (parseInt(s[0])) {
     case 1:

@@ -9,6 +9,7 @@ Serial arduino;
 int PT_PID_CHANGE = 100;
 int PT_JOY_MODE = 101;
 int PT_JOY_CAL_SAVE = 102;
+int PT_JOY_CAL_CLEAR = 103;
 
 //Set to false when you only want to see the GUI format.
 boolean CONNECTED = false;
@@ -268,7 +269,27 @@ void setup() {
      .setPosition(X_commands, Y_commands + 3*PIDboxSizeY + 4*margin)
      .setSize(80,40)
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-     ;     
+     ;    
+    
+  cp5.addButton("Clear_Cal")
+    .setValue(1)
+      .setPosition(300, graphYpos - 40 -margin)          //posición del botón
+        .setSize(90, 40)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;  
+                  
+  cp5.addButton("Save_Cal")
+    .setValue(1)
+      .setPosition(400, graphYpos - 40 -margin)          //posición del botón
+        .setSize(90, 40)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;    
   
   textFont(font);
 }
@@ -301,40 +322,12 @@ void draw() {
 }
 
 
-public void clear() {
-  cp5.get(Textfield.class,PID_P_label).clear();
-  cp5.get(Textfield.class,PID_I_label).clear();
-  cp5.get(Textfield.class,PID_D_label).clear();
-}
-
 
 public void input(String theText) {
   // automatically receives results from controller input
   println("a textfield event for controller 'input' : "+theText);
 }
 
-
-void toggle(boolean theFlag) {
-  if(theFlag==true) {
-    joystickMode = 0; //JOY_MODE_RATE
-    println("mode toggle changes to RATE mode");
-  } else {
-    joystickMode = 1; //JOY_MODE_ANGLE
-    println("mode toggle changes to ANGLE mode");
-  } 
-  
-  //Here shall be the message creation and delivery to GS
-  if (CONNECTED) {
-    arduino.write(PT_JOY_MODE);
-    arduino.write(joystickMode);
-  }
-  println(PT_JOY_MODE);
-  println(joystickMode);
-  
-  //There must be some feedback from QS through GS, 
-  //  which shall be catch in serialEvent
-  //  and make some light change color or something.
-}
 
 
 void customize(DropdownList ddl) {

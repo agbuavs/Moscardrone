@@ -15,6 +15,7 @@
 #define PT_PID_CHANGE 100
 #define PT_JOY_MODE 101
 #define PT_JOY_CAL_SAVE 102
+#define PT_JOY_CAL_CLEAR 103
 
 byte PT = 0; //Packet Type. It gets a new value every time GS receives a msg from ConfGUI.
 
@@ -42,6 +43,10 @@ void receiveDataFromGUI() {
     case PT_JOY_CAL_SAVE:
       ROMsaveJoystickCalibration();
       break;
+      
+    case PT_JOY_CAL_CLEAR:
+      ROMclearJoystickCalibration();
+      break;
   }
   Serial.flush();  
   
@@ -57,17 +62,6 @@ void sendAckToGUI(byte id, byte term, float value) {
   Serial.print(addMSG_type_ACK);
   Serial.print(" ");
   Serial.println(addMSG_data_ACK);
-}
-
-
-void sendJoyValuesToGUI() {
-  
-  Serial.print("10"); Serial.print(" ");    
-  Serial.print(joy_x); Serial.print(" ");        
-  Serial.print(joy_y); Serial.print(" ");
-  Serial.print(joy_z); Serial.print(" ");
-  Serial.print(joy_t); Serial.print("\r\n");
-  
 }
 
 

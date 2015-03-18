@@ -36,11 +36,27 @@ int ROMsaveJoystickCalibration() {
   return(0);
 }
 
+int ROMclearJoystickCalibration() {
+ 
+  EEPROM.write(DIR_JOY_IS_CAL, 0); 
+  JOY_calibrated = 0;
+  joy_x_max = 0;
+  joy_y_max = 0;
+  joy_z_max = 0;
+  joy_t_max = 0;
+  joy_x_min = 1024;
+  joy_y_min = 1024;
+  joy_z_min = 1024;
+  joy_t_min = 1024;
+  analogWrite(LED_CALIBRATE_OK,0);
+  
+  return(0); 
+}
+
 
 int JoystickPreviouslyCalibrated() {
  
- return (EEPROM.read(DIR_JOY_IS_CAL));
- 
+  return (EEPROM.read(DIR_JOY_IS_CAL));
 }
 
 
