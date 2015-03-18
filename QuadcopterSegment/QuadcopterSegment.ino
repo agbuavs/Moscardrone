@@ -162,6 +162,8 @@ PID_value;
 unsigned char PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the future, it can be GPS, barometer, etc)
                                 // this value received from GS and it is != 0 when you want to change some PID params
 unsigned char PID_term = 0;     // P, I or D
+unsigned char i_PID_id = 0;
+unsigned char i_PID_term = 0;
 //The next are variables used to configure other things than PIDs with ConfGUI.
 byte addMSG_type = 0;
 byte addMSG_data = 0;
@@ -233,7 +235,7 @@ void setup(){
 void loop(){
 
   //Read PID tuning commands from serial. 
-  #ifndef GUI_CONF_OVER_RF //Processing GUI is used to calibrate PIDs. Float values can be used
+  #ifndef GUI_CONF_OVER_RF //Compile if ConfGUI is used to calibrate PIDs. Float values can be used
     if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
       receiveDataFromGUI();   
     }  

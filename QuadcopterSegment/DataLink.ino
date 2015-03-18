@@ -36,7 +36,6 @@ int receiveData(byte* data) {
     joy_t = int(data[5]);    
     
     #ifdef GUI_CONF_OVER_RF
-    
     PID_id = data[6];
     PID_term = data[7];
     PID_value.asBytes[0] = data[8];
@@ -50,8 +49,7 @@ int receiveData(byte* data) {
       case (PT_JOY_MODE):
         joystickMode = addMSG_data;
         break;
-    }
-        
+    }        
     #endif
     
     //(optional, to monitor on serial when testing)
@@ -131,44 +129,48 @@ void prepareDataToGroundSegment(){
   data_tx[14] = (int) (((double)Mot3 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot3 value
   data_tx[15] = (int) (((double)Mot4 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot4 value
   
-  //PID calibrations
-  data_tx[16] = PID_id;
-  data_tx[17] = PID_term;
+  //PID calibrations  
+  i_PID_id = i_PID_id + 1;
+  if (i_PID_id == 6) i_PID_id = 1; //report one PID constant at each iteration  
+  i_PID_term = i_PID_term + 1;
+  if (i_PID_term == 4) i_PID_term = 1;
+  data_tx[16] = i_PID_id;
+  data_tx[17] = i_PID_term;
   union {                
     byte asBytes[4];        
     double asDouble;     
   } double_byte; 
-  switch (PID_id) {
+  switch (i_PID_id) {
       case 1: //Pitch PID_angle tuning ACK
-        double_byte.asDouble = PID_X_angle.GetValue(PID_term);
+        double_byte.asDouble = PID_X_angle.GetValue(i_PID_term);
         data_tx[18] = double_byte.asBytes[0];
         data_tx[19] = double_byte.asBytes[1];
         data_tx[20] = double_byte.asBytes[2];
         data_tx[21] = double_byte.asBytes[3];
         break;
       case 2: //Roll PID_angle tuning ACK
-        double_byte.asDouble = PID_Y_angle.GetValue(PID_term);
+        double_byte.asDouble = PID_Y_angle.GetValue(i_PID_term);
         data_tx[18] = double_byte.asBytes[0];
         data_tx[19] = double_byte.asBytes[1];
         data_tx[20] = double_byte.asBytes[2];
         data_tx[21] = double_byte.asBytes[3];
         break;
       case 3: //Pitch rate PID tuning ACK
-        double_byte.asDouble = PID_X.GetValue(PID_term);
+        double_byte.asDouble = PID_X.GetValue(i_PID_term);
         data_tx[18] = double_byte.asBytes[0];
         data_tx[19] = double_byte.asBytes[1];
         data_tx[20] = double_byte.asBytes[2];
         data_tx[21] = double_byte.asBytes[3];
         break;
       case 4: //Roll rate PID tuning ACK
-        double_byte.asDouble = PID_Y.GetValue(PID_term);
+        double_byte.asDouble = PID_Y.GetValue(i_PID_term);
         data_tx[18] = double_byte.asBytes[0];
         data_tx[19] = double_byte.asBytes[1];
         data_tx[20] = double_byte.asBytes[2];
         data_tx[21] = double_byte.asBytes[3];
         break;
       case 5: //Yaw rate PID tuning ACK
-        double_byte.asDouble = PID_Z.GetValue(PID_term);
+        double_byte.asDouble = PID_Z.GetValue(i_PID_term);
         data_tx[18] = double_byte.asBytes[0];
         data_tx[19] = double_byte.asBytes[1];
         data_tx[20] = double_byte.asBytes[2];

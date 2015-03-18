@@ -33,7 +33,7 @@ void receiveDataFromGUI() {
       PID_value.asBytes[1] = Serial.read();
       PID_value.asBytes[2] = Serial.read();
       PID_value.asBytes[3] = Serial.read();
-      //sendAckToGUI(PID_id,PID_term,PID_value.asFloat); //(used to test comms without quad
+      //sendAckToGUI(PID_id,PID_term,PID_value.asFloat); //(used to test comms without quadcopter)
       break;
     case PT_JOY_MODE:
       addMSG_type = PT_JOY_MODE;

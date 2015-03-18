@@ -16,6 +16,7 @@
 
 byte PT = 0; //Packet Type. It gets a new value every time GS receives a msg from ConfGUI.
 
+#ifndef GUI_CONF_OVER_RF //Compile if ConfGUI is used to calibrate PIDs. 
 
 /************************* Functions **********************/
 void receiveDataFromGUI() {
@@ -79,3 +80,5 @@ void sendAckToGUI(byte id, byte term, float value) {
   Serial.println(addMSG_data);
 }
 
+
+#endif
