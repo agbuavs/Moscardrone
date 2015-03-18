@@ -1,0 +1,1 @@
+uncomment #define DEBUG_RC_COMMANDS in configGroundSeg.h to use this sketch
