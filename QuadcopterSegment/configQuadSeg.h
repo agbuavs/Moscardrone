@@ -6,12 +6,13 @@
 #define JOY_MODE_ANGLE 1
 #define DEFAULT_JOY_MODE JOY_MODE_RATE
 
+
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_IMU //Configure Processing drawing sketch in accordance to see IMU data.
 //#define DEBUG_RX
-//#define DEBUG_PID
+#define DEBUG_PID
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 
@@ -72,6 +73,7 @@
 
 
 // ****** PID definitions ****** //
+#define PID_IS_CAL 10 //It could be any number different from 0. Used for ROM saving/loading
 /*
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.
 #define PID_SAMPLETIME 5 //You can use DEBUG_TIMING to know how much time it takes in loop() code

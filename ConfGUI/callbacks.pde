@@ -97,6 +97,21 @@ public void clear() {
   cp5.get(Textfield.class,PID_D_label).clear();
 }
 
+//clear PID calibration
+public void Clear_PID () {
+  if (CONNECTED) {
+        arduino.write(PT_PID_CAL_CLEAR);
+        println(PT_PID_CAL_CLEAR);
+  } 
+}
+
+//save PID calibration
+public void Save_PID () {
+  if (CONNECTED) {
+        arduino.write(PT_PID_CAL_SAVE);
+        println(PT_PID_CAL_SAVE);
+  } 
+}
 
 //clear joystick calibration
 public void Clear_Cal () {

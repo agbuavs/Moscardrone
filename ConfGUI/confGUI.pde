@@ -5,11 +5,13 @@ import controlP5.*;
 ControlP5 cp5;
 Serial arduino;
 
-//Define types of messages between ConfGUI and Arduino
+//Define packet types between ConfGUI and Arduino
 int PT_PID_CHANGE = 100;
 int PT_JOY_MODE = 101;
 int PT_JOY_CAL_SAVE = 102;
 int PT_JOY_CAL_CLEAR = 103;
+int PT_PID_CAL_SAVE = 104;
+int PT_PID_CAL_CLEAR = 105;
 
 //Set to false when you only want to see the GUI format.
 boolean CONNECTED = false;
@@ -131,7 +133,6 @@ void setup() {
      .setFont(font)
      .setAutoClear(false)
      .setFocus(true)
-     .setColor(color(255,0,0))
      ;
                  
   PID_I = cp5.addTextfield(PID_I_label)
@@ -147,28 +148,7 @@ void setup() {
      .setFont(font)
      .setAutoClear(false)
      ;
-  /*   
-  PID_P_ack = cp5.addTextfield(PID_P_ack_label)
-     .setPosition(X_commands + PIDboxSizeX + margin ,Y_commands + margin)
-     .setSize(PIDboxSizeX,PIDboxSizeY)
-     .setFont(font)
-     .setAutoClear(false)
-     ;
      
-  PID_I_ack = cp5.addTextfield(PID_I_ack_label)
-     .setPosition(X_commands + PIDboxSizeX + margin ,Y_commands + PIDboxSizeY + 2*margin)
-     .setSize(PIDboxSizeX,PIDboxSizeY)
-     .setFont(font)
-     .setAutoClear(false)
-     ;
-     
-  PID_D_ack = cp5.addTextfield(PID_D_ack_label)
-     .setPosition(X_commands + PIDboxSizeX + margin ,Y_commands + 2*PIDboxSizeY + 3*margin)
-     .setSize(PIDboxSizeX,PIDboxSizeY)
-     .setFont(font)
-     .setAutoClear(false)
-     ;
-  */  
 
   PID_Xangle_P_ack = cp5.addTextfield("X_ang_P")
      .setPosition(X_commands + PIDboxSizeX + margin ,Y_commands + margin)
@@ -264,6 +244,27 @@ void setup() {
      .setFont(font10)
      .setAutoClear(false)
      ;  
+     
+     
+  cp5.addButton("Clear_PID")
+    .setValue(1)
+      .setPosition(X_commands + PIDboxSizeX + 5*PIDackboxSizeX + 2*margin ,Y_commands + margin)   //posición del botón
+        .setSize(90, 40)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;  
+                  
+  cp5.addButton("Save_PID")
+    .setValue(1)
+      .setPosition(X_commands + PIDboxSizeX + 5*PIDackboxSizeX + 2*margin ,Y_commands + PIDackboxSizeY + 2*margin)          //posición del botón
+        .setSize(90, 40)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;  
      
   cp5.addBang("clear")
      .setPosition(X_commands, Y_commands + 3*PIDboxSizeY + 4*margin)

@@ -49,6 +49,12 @@ int receiveData(byte* data) {
       case (PT_JOY_MODE):
         joystickMode = addMSG_data;
         break;
+      case (PT_PID_CAL_SAVE):
+        ROMsavePIDCalibration();
+        break;
+      case (PT_PID_CAL_CLEAR):
+        ROMclearPIDCalibration();
+        break;
     }        
     #endif
     
@@ -129,17 +135,13 @@ void prepareDataToGroundSegment(){
   data_tx[14] = (int) (((double)Mot3 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot3 value
   data_tx[15] = (int) (((double)Mot4 - MIN_PWM_THROTTLE)*256/(MAX_PWM_THROTTLE - MIN_PWM_THROTTLE)); //Mot4 value
   
-  //PID calibrations  
+  //Report PID calibrations: report one PID constant (there are 5*3=15) at each iteration.
   i_PID_id = i_PID_id + 1;
-  if (i_PID_id == 6) i_PID_id = 1; //report one PID constant at each iteration  
+  if (i_PID_id == 6) i_PID_id = 1;
   i_PID_term = i_PID_term + 1;
   if (i_PID_term == 4) i_PID_term = 1;
   data_tx[16] = i_PID_id;
   data_tx[17] = i_PID_term;
-  union {                
-    byte asBytes[4];        
-    double asDouble;     
-  } double_byte; 
   switch (i_PID_id) {
       case 1: //Pitch PID_angle tuning ACK
         double_byte.asDouble = PID_X_angle.GetValue(i_PID_term);

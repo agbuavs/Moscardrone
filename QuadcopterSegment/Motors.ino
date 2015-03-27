@@ -1,6 +1,19 @@
+/* 
+  Motors functions:
+  
+  changeMotorsThrottle: 
+    - Applies cosntrained MotX value to every ESC
+   
+  turnOffMotors:
+    - sends lowest value to ESCs
+  
+  initMotValues:
+    - MotX = 0 for every motor.
+*/ 
+
+
 int changeMotorsThrottle() {
-//Applies MotX value to every ESC
-//maybe Mot values calculated at computeOutputs() exceed ranges that Servos (ESCs) understand?  
+//maybe Mot values calculated at computeOutputs() exceed ranges that Servos (ESCs) 
   
   //constrain throttle to defined limits
   Mot1 = constrain(Mot1, MIN_PWM_THROTTLE, MAX_PWM_THROTTLE);

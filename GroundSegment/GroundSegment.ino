@@ -102,8 +102,7 @@ byte PID_term = 0;     //P, I or D
 union {                
   byte asBytes[4];     
   float asDouble;        
-}                       
-PID_value_ACK;          
+} PID_value_ACK;          
 byte PID_id_ACK = 0;    //used to know if quad has updated PID requested axis
 byte PID_term_ACK = 0;  //used to know if quad has received PID change command
 //The next are variables used to configure other things than PIDs with ConfGUI.

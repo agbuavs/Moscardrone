@@ -26,7 +26,7 @@
       (Throttle for each motor will be calculated from mean throttle command and 3 PIDs outputs)
       
   PID default constants are defined in configQuadSeg.h but they can be tuned remotely 
-  (using serial port on Ground Segment board) once your quad had been turned on (see DataLink code).
+  (using serial port on Ground Segment board) once your quadcopter had been turned on (see DataLink code).
 
 */
 
@@ -43,6 +43,7 @@
 
 // The following libraries must be installed to use nRF24l module
 #include <SPI.h>
+#include <EEPROM.h>
 #include <Mirf.h>
 #include <nRF24L01.h>
 #include <MirfHardwareSpiDriver.h>
@@ -116,7 +117,7 @@ uint8_t i2cData[14]; // Buffer for I2C data
 int joy_x = 128;      // PITCH angle
 int joy_y = 128;      // ROLL angle 
 int joy_z = 128;      // YAW gyro rate (half between 0 and 255, since it has sign
-int joy_t = 5;        // THROTTLE average for 4 motors. More than 2 to wait for ESC calibration.
+int joy_t = 5;        // THROTTLE average for 4 motors. Initial value > 2 to wait for ESC calibration.
 //margins to control if ESC calibration is done
 int min_joy_t_rx = 255;
 int max_joy_t_rx = 0;
@@ -164,6 +165,10 @@ unsigned char PID_id = 0;       // angleX, angleY, rateX, rateY or rateZ (in the
 unsigned char PID_term = 0;     // P, I or D
 unsigned char i_PID_id = 0;
 unsigned char i_PID_term = 0;
+union {                
+  byte asBytes[4];        
+  double asDouble;     
+} double_byte; 
 //The next are variables used to configure other things than PIDs with ConfGUI.
 byte addMSG_type = 0;
 byte addMSG_data = 0;
@@ -225,6 +230,13 @@ void setup(){
   pinMode(PIN_RX, OUTPUT);
   pinMode(PIN_EMERG, OUTPUT);
   digitalWrite(PIN_EMERG, false);
+  
+  //Load last saved PID constant. 
+  // If there is nothing to be loaded, default values from configQuadSeg.h are used.
+  if ( PIDPreviouslyCalibrated() == PID_IS_CAL) {
+    ROMloadPIDCalibration();
+  }
+
 }
 
 

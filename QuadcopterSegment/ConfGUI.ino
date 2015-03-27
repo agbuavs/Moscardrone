@@ -13,6 +13,8 @@
 //Define types of messages between ConfGUI and Arduino
 #define PT_PID_CHANGE 100
 #define PT_JOY_MODE 101
+#define PT_PID_CAL_SAVE 104
+#define PT_PID_CAL_CLEAR 105
 
 byte PT = 0; //Packet Type. It gets a new value every time GS receives a msg from ConfGUI.
 

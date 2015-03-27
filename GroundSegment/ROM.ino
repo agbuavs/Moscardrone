@@ -1,15 +1,22 @@
 /* 
-  ROMk functions:
-  
-  ROMsaveJoystickCalibration: 
-    - loads global variables from the defined ROM addresses
+  ROM functions:
   
   ROMsaveJoystickCalibration:
     - saves global variables to ROM in the defined addresses
+    
+  ROMclearJoystickCalibration():
+   - deletes values stored in ROM
+   
+  JoystickPreviouslyCalibrated():
+   - Checks if there are any values to load upon system start-up
+    
+  ROMloadJoystickCalibration: 
+    - loads global variables from the defined ROM addresses
+
 */  
 
 
-//Addresses
+//Addresses (bytes)
 #define DIR_JOY_IS_CAL 10
 #define DIR_JOY_X_MAX 11
 #define DIR_JOY_Y_MAX 12
