@@ -182,5 +182,7 @@ void prepareDataToQuadcopter() {
   data_tx[11] = PID_value.asBytes[3];
   data_tx[12] = addMSG_type;
   data_tx[13] = addMSG_data;
+  addMSG_type = 0;
+  addMSG_data = 0;
 
 }
