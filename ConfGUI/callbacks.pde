@@ -100,8 +100,10 @@ public void clear() {
 //clear PID calibration
 public void Clear_PID () {
   if (CONNECTED) {
+
         arduino.write(PT_PID_CAL_CLEAR);
-        println(PT_PID_CAL_CLEAR);
+        println(PT_PID_CAL_CLEAR);   
+    
   } 
 }
 

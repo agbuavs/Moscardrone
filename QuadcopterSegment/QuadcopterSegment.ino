@@ -75,6 +75,7 @@
 int ID_remote = 0;
 #define LED_PIN 13
 boolean blinkState = false;
+boolean blinkROM = false;
 
 //PID global variables
 double SetpointX_angle, InputX_angle, OutputX_angle;
@@ -146,6 +147,7 @@ byte data_tx[RF_PACKET_SIZE]; //Mirf payload to send telemetry to Ground Station
 int PIN_TX = 9; //blue
 int PIN_RX = 2; //yellow
 int PIN_EMERG = 4; //green.
+int PIN_ROM = A0; //red.
 boolean blinkABORT = false;
 double time_last_loop = 0;
 double mean_cycle_time = 0;
@@ -182,10 +184,18 @@ void setup(){
 
   Serial.begin(115200); //(optional, to monitor on serial when testing)
 
+  // configure Arduino LED for showing activity
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(PIN_TX, OUTPUT);
+  pinMode(PIN_RX, OUTPUT);
+  pinMode(PIN_EMERG, OUTPUT);
+  pinMode(PIN_ROM, OUTPUT);
+  
   //LEDs off at start
   digitalWrite(PIN_TX,LOW);
   digitalWrite(PIN_RX,LOW);
   digitalWrite(PIN_EMERG,LOW);
+  digitalWrite(PIN_ROM,LOW);
   
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin();
@@ -223,13 +233,6 @@ void setup(){
   MOTOR3.attach(ESC3);
   MOTOR4.attach(ESC4); 
   Serial.println("Four motors attached as servos...");
-
-  // configure Arduino LED for showing activity
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(PIN_TX, OUTPUT);
-  pinMode(PIN_RX, OUTPUT);
-  pinMode(PIN_EMERG, OUTPUT);
-  digitalWrite(PIN_EMERG, false);
   
   //Load last saved PID constant. 
   // If there is nothing to be loaded, default values from configQuadSeg.h are used.

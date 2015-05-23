@@ -86,7 +86,10 @@ int receiveData(byte* data) {
         break;
     } 
     addMSG_type_ACK = data[22];
-    addMSG_data_ACK = data[23]; 
+    addMSG_data_ACK = data[23];
+    if (addMSG_type_ACK == addMSG_type) {
+      addMSG_type = 0;  
+    }
     
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_TELEMETRY
@@ -182,7 +185,7 @@ void prepareDataToQuadcopter() {
   data_tx[11] = PID_value.asBytes[3];
   data_tx[12] = addMSG_type;
   data_tx[13] = addMSG_data;
-  addMSG_type = 0;
-  addMSG_data = 0;
+  //addMSG_type = 0;
+  //addMSG_data = 0;
 
 }

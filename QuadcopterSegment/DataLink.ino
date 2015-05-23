@@ -50,12 +50,16 @@ int receiveData(byte* data) {
         joystickMode = addMSG_data;
         break;
       case (PT_PID_CAL_SAVE):
+        digitalWrite(PIN_ROM, blinkROM);
+        blinkROM = !blinkROM;
         ROMsavePIDCalibration();
         break;
       case (PT_PID_CAL_CLEAR):
+        digitalWrite(PIN_ROM, blinkROM);
+        blinkROM = !blinkROM;
         ROMclearPIDCalibration();
         break;
-    }        
+    }
     #endif
     
     //(optional, to monitor on serial when testing)

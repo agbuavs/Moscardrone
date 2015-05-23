@@ -48,7 +48,7 @@ int ROMsavePIDCalibration() {
     EEPROM.write(DIR_PID_X_angle + 4*(i-1) + 1, double_byte.asBytes[1]);
     EEPROM.write(DIR_PID_X_angle + 4*(i-1) + 2, double_byte.asBytes[2]);
     EEPROM.write(DIR_PID_X_angle + 4*(i-1) + 3, double_byte.asBytes[3]);
-  }  
+  }
   for (i = 1; i<4; i++) {
     double_byte.asDouble = PID_Y_angle.GetValue(i);
     EEPROM.write(DIR_PID_Y_angle + 4*(i-1) + 0, double_byte.asBytes[0]);
@@ -79,7 +79,6 @@ int ROMsavePIDCalibration() {
   }
 
   EEPROM.write(DIR_PID_IS_CAL, PID_IS_CAL);
-  
   return(0);
 }
 
