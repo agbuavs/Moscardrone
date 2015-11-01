@@ -27,7 +27,7 @@ void controlEvent(ControlEvent theEvent) {
       
     if(theEvent.isGroup()) {
       PID_id = (byte)theEvent.group().value();
-      setPID_parameters(PID_id);
+      copyPID_parameters();
     }
     
     boolean PID_change = false;
@@ -110,15 +110,17 @@ public void P_up () {
 public void P_down () {  
   float value = 0;  
   value = float(PID_P.getText());
-  value = value - PID_STEP;
-  PID_P.setText(str(value));
-  if (CONNECTED) {
+  if (value > PID_STEP) {
+    value = value - PID_STEP;
+    PID_P.setText(str(value));
+    if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
      arduino.write(1); // P, I or D ?
      arduino.write(floatToByteArray(value)); 
      setPID_ackColor(1, RED);  
-  } 
+    } 
+  }
 }
 
 
@@ -139,15 +141,17 @@ public void I_up () {
 public void I_down () {  
   float value = 0;  
   value = float(PID_I.getText());
-  value = value - PID_STEP;
-  PID_I.setText(str(value));
-  if (CONNECTED) {
+  if (value > PID_STEP) {
+    value = value - PID_STEP;
+    PID_I.setText(str(value));
+    if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
      arduino.write(2); // P, I or D ?
      arduino.write(floatToByteArray(value)); 
      setPID_ackColor(2, RED);  
-  } 
+    } 
+  }
 }
 
 
@@ -168,35 +172,38 @@ public void D_up () {
 public void D_down () {  
   float value = 0;  
   value = float(PID_D.getText());
-  value = value - PID_STEP;
-  PID_D.setText(str(value));
-  if (CONNECTED) {
+  if (value > PID_STEP) {
+    value = value - PID_STEP;
+    PID_D.setText(str(value));  
+    if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
      arduino.write(3); // P, I or D ?
      arduino.write(floatToByteArray(value)); 
      setPID_ackColor(3, RED);  
-  } 
+    } 
+  }
 }
-
-
 
 
 
 //Clear PID inputs
 public void clear() {
-  cp5.get(Textfield.class,PID_P_label).clear();
-  cp5.get(Textfield.class,PID_I_label).clear();
-  cp5.get(Textfield.class,PID_D_label).clear();
+  PID_P.setText("0");
+  PID_I.setText("0");
+  PID_D.setText("0");
+}
+
+//Copy PID inputs
+public void copy() {
+  copyPID_parameters();
 }
 
 //clear PID calibration
 public void Clear_PID () {
   if (CONNECTED) {
-
         arduino.write(PT_PID_CAL_CLEAR);
-        println(PT_PID_CAL_CLEAR);   
-    
+        println(PT_PID_CAL_CLEAR);     
   } 
 }
 
@@ -360,7 +367,7 @@ public void setPID_ackColor(int PID_term, color col) {
 }
 
 
-public void setPID_parameters(int PID_id) {
+public void copyPID_parameters() {
   switch (PID_id) {
    case 1:
     PID_P.setText(PID_Xangle_P_ack.getText());

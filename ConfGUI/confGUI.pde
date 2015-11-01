@@ -335,11 +335,17 @@ void setup() {
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;  
      
-  cp5.addBang("clear")
+  cp5.addBang("copy")
      .setPosition(X_commands, Y_commands + 3*PIDboxSizeY + 4*margin)
      .setSize(80,40)
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
      ;    
+     
+  cp5.addBang("clear")
+     .setPosition(X_commands, Y_commands + 4*PIDboxSizeY + 5*margin)
+     .setSize(80,40)
+     .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+     ;
     
   cp5.addButton("Clear_Cal")
     .setValue(1)
