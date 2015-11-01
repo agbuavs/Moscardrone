@@ -6,6 +6,14 @@ import controlP5.*;
 ControlP5 cp5;
 Serial arduino;
 
+//Define colors
+color YELLOW = color(255,255,0);
+color PINK = color(255,0,255);
+color BLUE = color(0,0,255);
+color GREEN = color(0,255,0);
+color RED = color(255,0,0);
+
+
 //Define packet types between ConfGUI and Arduino
 int PT_PID_CHANGE = 100;
 int PT_JOY_MODE = 101;
@@ -56,11 +64,8 @@ controlP5.Textfield PID_X_P_ack, PID_X_I_ack, PID_X_D_ack;
 controlP5.Textfield PID_Y_P_ack, PID_Y_I_ack, PID_Y_D_ack;
 controlP5.Textfield PID_Z_P_ack, PID_Z_I_ack, PID_Z_D_ack;
 String PID_P_label = "P";
-String PID_P_ack_label = "P ack";
 String PID_I_label = "I";
-String PID_I_ack_label = "I ack";
 String PID_D_label = "D";
-String PID_D_ack_label = "D ack";
 
 DropdownList PORT_selection;
 String PORT_select_label = "PORT_selection";
@@ -68,11 +73,17 @@ int COM_PORT_id = 0;
 int numberOfPorts = 0;
 String portList [];
 
-byte joystickMode = 0; // rate=0 / angle=1
+int joystickMode = 0; // rate=0 / angle=1
+int joystickMode_ack = 0; // rate=0 / angle=1 (used to save ack received from Arduino)
 
 //PID calibration widgets
 byte PID_id = 0;
 byte PID_term = 0;
+
+//PID calibratio step by step:
+float PID_STEP = 0.001;
+
+
 
 
 void setup() {
@@ -114,7 +125,7 @@ void setup() {
                   
   // create a toggle to control angle/rate mode
   // and change the default look to a (on/off) switch look
-  cp5.addToggle("toggle")
+  cp5.addToggle("PID_mode")
      .setPosition(X_commands + PIDboxSizeX + margin,Y_commands - margin - 80)
      .setSize(50,20)
      .setValue(true)
@@ -266,6 +277,63 @@ void setup() {
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;  
+                  
+  cp5.addButton("P_up")
+    .setValue(1)
+      .setPosition(X_commands+80,Y_commands + margin)
+        .setSize(20, 20)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ; 
+  cp5.addButton("P_down")
+    .setValue(1)
+      .setPosition(X_commands+80,Y_commands + margin + 20)
+        .setSize(20, 20)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ; 
+                  
+  cp5.addButton("I_up")
+    .setValue(1)
+      .setPosition(X_commands+80,Y_commands + PIDboxSizeY + 2*margin)
+        .setSize(20, 20)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ; 
+  cp5.addButton("I_down")
+    .setValue(1)
+      .setPosition(X_commands+80,Y_commands + PIDboxSizeY + 2*margin +20)
+        .setSize(20, 20)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;
+                 
+  cp5.addButton("D_up")
+    .setValue(1)
+      .setPosition(X_commands+80,Y_commands + 2*PIDboxSizeY + 3*margin)
+        .setSize(20, 20)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ; 
+  cp5.addButton("D_down")
+    .setValue(1)
+      .setPosition(X_commands+80,Y_commands + 2*PIDboxSizeY + 3*margin +20)
+        .setSize(20, 20)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;  
      
   cp5.addBang("clear")
      .setPosition(X_commands, Y_commands + 3*PIDboxSizeY + 4*margin)
@@ -294,6 +362,10 @@ void setup() {
                   ;    
   
   textFont(font);
+  
+  PID_P.setText("0");
+  PID_I.setText("0");
+  PID_D.setText("0");
 }
 
 
@@ -314,10 +386,14 @@ void draw() {
   text("From Quad",X_feedback,Y_feedback);
   text("Joystick RC commands",margin, graphYpos - margin);
   if (joystickMode==0)
-    text("Rate Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40);
+    text("Rate Mode", X_commands + PIDboxSizeX + 100,Y_commands - margin - 60);
   else
-    text("Angle Mode",X_commands + PIDboxSizeX + margin,Y_commands - 40); 
-  
+    text("Angle Mode", X_commands + PIDboxSizeX + 100,Y_commands - margin - 60); 
+  if (joystickMode == joystickMode_ack)
+    text("OK", X_commands + PIDboxSizeX + 220,Y_commands - margin - 60); 
+  else
+    text("......", X_commands + PIDboxSizeX + 200,Y_commands - margin - 60);
+    
   //Joystick visualization 
   convert();
   drawAxis(); 

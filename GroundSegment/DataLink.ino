@@ -48,6 +48,9 @@ int receiveData(byte* data) {
         
     PID_id_ACK = data[16];
     PID_term_ACK = data[17];
+    addMSG_type_ACK = data[22];
+    addMSG_data_ACK = data[23];
+    
     switch (PID_id_ACK) {
       case 1: //Pitch PID_angle tuning
         PID_value_ACK.asBytes[0] = data[18];
@@ -85,12 +88,11 @@ int receiveData(byte* data) {
         sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
     } 
-    addMSG_type_ACK = data[22];
-    addMSG_data_ACK = data[23];
+    /*
     if (addMSG_type_ACK == addMSG_type) {
-      addMSG_type = 0;  
+      addMSG_type = 0;  //Once the ACK is received, there is no need to keep sending addMSG_type/data
     }
-    
+    */
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_TELEMETRY
       Serial.print(nseq_rx); Serial.print("\t");  
