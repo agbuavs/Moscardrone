@@ -149,8 +149,9 @@ int PIN_RX = 2; //yellow
 int PIN_EMERG = 4; //green.
 int PIN_ROM = A0; //red.
 boolean blinkABORT = false;
-double time_last_loop = 0;
-double mean_cycle_time = 0;
+unsigned long time_last_loop = 0;
+unsigned long time_current_loop = 0;
+unsigned long mean_cycle_time = 0;
 int counter = 0;
 
 //Variables used in communication with GUI
@@ -280,15 +281,22 @@ void loop(){
    
     #ifndef ESC_CALIBRATION_ON //To calibrate ESCs, no PIDs nor gyros are needed.
       if (millis() > (double)TIME_TO_ARM) { //Compute PIDs in order to get outputs
-        if (joystickMode == JOY_MODE_ANGLE) { //If rate mode, joystick X,Y commands control Gyro Rates.
+        if (joystickMode == JOY_MODE_ANGLE) {
           PID_X_angle.Compute();
           PID_Y_angle.Compute();
-          SetpointX = OutputX_angle; //This is 0 if you set Kp,Ki,Kd to 0 in angle PIDs
+          //OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
+          //OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under
+          SetpointX = OutputX_angle;
           SetpointY = OutputY_angle;
+          PID_X.Compute();
+          PID_Y.Compute();
+          PID_Z.Compute();                  
         }
-        PID_X.Compute();
-        PID_Y.Compute();
-        PID_Z.Compute();
+        if (joystickMode == JOY_MODE_RATE) { //Joystick X,Y commands control Gyro Rates 
+          PID_X.Compute();
+          PID_Y.Compute();
+          PID_Z.Compute();
+        }
       }   
       else { //Calibrate gyros
         gyroXoffset = gyroXoffset * (gyroSamples-1)/gyroSamples + gyroXrate * (1/gyroSamples);
@@ -355,19 +363,19 @@ void loop(){
   blinkState = !blinkState;
   digitalWrite(LED_PIN, blinkState);
   
-  //print time elapsed during loop. Necessary to know minimum cycle time for datalink
+  //print time elapsed during loop. Necessary to know minimum cycle time for datalink  
   #ifdef DEBUG_TIMING  
     if(counter == 1000) {    
       Serial.println(mean_cycle_time,6);
       mean_cycle_time = 0;
-      time_last_loop = millis();
       counter = 0;
     }
     else {
-      double aux = millis()-time_last_loop;
-      mean_cycle_time = mean_cycle_time + aux/1000;    
-      time_last_loop = millis();
+      double aux = time_current_loop-time_last_loop;
+      mean_cycle_time = mean_cycle_time + aux/1000;      
       counter++;
     }
   #endif
+  time_last_loop = time_current_loop; 
+  time_current_loop = millis(); 
 }

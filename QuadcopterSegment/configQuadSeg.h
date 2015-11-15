@@ -12,7 +12,7 @@
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_IMU //Configure Processing drawing sketch in accordance to see IMU data.
 //#define DEBUG_RX
-#define DEBUG_PID
+#define DEBUG_PID //Uncomment tu use "Sketch for PID calibration"
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 
@@ -65,7 +65,7 @@
 #define MAX_PWM_PID_OUTPUT -MIN_PWM_PID_OUTPUT  // (== MAX_PWM_THROTTLE - MAX_HORIZ_THROTTLE)
 
 // Gyro rate limits given by PID_angle to gyro rate PIDs
-#define MAX_ANGLE_PID_OUTPUT LIMIT_GYRO_XY_RATE //maximun rate physically reachable is +-250.
+#define MAX_ANGLE_PID_OUTPUT LIMIT_GYRO_XY_RATE //maximum rate physically reachable is +-250.
 #define MIN_ANGLE_PID_OUTPUT -MAX_ANGLE_PID_OUTPUT
 
 // ****** GYROSCOPE constants ****** //

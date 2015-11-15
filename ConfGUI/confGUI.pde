@@ -33,10 +33,11 @@ String textWarning = "";
 String textInstructions = "";
 
 //GUI items frame definition:
+int WINDOW_SIZE_X = 700;
 int margin = 20;
 int PIDboxSizeX = 100;
 int PIDboxSizeY = 40;
-int PIDackboxSizeX = 40;
+int PIDackboxSizeX = 60;
 int PIDackboxSizeY = 40;
 int X_commands = 120;
 int Y_commands = 120;
@@ -49,10 +50,10 @@ String stringY;
 String stringZ;
 String stringT;
 int graphYpos = 500; //The graphs are belowfrom Y=graphYpos
-float[] X = new float[600];
-float[] Y = new float[600];
-float[] Z = new float[600];
-float[] T = new float[600];
+float[] X = new float[WINDOW_SIZE_X];
+float[] Y = new float[WINDOW_SIZE_X];
+float[] Z = new float[WINDOW_SIZE_X];
+float[] T = new float[WINDOW_SIZE_X];
 
 //Buttons and boxes
 DropdownList PID_selection;
@@ -90,9 +91,9 @@ void setup() {
   println(Serial.list());     
   portList = Serial.list();
   
-  size(600,graphYpos+255);
+  size(WINDOW_SIZE_X,graphYpos+255);
   
-  for (int i=0;i<600;i++) { // center all variables    
+  for (int i=0;i<WINDOW_SIZE_X;i++) { // center all variables    
     X[i] = height - graphYpos/2;
     Y[i] = height - graphYpos/2;
     Z[i] = height - graphYpos/2;

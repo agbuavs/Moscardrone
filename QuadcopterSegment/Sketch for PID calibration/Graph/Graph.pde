@@ -66,6 +66,8 @@ String stringMot2;
 String stringMot3;         
 String stringMot4; 
 
+String stringCycleTime;
+
 //Graph vectors
 float[] InputX_angle = new float[WIDTH];
 float[] InputY_angle = new float[WIDTH];
@@ -96,6 +98,7 @@ float[] Mot2 = new float[WIDTH];
 float[] Mot3 = new float[WIDTH];
 float[] Mot4 = new float[WIDTH];
 
+controlP5.Textfield CycleTime; //used to monitor arduino cycle time
 
 void setup() {  
   size(WIDTH, HEIGHT);
@@ -155,13 +158,6 @@ void setup() {
             .setColorActive(#6A6A6A) 
               .setColorForeground(#AEAEAE) 
                 ;
-
-  cp5.addTextlabel("Mot1_label")
-    .setText("Mot1")
-      .setPosition(495, 20 + HEIGHT_GRAPH + 100)
-        .setColorValue(0x00000000)
-          .setFont(createFont("Georgia", 11))
-            ; 
                         
    MOT2 = cp5.addSlider("Mot2")
     .setPosition(550, 20 + HEIGHT_GRAPH)
@@ -171,13 +167,6 @@ void setup() {
             .setColorActive(#6A6A6A) 
               .setColorForeground(#AEAEAE) 
                 ;
-
-  cp5.addTextlabel("Mot2_label")
-    .setText("Mot2")
-      .setPosition(545, 20 + HEIGHT_GRAPH + 100)
-        .setColorValue(0x00000000)
-          .setFont(createFont("Georgia", 11))
-            ; 
                         
    MOT3 = cp5.addSlider("Mot3")
     .setPosition(600, 20 + HEIGHT_GRAPH)
@@ -186,14 +175,7 @@ void setup() {
           .setValue(MIN_PWM_THROTTLE)
             .setColorActive(#6A6A6A) 
               .setColorForeground(#AEAEAE) 
-                ;
-
-   cp5.addTextlabel("Mot3_label")
-    .setText("Mot3")
-      .setPosition(595, 20 + HEIGHT_GRAPH + 100)
-        .setColorValue(0x00000000)
-          .setFont(createFont("Georgia", 11))
-            ;             
+                ;            
             
     MOT4 = cp5.addSlider("Mot4")
     .setPosition(650, 20 + HEIGHT_GRAPH)
@@ -203,14 +185,16 @@ void setup() {
             .setColorActive(#6A6A6A) 
               .setColorForeground(#AEAEAE) 
                 ;
-
-   cp5.addTextlabel("Mot4_label")
-    .setText("Mot4")
-      .setPosition(645, 20 + HEIGHT_GRAPH + 100)
-        .setColorValue(0x00000000)
-          .setFont(createFont("Georgia", 11))
-            ; 
             
+            
+   CycleTime = cp5.addTextfield("CycleTime(ms)")
+     .setPosition(845, 20 + HEIGHT_GRAPH)
+     .setSize(100,20)
+     .setAutoClear(false)
+     .setFocus(true)
+     ;
+     
+     
    IX_angle = cp5.addTextlabel("X_angle_ITerm")
      .setPosition(220, 20+HEIGHT_GRAPH)
      .setSize(100,15)
@@ -257,7 +241,7 @@ void draw()
   }
   
   //Draw graphPaper
-  background(255); // white
+  background(150);
   for (int i = 0 ;i<=width/10;i++) {      
     stroke(200); // gray
     line((-frameCount%10)+i*10, 0, (-frameCount%10)+i*10, HEIGHT_GRAPH);
@@ -345,6 +329,9 @@ void draw()
   if (stringMot2 != null) MOT2.setValue(float(trim(stringMot2)));
   if (stringMot3 != null) MOT3.setValue(float(trim(stringMot3)));
   if (stringMot4 != null) MOT4.setValue(float(trim(stringMot4)));
+  
+  //Edit Cycle Time Box (cycle time would be much lower if you avoid monitoring through COM)
+  if (stringCycleTime != null) CycleTime.setText(trim(stringCycleTime));
   
   //Draw mean throttle line
   meanT = (MOT1.getValue() + MOT2.getValue() + MOT3.getValue() + MOT4.getValue())/4;

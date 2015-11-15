@@ -34,10 +34,12 @@ void initializePIDs() {
   PID_Y.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   PID_Z.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   
-  //sets the period, in Milliseconds, at which the calculation is performed
+  //Set arduino cycles elapsed between PID iterations
+  //rate PIDs are set at 1 loop cycle per sample by default (PID library)
   PID_X_angle.SetLoopsPerSample(5);
   PID_Y_angle.SetLoopsPerSample(5);
-  //rate PIDs are set at 1 loop cycle per sample by default (PID library)
+  
+  //SetSampleTime method is not used because I want the sample time to be the minimum (arduino cycle)
   /*
   PID_X_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
   PID_Y_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
@@ -221,6 +223,8 @@ void printPIDvalues() {
   Serial.print(Mot2); Serial.print("\t");
   Serial.print(Mot3); Serial.print("\t");        
   Serial.print(Mot4); Serial.print("\t");
+  
+  Serial.print(time_current_loop - time_last_loop); Serial.print("\t");
     
   Serial.print("\r\n"); 
   

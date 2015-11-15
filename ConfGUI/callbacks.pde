@@ -174,7 +174,7 @@ public void D_down () {
   value = float(PID_D.getText());
   if (value > PID_STEP) {
     value = value - PID_STEP;
-    PID_D.setText(str(value));  
+    PID_D.setText(trim(str(value)));  
     if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ

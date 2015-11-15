@@ -61,6 +61,8 @@ void serialEvent (Serial arduino) {
   stringMot3 = arduino.readStringUntil('\t');         
   stringMot4 = arduino.readStringUntil('\t');
 
+  stringCycleTime = arduino.readStringUntil('\t');
+
   arduino.clear(); // Clear buffer
 
   //printAxis(); // slows down the process and can result in error readings - use for debugging
