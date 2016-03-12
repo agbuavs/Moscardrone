@@ -10,9 +10,9 @@
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
 //They must be commented if we are using ConfGUI.
-//#define DEBUG_IMU //Configure Processing drawing sketch in accordance to see IMU data.
+#define DEBUG_IMU //Configure Processing "Sketch for IMU visualization" in accordance to see IMU data.
 //#define DEBUG_RX
-#define DEBUG_PID //Uncomment tu use "Sketch for PID calibration"
+//#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 
@@ -80,28 +80,6 @@
 #define PID_SAMPLETIME_ANGLE 25
 */
 //PID tunings by default
-/*
-#define KpX_angle 1
-#define KiX_angle 0.0
-#define KdX_angle 0.001
-#define KpY_angle 1
-#define KiY_angle 0.0
-#define KdY_angle 0.001
-#define KpX 0.5
-#define KiX 0.001
-#define KdX 0.00
-#define KpY 0.5
-#define KiY 0.001
-#define KdY 0.00
-#define KpZ 0.
-#define KiZ 0.
-#define KdZ 0.
-#define X_angle_ITerm 0
-#define Y_angle_ITerm 0
-#define X_ITerm 0
-#define Y_ITerm 0
-#define Z_ITerm 0
-*/
 #define KpX_angle 0.
 #define KiX_angle 0.
 #define KdX_angle 0.

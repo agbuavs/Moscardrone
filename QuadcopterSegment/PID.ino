@@ -59,13 +59,6 @@ void initializePIDs() {
 
 void calibratePID(unsigned char PID_id, unsigned char PID_term, double value) {
   
-  Serial.print("PID ");
-  Serial.print(PID_id);
-  Serial.print(" term ");
-  Serial.print(PID_term);
-  Serial.print(" changing to ");
-  Serial.println(value);
-  
   switch(PID_id) {
     case 1: //Pitch PID_angle tuning
       PID_X_angle.SetTuning(PID_term, value);
@@ -101,10 +94,16 @@ int computeInputs() {
   
   InputX_angle = compAngleX;
   InputY_angle = compAngleY;
+  InputX_angle = kalAngleX; //testing Kalman
+  InputY_angle = kalAngleY;
+  InputX = gyroXrate_comp - gyroXoffset;
+  InputY = gyroYrate_comp - gyroYoffset;
+  InputZ = gyroZrate_comp - gyroZoffset;
+  /*
   InputX = gyroXrate - gyroXoffset;
   InputY = gyroYrate - gyroYoffset;
   InputZ = gyroZrate - gyroZoffset;
-  
+  */
   return(0);
 }
 

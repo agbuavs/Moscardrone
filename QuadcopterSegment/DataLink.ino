@@ -27,7 +27,7 @@ int receiveData(byte* data) {
     Mirf.getData(data);
     RX_packets++;
   
-    //Assign buffer data to PID inputs
+    //Assign buffer data to global variables
     ID_remote = int(data[0]);
     nseq_rx = int(data[1]);
     joy_x = int(data[2]);

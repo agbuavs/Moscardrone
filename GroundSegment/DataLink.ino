@@ -51,6 +51,8 @@ int receiveData(byte* data) {
     addMSG_type_ACK = data[22];
     addMSG_data_ACK = data[23];
     
+    sendAckToGUI(11, 0, 0);
+    
     switch (PID_id_ACK) {
       case 1: //Pitch PID_angle tuning
         PID_value_ACK.asBytes[0] = data[18];
@@ -88,11 +90,12 @@ int receiveData(byte* data) {
         sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
     } 
-    /*
+    
+    //Once the ACK is received, there is no need to keep sending addMSG_type/data
     if (addMSG_type_ACK == addMSG_type) {
-      addMSG_type = 0;  //Once the ACK is received, there is no need to keep sending addMSG_type/data
+      addMSG_type = 0;  
     }
-    */
+    
     //(optional, to monitor on serial when testing)
     #ifdef DEBUG_TELEMETRY
       Serial.print(nseq_rx); Serial.print("\t");  
@@ -187,7 +190,4 @@ void prepareDataToQuadcopter() {
   data_tx[11] = PID_value.asBytes[3];
   data_tx[12] = addMSG_type;
   data_tx[13] = addMSG_data;
-  //addMSG_type = 0;
-  //addMSG_data = 0;
-
 }

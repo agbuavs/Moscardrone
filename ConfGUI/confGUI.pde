@@ -34,13 +34,13 @@ String textInstructions = "";
 
 //GUI items frame definition:
 int WINDOW_SIZE_X = 700;
-int margin = 20;
+int margin = 5;
 int PIDboxSizeX = 100;
-int PIDboxSizeY = 40;
+int PIDboxSizeY = 30;
 int PIDackboxSizeX = 60;
-int PIDackboxSizeY = 40;
+int PIDackboxSizeY = 30;
 int X_commands = 120;
-int Y_commands = 120;
+int Y_commands = 70;
 int X_feedback = X_commands + PIDboxSizeX + margin;
 int Y_feedback = Y_commands;
 
@@ -49,7 +49,7 @@ String stringX;
 String stringY;
 String stringZ;
 String stringT;
-int graphYpos = 500; //The graphs are belowfrom Y=graphYpos
+int graphYpos = 250; //The graphs are belowfrom Y=graphYpos
 float[] X = new float[WINDOW_SIZE_X];
 float[] Y = new float[WINDOW_SIZE_X];
 float[] Z = new float[WINDOW_SIZE_X];
@@ -92,6 +92,7 @@ void setup() {
   portList = Serial.list();
   
   size(WINDOW_SIZE_X,graphYpos+255);
+  frame.setResizable(true);
   
   for (int i=0;i<WINDOW_SIZE_X;i++) { // center all variables    
     X[i] = height - graphYpos/2;
@@ -110,14 +111,15 @@ void setup() {
   
   // create a DropdownList for COM port selection        
   PORT_selection = cp5.addDropdownList(PORT_select_label)
-    .setPosition(margin, margin)
+    .setPosition(margin, margin + 15)
         ;
   customizeCOMselection(PORT_selection);
   
   cp5.addButton("CONNECT")
     .setValue(1)
-      .setPosition(20, 100 + margin)          //posición del botón
-        .setSize(90, 40)              //tamaño del botón
+      .setPosition(X_commands, margin)
+      //.setPosition(20, 100 + margin)          //posición del botón
+        .setSize(PIDboxSizeX, PIDboxSizeY)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -127,17 +129,17 @@ void setup() {
   // create a toggle to control angle/rate mode
   // and change the default look to a (on/off) switch look
   cp5.addToggle("PID_mode")
-     .setPosition(X_commands + PIDboxSizeX + margin,Y_commands - margin - 80)
-     .setSize(50,20)
+     .setPosition(X_commands + PIDboxSizeX + margin, margin)
+     .setSize(40,20)
      .setValue(true)
      .setMode(ControlP5.SWITCH)
      ;
   
   // create a DropdownList for PID identifier selection
   PID_selection = cp5.addDropdownList(PID_select_label)
-          .setPosition(X_commands, Y_commands - margin - 80)
-          ;
-          
+          //.setPosition(X_commands, Y_commands - margin - 80)
+          .setPosition(margin, Y_commands + 70)
+          ;          
   customize(PID_selection);
   
   PID_P = cp5.addTextfield(PID_P_label)
@@ -262,7 +264,7 @@ void setup() {
   cp5.addButton("Clear_PID")
     .setValue(1)
       .setPosition(X_commands + PIDboxSizeX + 5*PIDackboxSizeX + 2*margin ,Y_commands + margin)   //posición del botón
-        .setSize(90, 40)              //tamaño del botón
+        .setSize(PIDboxSizeX, PIDboxSizeY)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -272,7 +274,7 @@ void setup() {
   cp5.addButton("Save_PID")
     .setValue(1)
       .setPosition(X_commands + PIDboxSizeX + 5*PIDackboxSizeX + 2*margin ,Y_commands + PIDackboxSizeY + 2*margin)          //posición del botón
-        .setSize(90, 40)              //tamaño del botón
+        .setSize(PIDboxSizeX, PIDboxSizeY)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -282,7 +284,7 @@ void setup() {
   cp5.addButton("P_up")
     .setValue(1)
       .setPosition(X_commands+80,Y_commands + margin)
-        .setSize(20, 20)              //tamaño del botón
+        .setSize(20, 10)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -291,7 +293,7 @@ void setup() {
   cp5.addButton("P_down")
     .setValue(1)
       .setPosition(X_commands+80,Y_commands + margin + 20)
-        .setSize(20, 20)              //tamaño del botón
+        .setSize(20, 10)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -301,7 +303,7 @@ void setup() {
   cp5.addButton("I_up")
     .setValue(1)
       .setPosition(X_commands+80,Y_commands + PIDboxSizeY + 2*margin)
-        .setSize(20, 20)              //tamaño del botón
+        .setSize(20, 10)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -310,7 +312,7 @@ void setup() {
   cp5.addButton("I_down")
     .setValue(1)
       .setPosition(X_commands+80,Y_commands + PIDboxSizeY + 2*margin +20)
-        .setSize(20, 20)              //tamaño del botón
+        .setSize(20, 10)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -320,7 +322,7 @@ void setup() {
   cp5.addButton("D_up")
     .setValue(1)
       .setPosition(X_commands+80,Y_commands + 2*PIDboxSizeY + 3*margin)
-        .setSize(20, 20)              //tamaño del botón
+        .setSize(20, 10)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -329,7 +331,7 @@ void setup() {
   cp5.addButton("D_down")
     .setValue(1)
       .setPosition(X_commands+80,Y_commands + 2*PIDboxSizeY + 3*margin +20)
-        .setSize(20, 20)              //tamaño del botón
+        .setSize(20, 10)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -338,20 +340,20 @@ void setup() {
      
   cp5.addBang("copy")
      .setPosition(X_commands, Y_commands + 3*PIDboxSizeY + 4*margin)
-     .setSize(80,40)
+     .setSize(PIDboxSizeX/2, PIDboxSizeY)
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
      ;    
      
   cp5.addBang("clear")
-     .setPosition(X_commands, Y_commands + 4*PIDboxSizeY + 5*margin)
-     .setSize(80,40)
+     .setPosition(X_commands + PIDboxSizeX/2 + margin, Y_commands + 3*PIDboxSizeY + 4*margin)
+     .setSize(PIDboxSizeX/2, PIDboxSizeY)
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
      ;
     
   cp5.addButton("Clear_Cal")
     .setValue(1)
-      .setPosition(300, graphYpos - 40 -margin)          //posición del botón
-        .setSize(90, 40)              //tamaño del botón
+      .setPosition(300, graphYpos - PIDboxSizeY)          //posición del botón
+        .setSize(PIDboxSizeX, PIDboxSizeY)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -360,8 +362,8 @@ void setup() {
                   
   cp5.addButton("Save_Cal")
     .setValue(1)
-      .setPosition(400, graphYpos - 40 -margin)          //posición del botón
-        .setSize(90, 40)              //tamaño del botón
+      .setPosition(420, graphYpos - PIDboxSizeY)          //posición del botón
+        .setSize(PIDboxSizeX, PIDboxSizeY)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
@@ -393,13 +395,13 @@ void draw() {
   text("From Quad",X_feedback,Y_feedback);
   text("Joystick RC commands",margin, graphYpos - margin);
   if (joystickMode==0)
-    text("Rate Mode", X_commands + PIDboxSizeX + 100,Y_commands - margin - 60);
+    text("Rate Mode", X_commands + PIDboxSizeX + 100, margin + PIDboxSizeY);
   else
-    text("Angle Mode", X_commands + PIDboxSizeX + 100,Y_commands - margin - 60); 
+    text("Angle Mode", X_commands + PIDboxSizeX + 100, margin + PIDboxSizeY); 
   if (joystickMode == joystickMode_ack)
-    text("OK", X_commands + PIDboxSizeX + 220,Y_commands - margin - 60); 
+    text("OK", X_commands + PIDboxSizeX + 220, margin + PIDboxSizeY); 
   else
-    text("......", X_commands + PIDboxSizeX + 200,Y_commands - margin - 60);
+    text("......", X_commands + PIDboxSizeX + 200, margin + PIDboxSizeY);
     
   //Joystick visualization 
   convert();

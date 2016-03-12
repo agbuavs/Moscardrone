@@ -86,14 +86,14 @@ void draw()
   
   convert();
   //drawAxisX();
-  //drawAxisY();
+  drawAxisY();
   //drawAxisZ(); //not used
-  drawGyroRate();
+  //drawGyroRate();
 }
 
 void serialEvent (Serial arduino) {
   // get the ASCII strings:
-  /*
+  
   stringGyroX = arduino.readStringUntil('\t');
   stringGyroY = arduino.readStringUntil('\t');
   stringGyroZ = arduino.readStringUntil('\t');
@@ -101,15 +101,15 @@ void serialEvent (Serial arduino) {
   stringAccX = arduino.readStringUntil('\t');
   stringAccY = arduino.readStringUntil('\t');
   stringAccZ = arduino.readStringUntil('\t');
-  */
+  
   stringCompX = arduino.readStringUntil('\t');
   stringCompY = arduino.readStringUntil('\t'); 
   stringCompZ = arduino.readStringUntil('\t');
-  /*
+  
   stringKalmanX = arduino.readStringUntil('\t');
   stringKalmanY = arduino.readStringUntil('\t');
   stringKalmanZ = arduino.readStringUntil('\t');
-  */
+  
   stringGyroRateX = arduino.readStringUntil('\t');
   stringGyroRateY = arduino.readStringUntil('\t');
   stringGyroRateZ = arduino.readStringUntil('\t');

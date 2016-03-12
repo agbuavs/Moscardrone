@@ -65,6 +65,7 @@ void receiveDataFromGUI() {
 
 
 void sendAckToGUI(byte id, byte term, float value) {
+  
   Serial.print(id);     Serial.print(" ");
   Serial.print(term);   Serial.print(" ");
   Serial.print(value,4); 
@@ -82,6 +83,5 @@ void send4ValuesToGUI(byte x, byte y, byte z, byte t) {
   Serial.print(x); Serial.print(" ");        
   Serial.print(y); Serial.print(" ");
   Serial.print(z); Serial.print(" ");
-  Serial.print(t); Serial.println(" ");
-  
+  Serial.print(t); Serial.println(" ");  
 }

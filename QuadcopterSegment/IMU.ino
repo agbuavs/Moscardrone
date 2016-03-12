@@ -14,6 +14,11 @@ int computeIMU() {
   gyroYrate = -((double)gyroY / 131.0);
   gyroZrate = -((double)gyroZ / 131.0);
 
+  //agb:gyroscope complementary filtering to avoid high frequency peaks due to vibration
+  gyroXrate_comp = 0.9 * gyroXrate_comp + 0.1 * gyroXrate;
+  gyroYrate_comp = 0.9 * gyroYrate_comp + 0.1 * gyroYrate;
+  gyroZrate_comp = 0.9 * gyroZrate_comp + 0.1 * gyroZrate;
+
   gyroXangle += gyroXrate * ((double)(micros() - timer) / 1000000); // Calculate gyro angle without any filter
   gyroYangle += gyroYrate * ((double)(micros() - timer) / 1000000);
   gyroZangle += gyroZrate * ((double)(micros() - timer) / 1000000);
@@ -24,16 +29,16 @@ int computeIMU() {
   compAngleX = (0.93 * (compAngleX + (gyroXrate * (double)(micros() - timer) / 1000000))) + (0.07 * accXangle); // Calculate the angle using a Complimentary filter
   compAngleY = (0.93 * (compAngleY + (gyroYrate * (double)(micros() - timer) / 1000000))) + (0.07 * accYangle);
   compAngleZ = (0.93 * (compAngleZ + (gyroZrate * (double)(micros() - timer) / 1000000))) + (0.07 * accZangle);
-  //kalAngleX = kalmanX.getAngle(accXangle, gyroXrate, (double)(micros() - timer) / 1000000); // Calculate the angle using a Kalman filter
-  //kalAngleY = kalmanY.getAngle(accYangle, gyroYrate, (double)(micros() - timer) / 1000000);
-  //kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate, (double)(micros() - timer) / 1000000);
+  kalAngleX = kalmanX.getAngle(accXangle, gyroXrate, (double)(micros() - timer) / 1000000); // Calculate the angle using a Kalman filter
+  kalAngleY = kalmanY.getAngle(accYangle, gyroYrate, (double)(micros() - timer) / 1000000);
+  kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate, (double)(micros() - timer) / 1000000);
   
   timer = micros();
   temp = ((double)tempRaw + 12412.0) / 340.0;
   
   // display tab-separated accel/gyro x/y/z values. Must be the same number as input readings in Processing.
   #ifdef DEBUG_IMU //These values can be monitored with Graph (Processing sketch)
-    /*
+    
     Serial.print(gyroXangle); Serial.print("\t");
     Serial.print(gyroYangle); Serial.print("\t");
     Serial.print(gyroZangle); Serial.print("\t");    
@@ -41,14 +46,14 @@ int computeIMU() {
     Serial.print(accXangle); Serial.print("\t");
     Serial.print(accYangle); Serial.print("\t");
     Serial.print(accZangle); Serial.print("\t");
-    */
+    
     Serial.print(compAngleX); Serial.print("\t");
     Serial.print(compAngleY); Serial.print("\t");
     Serial.print(compAngleZ); Serial.print("\t");
     
-    //Serial.print(kalAngleY); Serial.print("\t");
-    //Serial.print(kalAngleX); Serial.print("\t");
-    //Serial.print(kalAngleZ); Serial.print("\t");   
+    Serial.print(kalAngleX); Serial.print("\t");
+    Serial.print(kalAngleY); Serial.print("\t");
+    Serial.print(kalAngleZ); Serial.print("\t");   
     
     Serial.print(gyroXrate); Serial.print("\t"); //Print gyro rotating rate
     Serial.print(gyroYrate); Serial.print("\t"); //Print gyro rotating rate

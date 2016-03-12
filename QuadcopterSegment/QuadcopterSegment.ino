@@ -47,6 +47,7 @@
 #include <Mirf.h>
 #include <nRF24L01.h>
 #include <MirfHardwareSpiDriver.h>
+#include <Kalman.h>
 
 // The following libraries must be installed to use MPU6050 module
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation is used in I2Cdev.h
@@ -97,14 +98,15 @@ int16_t accX, accY, accZ;
 int16_t tempRaw;
 int16_t gyroX, gyroY, gyroZ;
 // Kalman instances (not used yet)
-//Kalman kalmanX;
-//Kalman kalmanY;
-//Kalman kalmanZ;
+Kalman kalmanX;
+Kalman kalmanY;
+Kalman kalmanZ;
 
 // Variables to process IMU data
 double accXangle, accYangle, accZangle; // Angle calculate using the accelerometer
 double temp; // Temperature
 double gyroXrate, gyroYrate, gyroZrate; // Gyroscope changing rate
+double gyroXrate_comp, gyroYrate_comp, gyroZrate_comp;
 double gyroXoffset, gyroYoffset, gyroZoffset; //Gyroscope rate measure when quad isn't moving. Get values on startup
 double gyroSamples = 1; //aux variable used to calculate average gyro noise while arming motors.
 double gyroXangle, gyroYangle,  gyroZangle; // Angle calculate using the gyro
@@ -151,7 +153,8 @@ int PIN_ROM = A0; //red.
 boolean blinkABORT = false;
 unsigned long time_last_loop = 0;
 unsigned long time_current_loop = 0;
-unsigned long mean_cycle_time = 0;
+unsigned long time_loop_aux = 0;
+unsigned long mean_loop_time = 0;
 int counter = 0;
 
 //Variables used in communication with GUI
@@ -281,15 +284,17 @@ void loop(){
    
     #ifndef ESC_CALIBRATION_ON //To calibrate ESCs, no PIDs nor gyros are needed.
       if (millis() > (double)TIME_TO_ARM) { //Compute PIDs in order to get outputs
-        if (joystickMode == JOY_MODE_ANGLE) {
+        if (joystickMode == JOY_MODE_ANGLE) {//Joystick X,Y commands control pitch,roll Angles
           PID_X_angle.Compute();
           PID_Y_angle.Compute();
-          //OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
-          //OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under
+          OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
+          OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
+          /*
           SetpointX = OutputX_angle;
           SetpointY = OutputY_angle;
           PID_X.Compute();
           PID_Y.Compute();
+          */
           PID_Z.Compute();                  
         }
         if (joystickMode == JOY_MODE_RATE) { //Joystick X,Y commands control Gyro Rates 
@@ -303,12 +308,6 @@ void loop(){
         gyroYoffset = gyroYoffset * (gyroSamples-1)/gyroSamples + gyroYrate * (1/gyroSamples);
         gyroZoffset = gyroZoffset * (gyroSamples-1)/gyroSamples + gyroZrate * (1/gyroSamples);
         gyroSamples++;
-        /*
-        Serial.print(gyroXrate); Serial.print("\t");
-        Serial.print(gyroSamples); Serial.print("\t");
-        Serial.print(gyroXoffset); Serial.print("\t");
-        Serial.print("\r\n");
-        */
       }
     #endif
     
@@ -365,14 +364,14 @@ void loop(){
   
   //print time elapsed during loop. Necessary to know minimum cycle time for datalink  
   #ifdef DEBUG_TIMING  
-    if(counter == 1000) {    
-      Serial.println(mean_cycle_time,6);
-      mean_cycle_time = 0;
+    if(counter == 10) {    
+      Serial.println(mean_loop_time,6);
+      mean_loop_time = 0;
       counter = 0;
     }
     else {
-      double aux = time_current_loop-time_last_loop;
-      mean_cycle_time = mean_cycle_time + aux/1000;      
+      time_loop_aux = time_current_loop - time_last_loop;
+      mean_loop_time = mean_loop_time + time_loop_aux/10;      
       counter++;
     }
   #endif

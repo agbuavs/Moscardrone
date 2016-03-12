@@ -240,7 +240,14 @@ void serialEvent(Serial arduino)
   arduino.clear();
   String[] s = split(read, " ");
   println(read);
+  
+  //Manage Rate/Angle mode changes acknowledgement
+  if (parseInt(s[0]) == 11) {
+    if (parseInt(s[3]) == PT_JOY_MODE)
+       joystickMode_ack = parseInt(s[4]);
+  }
 
+  //Manage PID changes acknowledgements
   switch (parseInt(s[0])) {
     case 1:
       if (parseInt(s[1])==1) {
@@ -255,9 +262,6 @@ void serialEvent(Serial arduino)
         PID_Xangle_D_ack.setText(s[2]);
         PID_Xangle_D_ack.setColorBackground(BLUE);
       }
-      //The following 2 lines should not be inside this switch-case.
-      if (parseInt(s[3]) == PT_JOY_MODE)
-       joystickMode_ack = parseInt(s[4]);
       break;
       
     case 2:
