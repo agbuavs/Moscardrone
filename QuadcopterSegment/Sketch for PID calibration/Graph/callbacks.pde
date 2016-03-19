@@ -1,5 +1,5 @@
 public void CONNECT(int theValue) {
-  if (millis()>10000)
+  if (millis()>1000)
   {
     arduino = new Serial(this, Serial.list()[COM_PORT_id], 115200);
     arduino.bufferUntil('\n');

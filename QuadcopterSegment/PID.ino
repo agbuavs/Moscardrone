@@ -92,10 +92,10 @@ int computeInputs() {
   double InputX_angle, InputY_angle, InputX, InputY, InputZ;
   */
   
-  InputX_angle = compAngleX;
+  InputX_angle = compAngleX; //using Complementary filter
   InputY_angle = compAngleY;
-  InputX_angle = kalAngleX; //testing Kalman
-  InputY_angle = kalAngleY;
+  //InputX_angle = kalAngleX; //using Kalman filter
+  //InputY_angle = kalAngleY;
   InputX = gyroXrate_comp - gyroXoffset;
   InputY = gyroYrate_comp - gyroYoffset;
   InputZ = gyroZrate_comp - gyroZoffset;

@@ -2,7 +2,7 @@ public void CONNECT(int theValue) {
   if (millis()>10000)
   {
     CONNECTED = true;
-    arduino = new Serial(this, Serial.list()[COM_PORT_id], 115200);
+    arduino = new Serial(this, Serial.list()[COM_PORT_id], 9600);
     arduino.bufferUntil('\n');
   }
 }

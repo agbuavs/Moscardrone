@@ -119,7 +119,7 @@ byte addMSG_data_ACK = 0;
 
 void setup(){
   //General settings
-  Serial.begin(115200);
+  Serial.begin(9600);//115200);
    
   //LEDs off at start
   digitalWrite(PIN_TX,LOW);

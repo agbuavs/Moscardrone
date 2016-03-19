@@ -279,6 +279,11 @@ void loop(){
   //Do necessary calculations on received data to get PIDs setpoints
   computeSetpoints(); //Take care of data format sent by RC. Look into GroundSegment code.
   
+  //IMU calibration
+  if (!IMU_calibrated) {
+    //currently, the only calibration is done is for Gyro during TIME_TO_ARM (see next piece of code)
+  }
+  
   //PID calculations 
   if (IMU_calibrated) { //IMU DEFINED as 1. IMU CALIBRATION PROCESS NOT IMPLEMENTED!
    
@@ -287,14 +292,15 @@ void loop(){
         if (joystickMode == JOY_MODE_ANGLE) {//Joystick X,Y commands control pitch,roll Angles
           PID_X_angle.Compute();
           PID_Y_angle.Compute();
+          /*
           OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
           OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
-          /*
+          */
           SetpointX = OutputX_angle;
           SetpointY = OutputY_angle;
           PID_X.Compute();
           PID_Y.Compute();
-          */
+          //*/
           PID_Z.Compute();                  
         }
         if (joystickMode == JOY_MODE_RATE) { //Joystick X,Y commands control Gyro Rates 
@@ -310,7 +316,7 @@ void loop(){
         gyroSamples++;
       }
     #endif
-    
+      
     #ifdef DEBUG_PID
       printPIDvalues(); //Here, Mot values are not truncated yet.
     #endif

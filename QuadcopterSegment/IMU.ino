@@ -55,9 +55,12 @@ int computeIMU() {
     Serial.print(kalAngleY); Serial.print("\t");
     Serial.print(kalAngleZ); Serial.print("\t");   
     
-    Serial.print(gyroXrate); Serial.print("\t"); //Print gyro rotating rate
-    Serial.print(gyroYrate); Serial.print("\t"); //Print gyro rotating rate
-    Serial.print(gyroZrate); Serial.print("\t"); //Print gyro rotating rate
+    //Serial.print(gyroXrate-gyroXoffset); Serial.print("\t");
+    //Serial.print(gyroYrate-gyroYoffset); Serial.print("\t");
+    //Serial.print(gyroZrate-gyroZoffset); Serial.print("\t");
+    Serial.print(gyroXrate_comp-gyroXoffset); Serial.print("\t");
+    Serial.print(gyroYrate_comp-gyroYoffset); Serial.print("\t");
+    Serial.print(gyroZrate_comp-gyroZoffset); Serial.print("\t");
     //Serial.print(temp);Serial.print("\t"); 
     Serial.print("\r\n");    
   #endif

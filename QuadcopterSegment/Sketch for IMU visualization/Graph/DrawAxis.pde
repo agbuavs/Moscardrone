@@ -87,6 +87,18 @@ void drawAxisX() {
   // put all data one array back
   for(int i = 1; i<kalmanX.length;i++)
     kalmanX[i-1] = kalmanX[i];
+    
+  /* draw gyroRate x-axis */
+  noFill();
+  stroke(100,0,100); // purple
+  // redraw everything
+  beginShape();
+  for(int i = 0; i<gyroRateX.length;i++)
+    vertex(i,gyroRateX[i]);
+  endShape();
+  // put all data one array back
+  for(int i = 1; i<gyroRateX.length;i++)
+   gyroRateX[i-1] = gyroRateX[i];
 }
 
 
@@ -138,6 +150,19 @@ void drawAxisY() {
   //put all data one array back
   for(int i = 1; i<kalmanY.length;i++)
     kalmanY[i-1] = kalmanY[i];
+    
+    
+  /* draw gyroRate y-axis */
+  noFill();
+  stroke(100,0,100); // purple
+  // redraw everything
+  beginShape();
+  for(int i = 0; i<gyroRateY.length;i++)
+    vertex(i,gyroRateY[i]);
+  endShape();
+  // put all data one array back
+  for(int i = 1; i<gyroRateY.length;i++)
+   gyroRateY[i-1] = gyroRateY[i];
 }    
 
 
@@ -189,4 +214,16 @@ void drawAxisZ() {
   //put all data one array back
   for(int i = 1; i<kalmanZ.length;i++)
     kalmanZ[i-1] = kalmanZ[i];
+    
+  /* draw gyroRate z-axis */
+  noFill();
+  stroke(100,0,100); // purple
+  // redraw everything
+  beginShape();
+  for(int i = 0; i<gyroRateZ.length;i++)
+    vertex(i,gyroRateZ[i]);
+  endShape();
+  // put all data one array back
+  for(int i = 1; i<gyroRateZ.length;i++)
+   gyroRateZ[i-1] = gyroRateZ[i];
 }

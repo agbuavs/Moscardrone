@@ -33,7 +33,7 @@ String textWarning = "";
 String textInstructions = "";
 
 //GUI items frame definition:
-int WINDOW_SIZE_X = 700;
+int WINDOW_SIZE_X = 650;
 int margin = 5;
 int PIDboxSizeX = 100;
 int PIDboxSizeY = 30;
@@ -92,7 +92,7 @@ void setup() {
   portList = Serial.list();
   
   size(WINDOW_SIZE_X,graphYpos+255);
-  frame.setResizable(true);
+  //frame.setResizable(true);
   
   for (int i=0;i<WINDOW_SIZE_X;i++) { // center all variables    
     X[i] = height - graphYpos/2;

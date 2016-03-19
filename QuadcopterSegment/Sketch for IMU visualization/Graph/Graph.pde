@@ -60,8 +60,7 @@ void setup() {
     compZ[i] = height/2;
     kalmanX[i] = height/2; 
     kalmanY[i] = height/2;
-    kalmanZ[i] = height/2;
-    
+    kalmanZ[i] = height/2;    
     gyroRateX[i] = height/2;
     gyroRateY[i] = height/2;
     gyroRateZ[i] = height/2;

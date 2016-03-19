@@ -10,9 +10,9 @@
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
 //They must be commented if we are using ConfGUI.
-#define DEBUG_IMU //Configure Processing "Sketch for IMU visualization" in accordance to see IMU data.
+//#define DEBUG_IMU //Uncomment to use "Sketch for IMU visualization". Change code to select IMU data to see.
 //#define DEBUG_RX
-//#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
+#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 
