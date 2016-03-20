@@ -69,19 +69,19 @@ String stringMot4;
 String stringCycleTime;
 
 //Graph vectors
-float[] InputX_angle = new float[WIDTH];
+float[] InputX_angle = new float[WIDTH]; //to be painted in RED
 float[] InputY_angle = new float[WIDTH];
 float[] InputX = new float[WIDTH];
 float[] InputY = new float[WIDTH];
 float[] InputZ = new float[WIDTH];
 
-float[] SetpointX_angle = new float[WIDTH];
+float[] SetpointX_angle = new float[WIDTH]; //to be painted in BLUE
 float[] SetpointY_angle = new float[WIDTH];
 float[] SetpointX = new float[WIDTH];
 float[] SetpointY = new float[WIDTH];
 float[] SetpointZ = new float[WIDTH];
 
-float[] OutputX_angle = new float[WIDTH];
+float[] OutputX_angle = new float[WIDTH]; //to be painted in GREEN
 float[] OutputY_angle = new float[WIDTH];
 float[] OutputX = new float[WIDTH];
 float[] OutputY = new float[WIDTH];
@@ -257,9 +257,9 @@ void draw()
     line(0, HEIGHT_GRAPH/4*i, width, HEIGHT_GRAPH/4*i); 
     
   //Color definitions
-  int[] BLUE = new int[3]; BLUE[0] = 255; BLUE[1] = 0; BLUE[2] = 0;
+  int[] BLUE = new int[3]; BLUE[0] = 0; BLUE[1] = 0; BLUE[2] = 255;
   int[] GREEN = new int[3]; GREEN[0] = 0; GREEN[1] = 255; GREEN[2] = 0;
-  int[] RED = new int[3]; RED[0] = 0; RED[1] = 0; RED[2] = 255;
+  int[] RED = new int[3]; RED[0] = 255; RED[1] = 0; RED[2] = 0;
   
   
   //convertAll();
@@ -286,33 +286,33 @@ void draw()
   //PID Graphs
   switch(PID_id) {  
     case 1:  //CASE Pitch angle
-      drawX(InputX_angle,BLUE);
-      drawX(SetpointX_angle,GREEN);
-      drawX(OutputX_angle,RED);
+      drawX(InputX_angle,RED);
+      drawX(SetpointX_angle,BLUE);
+      drawX(OutputX_angle,GREEN);
       break;
     
     case 2://CASE Roll angle
-      drawX(InputY_angle,BLUE);
-      drawX(SetpointY_angle,GREEN);
-      drawX(OutputY_angle,RED);
+      drawX(InputY_angle,RED);
+      drawX(SetpointY_angle,BLUE);
+      drawX(OutputY_angle,GREEN);
       break;
   
     case 3: //CASE Pitch gyro rate
-      drawX(InputX,BLUE);
-      drawX(SetpointX,GREEN);
-      drawX(OutputX,RED);
+      drawX(InputX,RED);
+      drawX(SetpointX,BLUE);
+      drawX(OutputX,GREEN);
       break;
   
     case 4: //CASE Roll gyro rate
-      drawX(InputY,BLUE);
-      drawX(SetpointY,GREEN);
-      drawX(OutputY,RED);
+      drawX(InputY,RED);
+      drawX(SetpointY,BLUE);
+      drawX(OutputY,GREEN);
       break;
       
     case 5: //CASE Yaw gyro rate
-      drawX(InputZ,BLUE);
-      drawX(SetpointZ,GREEN);
-      drawX(OutputZ,RED);
+      drawX(InputZ,RED);
+      drawX(SetpointZ,BLUE);
+      drawX(OutputZ,GREEN);
       break;
   }
   

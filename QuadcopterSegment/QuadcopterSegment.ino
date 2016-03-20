@@ -21,11 +21,11 @@
   It receives commands for pitch, roll, yaw and throttle, which have been calculated on ground station
   from 4 joystick potentiometer measurements.
     Pitch & roll are angle setpoints for PIDs
-    Yaw is a gyroscope change rate setpoint for PID
-    Throttle is the mean power for the 4 motors. 
+    Yaw is angle velocity setpoint for PID
+    Throttle is the mean power command for the 4 motors. 
       (Throttle for each motor will be calculated from mean throttle command and 3 PIDs outputs)
       
-  PID default constants are defined in configQuadSeg.h but they can be tuned remotely 
+  PID default constants are defined in configQuadSeg.h but they can be tuned remotely and stored in ROM 
   (using serial port on Ground Segment board) once your quadcopter had been turned on (see DataLink code).
 
 */
