@@ -82,7 +82,9 @@ byte PID_id = 0;
 byte PID_term = 0;
 
 //PID calibratio step by step:
-float PID_STEP = 0.001;
+float PID_STEP_P = 0.1;
+float PID_STEP_I = 0.0001;
+float PID_STEP_D = 0.1;
 
 
 

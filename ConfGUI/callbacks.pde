@@ -96,8 +96,8 @@ void PID_mode(boolean theFlag) {
 public void P_up () {  
   float value = 0;  
   value = float(PID_P.getText());
-  value = value + PID_STEP;
-  PID_P.setText(str(value));
+  value = value + PID_STEP_P;
+  PID_P.setText(trim(str(value)));
   if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
@@ -110,9 +110,9 @@ public void P_up () {
 public void P_down () {  
   float value = 0;  
   value = float(PID_P.getText());
-  if (value > PID_STEP) {
-    value = value - PID_STEP;
-    PID_P.setText(str(value));
+  if (value > PID_STEP_P) {
+    value = value - PID_STEP_P;
+    PID_P.setText(trim(str(value)));
     if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
@@ -127,8 +127,8 @@ public void P_down () {
 public void I_up () {  
   float value = 0;  
   value = float(PID_I.getText());
-  value = value + PID_STEP;
-  PID_I.setText(str(value));
+  value = value + PID_STEP_I;
+  PID_I.setText(trim(str(value)));
   if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
@@ -141,9 +141,9 @@ public void I_up () {
 public void I_down () {  
   float value = 0;  
   value = float(PID_I.getText());
-  if (value > PID_STEP) {
-    value = value - PID_STEP;
-    PID_I.setText(str(value));
+  if (value > PID_STEP_I) {
+    value = value - PID_STEP_I;
+    PID_I.setText(trim(str(value)));
     if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
@@ -158,8 +158,8 @@ public void I_down () {
 public void D_up () {  
   float value = 0;  
   value = float(PID_D.getText());
-  value = value + PID_STEP;
-  PID_D.setText(str(value));
+  value = value + PID_STEP_D;
+  PID_D.setText(trim(str(value)));
   if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
      arduino.write(PID_id);   // angleX, angleY, rateX, rateY or rateZ
@@ -172,8 +172,8 @@ public void D_up () {
 public void D_down () {  
   float value = 0;  
   value = float(PID_D.getText());
-  if (value > PID_STEP) {
-    value = value - PID_STEP;
+  if (value > PID_STEP_D) {
+    value = value - PID_STEP_D;
     PID_D.setText(trim(str(value)));  
     if (CONNECTED) {
      arduino.write(PT_PID_CHANGE);
