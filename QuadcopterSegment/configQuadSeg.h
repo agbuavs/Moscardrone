@@ -12,7 +12,7 @@
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_IMU //Uncomment to use "Sketch for IMU visualization". Change code to select IMU data to see.
 //#define DEBUG_RX
-#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
+//#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 
@@ -36,7 +36,7 @@
 #define MAX_PITCH_ANGLE 210
 #define MIN_ROLL_ANGLE 150
 #define MAX_ROLL_ANGLE 210
-#define LIMIT_GYRO_XY_RATE 100
+#define LIMIT_GYRO_XY_RATE 200
 #define LIMIT_GYRO_Z_RATE 100
 
 

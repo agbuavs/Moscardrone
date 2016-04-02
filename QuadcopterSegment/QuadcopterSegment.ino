@@ -84,6 +84,7 @@ double SetpointY_angle, InputY_angle, OutputY_angle;
 double SetpointX, InputX, OutputX;
 double SetpointY, InputY, OutputY;
 double SetpointZ, InputZ, OutputZ;
+int first_angle_computation = 0;
 
 //Specify the links and initial tuning parameters
 PID PID_X_angle(&InputX_angle, &OutputX_angle, &SetpointX_angle, KpX_angle, KiX_angle, KdX_angle, DIRECT);
@@ -97,7 +98,7 @@ MPU6050 accelgyro;
 int16_t accX, accY, accZ;
 int16_t tempRaw;
 int16_t gyroX, gyroY, gyroZ;
-// Kalman instances (not used yet)
+// Kalman instances
 Kalman kalmanX;
 Kalman kalmanY;
 Kalman kalmanZ;
@@ -151,10 +152,10 @@ int PIN_RX = 2; //yellow
 int PIN_EMERG = 4; //green.
 int PIN_ROM = A0; //red.
 boolean blinkABORT = false;
-unsigned long time_last_loop = 0;
-unsigned long time_current_loop = 0;
-unsigned long time_loop_aux = 0;
-unsigned long mean_loop_time = 0;
+double time_last_loop = 0;
+double time_current_loop = 0;
+double time_loop_aux = 0;
+double mean_loop_time = 0;
 int counter = 0;
 
 //Variables used in communication with GUI
@@ -292,6 +293,11 @@ void loop(){
         if (joystickMode == JOY_MODE_ANGLE) {//Joystick X,Y commands control pitch,roll Angles
           PID_X_angle.Compute();
           PID_Y_angle.Compute();
+          if (first_angle_computation) { //this is to avoid sharp I changes due to elapsed dT.
+            PID_X_angle.SetITerm(0);
+            PID_Y_angle.SetITerm(0);
+            first_angle_computation = 0;
+          }
           /*
           OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
           OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
@@ -307,6 +313,7 @@ void loop(){
           PID_X.Compute();
           PID_Y.Compute();
           PID_Z.Compute();
+          first_angle_computation = 1;
         }
       }   
       else { //Calibrate gyros
@@ -370,17 +377,20 @@ void loop(){
   
   //print time elapsed during loop. Necessary to know minimum cycle time for datalink  
   #ifdef DEBUG_TIMING  
-    if(counter == 10) {    
-      Serial.println(mean_loop_time,6);
+    time_current_loop = millis(); 
+    if(counter == 1000) {    
+      //Serial.print(time_last_loop);Serial.print("\t");
+      //Serial.print(time_current_loop); Serial.print("\t");
+      Serial.println(mean_loop_time);
       mean_loop_time = 0;
       counter = 0;
     }
     else {
       time_loop_aux = time_current_loop - time_last_loop;
-      mean_loop_time = mean_loop_time + time_loop_aux/10;      
+      mean_loop_time = mean_loop_time + time_loop_aux*0.001;      
       counter++;
     }
+    time_last_loop = time_current_loop; 
   #endif
-  time_last_loop = time_current_loop; 
-  time_current_loop = millis(); 
+  
 }
