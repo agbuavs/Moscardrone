@@ -26,12 +26,15 @@ int computeIMU() {
   //gyroYangle += kalmanY.getRate()*((double)(micros()-timer)/1000000);
   //gyroZangle += kalmanZ.getRate()*((double)(micros()-timer)/1000000);
 
-  compAngleX = (0.97 * (compAngleX + (gyroXrate * (double)(micros() - timer) / 1000000))) + (0.03 * accXangle); // Calculate the angle using a Complimentary filter
+  //#ifdef KALMAN_FILTERING // Calculate the angle using a Kalman filter
+  kalAngleX = kalmanX.getAngle(accXangle, gyroXrate_comp, (double)(micros() - timer) / 1000000); 
+  kalAngleY = kalmanY.getAngle(accYangle, gyroYrate_comp, (double)(micros() - timer) / 1000000);
+  kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate_comp, (double)(micros() - timer) / 1000000);
+  //#else // Calculate the angle using a Complimentary filter
+  compAngleX = (0.97 * (compAngleX + (gyroXrate * (double)(micros() - timer) / 1000000))) + (0.03 * accXangle); 
   compAngleY = (0.97 * (compAngleY + (gyroYrate * (double)(micros() - timer) / 1000000))) + (0.03 * accYangle);
   compAngleZ = (0.97 * (compAngleZ + (gyroZrate * (double)(micros() - timer) / 1000000))) + (0.03 * accZangle);
-  //kalAngleX = kalmanX.getAngle(accXangle, gyroXrate_comp, (double)(micros() - timer) / 1000000); // Calculate the angle using a Kalman filter
-  //kalAngleY = kalmanY.getAngle(accYangle, gyroYrate_comp, (double)(micros() - timer) / 1000000);
-  //kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate_comp, (double)(micros() - timer) / 1000000);
+  //#endif
   
   timer = micros();
   //Temperature (not used)

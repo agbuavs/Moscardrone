@@ -36,8 +36,8 @@ void initializePIDs() {
   
   //Set arduino cycles elapsed between PID iterations
   //rate PIDs are set at 1 loop cycle per sample by default (PID library)
-  PID_X_angle.SetLoopsPerSample(15);
-  PID_Y_angle.SetLoopsPerSample(15);
+  PID_X_angle.SetLoopsPerSample(8);
+  PID_Y_angle.SetLoopsPerSample(8);
   
   //SetSampleTime method is not used because I want the sample time to be the minimum (arduino cycle)
   /*
@@ -91,11 +91,14 @@ int computeInputs() {
   OUTPUTS:
   double InputX_angle, InputY_angle, InputX, InputY, InputZ;
   */
-  
-  //InputX_angle = compAngleX; //using Complementary filter
-  //InputY_angle = compAngleY;
-  InputX_angle = kalAngleX; //using Kalman filter
-  InputY_angle = kalAngleY;
+ 
+  #ifndef KALMAN_FILTERING
+    InputX_angle = compAngleX; //using Complementary filter
+    InputY_angle = compAngleY;
+  #else
+    InputX_angle = kalAngleX; //using Kalman filter
+    InputY_angle = kalAngleY;
+  #endif
   InputX = gyroXrate_comp - gyroXoffset;
   InputY = gyroYrate_comp - gyroYoffset;
   InputZ = gyroZrate_comp - gyroZoffset;

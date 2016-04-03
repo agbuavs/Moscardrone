@@ -301,7 +301,7 @@ void loop(){
           /*
           OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
           OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
-          */
+          /*/
           SetpointX = OutputX_angle;
           SetpointY = OutputY_angle;
           PID_X.Compute();

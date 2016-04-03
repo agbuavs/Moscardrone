@@ -5,7 +5,7 @@
 #define JOY_MODE_RATE 0
 #define JOY_MODE_ANGLE 1
 #define DEFAULT_JOY_MODE JOY_MODE_RATE
-
+#define KALMAN_FILTERING //comment this line to use complementary filtering.
 
 // ****** Debugging options ****** //
 //At most, one of them can be uncommented. The rest must be commented.
