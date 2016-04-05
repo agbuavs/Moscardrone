@@ -21,6 +21,7 @@ int PT_JOY_CAL_SAVE = 102;
 int PT_JOY_CAL_CLEAR = 103;
 int PT_PID_CAL_SAVE = 104;
 int PT_PID_CAL_CLEAR = 105;
+int PT_ABORT = 106;
 
 //Set to false when you only want to see the GUI format.
 boolean CONNECTED = false;
@@ -281,7 +282,17 @@ void setup() {
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ;  
+                  ;
+                
+  cp5.addButton("ABORT")
+    .setValue(1)
+      .setPosition(X_commands + PIDboxSizeX + 5*PIDackboxSizeX + 2*margin ,Y_commands + PIDackboxSizeY*3 + 4*margin)          //posición del botón
+        .setSize(PIDboxSizeX, 2*PIDboxSizeY)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#FF0000)//color de fondo con botón en reposo
+              .setColorForeground(#EE2222)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                  ;   
                   
   cp5.addButton("P_up")
     .setValue(1)
@@ -291,7 +302,7 @@ void setup() {
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
-                  ; 
+                  ;                   
   cp5.addButton("P_down")
     .setValue(1)
       .setPosition(X_commands+80,Y_commands + margin + 20)
@@ -364,13 +375,14 @@ void setup() {
                   
   cp5.addButton("Save_Cal")
     .setValue(1)
-      .setPosition(420, graphYpos - PIDboxSizeY)          //posición del botón
+      .setPosition(410, graphYpos - PIDboxSizeY)          //posición del botón
         .setSize(PIDboxSizeX, PIDboxSizeY)              //tamaño del botón
           .setColorActive(#40BF44)     //color del botón cuando es pulsado
             .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
               .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
                 .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
                   ;    
+  
   
   textFont(font);
   

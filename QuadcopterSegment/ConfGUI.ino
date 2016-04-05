@@ -1,4 +1,6 @@
 /*
+  (NOT TESTED DURING THE LAST YEAR. I ALWAYS TUNE PID OVER RF)
+  
   This file contains functions to communicate over serial with ConfGUI (Processing sketch)
   
   Its main purpose is to receive PID parameters from a Graphical User Interface, making
@@ -15,6 +17,7 @@
 #define PT_JOY_MODE 101
 #define PT_PID_CAL_SAVE 104
 #define PT_PID_CAL_CLEAR 105
+#define PT_ABORT 106
 
 byte PT = 0; //Packet Type. It gets a new value every time GS receives a msg from ConfGUI.
 
@@ -35,14 +38,27 @@ void receiveDataFromGUI() {
       PID_value.asBytes[3] = Serial.read();
       //sendAckToGUI(PID_id,PID_term,PID_value.asFloat); //(used to test comms without quad
       break;
+    
     case PT_JOY_MODE:
       addMSG_type = PT_JOY_MODE;
       addMSG_data = Serial.read();
       break;
+      
+    case PT_PID_CAL_SAVE:
+      addMSG_type = PT_PID_CAL_SAVE;
+      break;
+      
+    case PT_PID_CAL_CLEAR:
+      addMSG_type = PT_PID_CAL_CLEAR;
+      break;
+      
+    case PT_ABORT:
+      addMSG_type = PT_ABORT;
+      break;  
   }
   Serial.flush();  
   
-  //This piece of code doesn't exist in Ground Segment code.............
+  //This piece of code doesn't exist in Ground Segment code.........................
   calibratePID(PID_id, PID_term, PID_value.asDouble);
   double val = 0;
   switch(PID_id) {
@@ -63,7 +79,7 @@ void receiveDataFromGUI() {
       break;
   }
   sendAckToGUI(PID_id, PID_term, val);
-  //....................................................................
+  //.................................................................................
   
   lastGUIpacket = millis();
   

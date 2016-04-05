@@ -3,7 +3,7 @@
   
   receiveData: 
     - reads message from nRF24l01 buffer when something is available
-    - udpdates Telemetry data from Quadcopter segment
+    - udpdates Telemetry data from QuadcopterSegment
    
   sendData:
     - sends payload, taking care of timing restrictions (in order to avoid channel saturation)
@@ -119,10 +119,12 @@ int receiveData(byte* data) {
       Serial.print("\r\n");
     #endif
     
-    
     //Keep in mind last reception. (Communication loss control)
+    /* 
     
-    /* MISSING CODE */
+    *********** MISSING CODE ***********
+   
+    */
   }
   
   return(nseq_rx);

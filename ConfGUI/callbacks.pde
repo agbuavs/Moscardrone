@@ -231,6 +231,13 @@ public void Save_Cal () {
   } 
 }
 
+//ABORT - Stop quadcopter motors
+public void ABORT () {
+  if (CONNECTED) {
+        arduino.write(PT_ABORT);
+        println(PT_ABORT);     
+  } 
+}
 
 
 //take the string the arduino sends and parse it

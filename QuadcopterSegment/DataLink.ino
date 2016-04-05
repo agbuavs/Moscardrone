@@ -3,7 +3,7 @@
   
   receiveData: 
     - reads message from nRF24l01 buffer when something is available
-    - udpdates RC commands and PID params conf. from Ground segment.
+    - udpdates RC commands and PID params conf. from GroundSegment.
    
   sendData:
     - sends payload, taking care of timing restrictions (in order to avoid channel saturation)
@@ -59,6 +59,9 @@ int receiveData(byte* data) {
         blinkROM = !blinkROM;
         ROMclearPIDCalibration();
         break;
+      case (PT_ABORT):
+        ABORT = 1;
+        break;
     }
     #endif
     
@@ -75,8 +78,11 @@ int receiveData(byte* data) {
     time_lastRx = millis();
     
     //Keep in mind last reception. (Communication loss control)
+    /* 
     
-    /* MISSING CODE */
+    *********** MISSING CODE ***********
+   
+    */    
   }
   else {
     if ((time_lastRx > 0) && ((millis() - time_lastRx) > MAX_TIME_NO_PACKETS))
@@ -124,6 +130,7 @@ void prepareDataToGroundSegment(){
   data_tx[0] = ID_local;
   data_tx[1] = nseq_tx;
   //Read and map values from IMU, PID and ESC to send them to ground segment
+  // Useless to PID tuning purposes due to the low sending rate. (consider use of data_tx[2..15] for other things)
   data_tx[2] = (int) map(InputX_angle, 0, 360, 0,255); //IMU pitch angle
   data_tx[3] = (int) map(InputY_angle, 0, 360, 0,255); //IMU roll angle
   data_tx[4] = (int) map(InputX, -MAX_ABS_GYRO_RATE, MAX_ABS_GYRO_RATE, 0,255); //IMU pitch rate
