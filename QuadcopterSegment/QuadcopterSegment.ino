@@ -308,8 +308,8 @@ void loop(){
           OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
           OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
           /*/
-          SetpointX = OutputX_angle;
-          SetpointY = OutputY_angle;
+          SetpointX = 0;
+          SetpointY = 0;
           PID_X.Compute();
           PID_Y.Compute();
           //*/
@@ -319,6 +319,8 @@ void loop(){
           PID_X.Compute();
           PID_Y.Compute();
           PID_Z.Compute();
+          OutputX_angle = 0;
+          OutputY_angle = 0;
           first_angle_computation = 1;
         }
       }   

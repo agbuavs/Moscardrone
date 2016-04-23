@@ -28,16 +28,16 @@ void initializePIDs() {
   PID_Z.SetMode(AUTOMATIC);
   
   //Constrain PID outputs to be within preconfigured limits
-  PID_X_angle.SetOutputLimits(MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT);
-  PID_Y_angle.SetOutputLimits(MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT);
+  PID_X_angle.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
+  PID_Y_angle.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   PID_X.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   PID_Y.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   PID_Z.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   
   //Set arduino cycles elapsed between PID iterations
   //rate PIDs are set at 1 loop cycle per sample by default (PID library)
-  PID_X_angle.SetLoopsPerSample(8);
-  PID_Y_angle.SetLoopsPerSample(8);
+  PID_X_angle.SetLoopsPerSample(2);
+  PID_Y_angle.SetLoopsPerSample(2);
   
   //SetSampleTime method is not used because I want the sample time to be the minimum (arduino cycle)
   /*
@@ -99,14 +99,11 @@ int computeInputs() {
     InputX_angle = kalAngleX; //using Kalman filter
     InputY_angle = kalAngleY;
   #endif
-  InputX = gyroXrate_comp - gyroXoffset;
-  InputY = gyroYrate_comp - gyroYoffset;
-  InputZ = gyroZrate_comp - gyroZoffset;
-  /*
+  
   InputX = gyroXrate - gyroXoffset;
   InputY = gyroYrate - gyroYoffset;
   InputZ = gyroZrate - gyroZoffset;
-  */
+ 
   return(0);
 }
 
@@ -132,7 +129,7 @@ int computeSetpoints() {
   if (joystickMode == JOY_MODE_ANGLE){
     SetpointX_angle = map(joy_x, 0, 255, MIN_PITCH_ANGLE, MAX_PITCH_ANGLE);
     SetpointY_angle = map(joy_y, 0, 255, MIN_ROLL_ANGLE, MAX_ROLL_ANGLE);
-    //SetpointX & SetpointY come from PID_X/Y_angle Outputs (see main loop)
+    //SetpointX & SetpointY are set to 0 (see main loop)
   }
   SetpointZ = map(joy_z, 0, 255, -LIMIT_GYRO_Z_RATE, LIMIT_GYRO_Z_RATE);
 
@@ -159,6 +156,9 @@ int computeOutputs() {
   int correction = 1; // might be necessary to increase mean throttle to keep its vertical component constant
   meanT = meanT * correction;
   
+  double X = OutputX + OutputX_angle;
+  double Y = OutputY + OutputY_angle;
+  
   /* Distribute throttle
     X-Wing configuration    M4   M1       
                                X     
@@ -168,10 +168,10 @@ int computeOutputs() {
     kX = 0.4;
     kY = kX;
     kZ = 1 - 2*kX;
-    Mot1 = meanT + kX*OutputX + kY*OutputY - kZ*OutputZ;
-    Mot2 = meanT - kX*OutputX + kY*OutputY + kZ*OutputZ;
-    Mot3 = meanT - kX*OutputX - kY*OutputY - kZ*OutputZ;
-    Mot4 = meanT + kX*OutputX - kY*OutputY + kZ*OutputZ;
+    Mot1 = meanT + kX*X + kY*Y - kZ*OutputZ;
+    Mot2 = meanT - kX*X + kY*Y + kZ*OutputZ;
+    Mot3 = meanT - kX*X - kY*Y - kZ*OutputZ;
+    Mot4 = meanT + kX*X - kY*Y + kZ*OutputZ;
   #endif
   
   /* Distribute throttle
@@ -183,10 +183,10 @@ int computeOutputs() {
     kX = 1;
     kY = kX;
     kZ = 1 - kX;
-    Mot1 = meanT + kX*OutputX - kZ*OutputZ;
-    Mot2 = meanT + kY*OutputY + kZ*OutputZ;
-    Mot3 = meanT - kX*OutputX - kZ*OutputZ;
-    Mot4 = meanT - kY*OutputY + kZ*OutputZ;   
+    Mot1 = meanT + kX*X - kZ*OutputZ;
+    Mot2 = meanT + kY*Y + kZ*OutputZ;
+    Mot3 = meanT - kX*X - kZ*OutputZ;
+    Mot4 = meanT - kY*Y + kZ*OutputZ;   
   #endif 
   
   return(0);

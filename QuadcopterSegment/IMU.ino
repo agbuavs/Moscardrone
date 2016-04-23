@@ -14,11 +14,12 @@ int computeIMU() {
   gyroYrate = -((double)gyroY / 131.0);
   gyroZrate = -((double)gyroZ / 131.0);
 
-  //agb:gyroscope complementary filtering to avoid high frequency peaks due to vibration
+  /* 
+  //agb:gyroscope complementary filtering to avoid high frequency peaks due to vibration  
   gyroXrate_comp = 0.8 * gyroXrate_comp + 0.2 * gyroXrate;
   gyroYrate_comp = 0.8 * gyroYrate_comp + 0.2 * gyroYrate;
   gyroZrate_comp = 0.8 * gyroZrate_comp + 0.2 * gyroZrate;
-
+  */
   //gyroXangle += gyroXrate * ((double)(micros() - timer) / 1000000); // Calculate gyro angle without any filter
   //gyroYangle += gyroYrate * ((double)(micros() - timer) / 1000000);
   //gyroZangle += gyroZrate * ((double)(micros() - timer) / 1000000);
@@ -27,9 +28,9 @@ int computeIMU() {
   //gyroZangle += kalmanZ.getRate()*((double)(micros()-timer)/1000000);
 
   //#ifdef KALMAN_FILTERING // Calculate the angle using a Kalman filter
-  kalAngleX = kalmanX.getAngle(accXangle, gyroXrate_comp, (double)(micros() - timer) / 1000000); 
-  kalAngleY = kalmanY.getAngle(accYangle, gyroYrate_comp, (double)(micros() - timer) / 1000000);
-  kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate_comp, (double)(micros() - timer) / 1000000);
+  kalAngleX = kalmanX.getAngle(accXangle, gyroXrate, (double)(micros() - timer) / 1000000); 
+  kalAngleY = kalmanY.getAngle(accYangle, gyroYrate, (double)(micros() - timer) / 1000000);
+  kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate, (double)(micros() - timer) / 1000000);
   //#else // Calculate the angle using a Complimentary filter
   compAngleX = (0.97 * (compAngleX + (gyroXrate * (double)(micros() - timer) / 1000000))) + (0.03 * accXangle); 
   compAngleY = (0.97 * (compAngleY + (gyroYrate * (double)(micros() - timer) / 1000000))) + (0.03 * accYangle);
