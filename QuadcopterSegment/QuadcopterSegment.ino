@@ -2,7 +2,13 @@
   Moscardrone - Quadcopter firmware
   
   Created by Alvaro Gippini, 8 February 2014
-  
+  Branch created on 23/04/2016 to test another Control Algorithm.
+  Instead of using angle PID outputs to feed rate PID, 
+    the outputs from both PID feed the motors.
+    rate PID always tries to keep gyro rate at 0.
+    angle PID fights against rate PID.
+    rate mode is not used.
+      
   This program is free software: you can redistribute it and/or modify it under the terms of
   the GNU General Public License as published by the Free Software Foundation, either version 3
   of the License, or (at your option) any later version.
