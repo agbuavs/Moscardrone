@@ -36,8 +36,8 @@ void initializePIDs() {
   
   //Set arduino cycles elapsed between PID iterations
   //rate PIDs are set at 1 loop cycle per sample by default (PID library)
-  PID_X_angle.SetLoopsPerSample(2);
-  PID_Y_angle.SetLoopsPerSample(2);
+  PID_X_angle.SetLoopsPerSample(1);
+  PID_Y_angle.SetLoopsPerSample(1);
   
   //SetSampleTime method is not used because I want the sample time to be the minimum (arduino cycle)
   /*
@@ -129,7 +129,6 @@ int computeSetpoints() {
   if (joystickMode == JOY_MODE_ANGLE){
     SetpointX_angle = map(joy_x, 0, 255, MIN_PITCH_ANGLE, MAX_PITCH_ANGLE);
     SetpointY_angle = map(joy_y, 0, 255, MIN_ROLL_ANGLE, MAX_ROLL_ANGLE);
-    //SetpointX & SetpointY are set to 0 (see main loop)
   }
   SetpointZ = map(joy_z, 0, 255, -LIMIT_GYRO_Z_RATE, LIMIT_GYRO_Z_RATE);
 

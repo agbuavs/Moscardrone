@@ -32,11 +32,11 @@
 // ****** Angle commands ranges ****** //
 //(according to IMU computations, hovering is at pitch=roll=180º)
 //Let's start imposing 30º of maximum inclination
-#define MIN_PITCH_ANGLE 150
-#define MAX_PITCH_ANGLE 210
-#define MIN_ROLL_ANGLE 150
-#define MAX_ROLL_ANGLE 210
-#define LIMIT_GYRO_XY_RATE 200
+#define MIN_PITCH_ANGLE 160
+#define MAX_PITCH_ANGLE 200
+#define MIN_ROLL_ANGLE MIN_PITCH_ANGLE
+#define MAX_ROLL_ANGLE MAX_PITCH_ANGLE
+#define LIMIT_GYRO_XY_RATE 100
 #define LIMIT_GYRO_Z_RATE 100
 
 
