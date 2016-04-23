@@ -165,7 +165,7 @@ int computeOutputs() {
                             M3   M2 
   */
   #ifdef QUADX  
-    kX = 0.4;
+    kX = 0.45;
     kY = kX;
     kZ = 1 - 2*kX;
     Mot1 = meanT + kX*OutputX + kY*OutputY - kZ*OutputZ;
@@ -180,7 +180,7 @@ int computeOutputs() {
                               M4
   */
   #ifdef QUADP
-    kX = 1;
+    kX = 0.9;
     kY = kX;
     kZ = 1 - kX;
     Mot1 = meanT + kX*OutputX - kZ*OutputZ;
