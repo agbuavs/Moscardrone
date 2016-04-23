@@ -14,12 +14,12 @@ int computeIMU() {
   gyroYrate = -((double)gyroY / 131.0);
   gyroZrate = -((double)gyroZ / 131.0);
 
-  /* 
+   
   //agb:gyroscope complementary filtering to avoid high frequency peaks due to vibration  
   gyroXrate_comp = 0.8 * gyroXrate_comp + 0.2 * gyroXrate;
   gyroYrate_comp = 0.8 * gyroYrate_comp + 0.2 * gyroYrate;
   gyroZrate_comp = 0.8 * gyroZrate_comp + 0.2 * gyroZrate;
-  */
+  
   //gyroXangle += gyroXrate * ((double)(micros() - timer) / 1000000); // Calculate gyro angle without any filter
   //gyroYangle += gyroYrate * ((double)(micros() - timer) / 1000000);
   //gyroZangle += gyroZrate * ((double)(micros() - timer) / 1000000);

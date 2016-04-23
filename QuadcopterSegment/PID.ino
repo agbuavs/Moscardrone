@@ -100,9 +100,9 @@ int computeInputs() {
     InputY_angle = kalAngleY;
   #endif
   
-  InputX = gyroXrate - gyroXoffset;
-  InputY = gyroYrate - gyroYoffset;
-  InputZ = gyroZrate - gyroZoffset;
+  InputX = gyroXrate_comp - gyroXoffset;
+  InputY = gyroYrate_comp - gyroYoffset;
+  InputZ = gyroZrate_comp - gyroZoffset;
  
   return(0);
 }

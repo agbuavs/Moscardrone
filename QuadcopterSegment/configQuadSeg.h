@@ -12,7 +12,7 @@
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_IMU //Uncomment to use "Sketch for IMU visualization". Change code to select IMU data to see.
 //#define DEBUG_RX
-//#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
+#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 
@@ -61,7 +61,7 @@
 #define MAX_HORIZ_THROTTLE 1700 //shall be less than MAX_PWM_THROTTLE
 
 //Throttle limits for change given by PID outputs
-#define MIN_PWM_PID_OUTPUT -200. // (== MAX_HORIZ_THROTTLE - MAX_PWM_THROTTLE)
+#define MIN_PWM_PID_OUTPUT -150. // (== MAX_HORIZ_THROTTLE - MAX_PWM_THROTTLE)
 #define MAX_PWM_PID_OUTPUT -MIN_PWM_PID_OUTPUT  // (== MAX_PWM_THROTTLE - MAX_HORIZ_THROTTLE)
 
 // Gyro rate limits given by PID_angle to gyro rate PIDs
