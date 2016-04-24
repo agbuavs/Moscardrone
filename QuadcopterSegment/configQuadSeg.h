@@ -36,7 +36,7 @@
 #define MAX_PITCH_ANGLE 200
 #define MIN_ROLL_ANGLE MIN_PITCH_ANGLE
 #define MAX_ROLL_ANGLE MAX_PITCH_ANGLE
-#define LIMIT_GYRO_XY_RATE 100
+#define LIMIT_GYRO_XY_RATE 200
 #define LIMIT_GYRO_Z_RATE 100
 
 
@@ -73,6 +73,7 @@
 
 
 // ****** PID definitions ****** //
+#define RATE_SAMPLES_X_ANGLE_SAMPLE 8 //How many iterations of inner loop to follow 1 outter loop sample?
 #define PID_IS_CAL 10 //It could be any number different from 0. Used for ROM saving/loading
 /*
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.

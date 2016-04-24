@@ -36,8 +36,8 @@ void initializePIDs() {
   
   //Set arduino cycles elapsed between PID iterations
   //rate PIDs are set at 1 loop cycle per sample by default (PID library)
-  PID_X_angle.SetLoopsPerSample(8);
-  PID_Y_angle.SetLoopsPerSample(8);
+  PID_X_angle.SetLoopsPerSample(RATE_SAMPLES_X_ANGLE_SAMPLE);
+  PID_Y_angle.SetLoopsPerSample(RATE_SAMPLES_X_ANGLE_SAMPLE);
   
   //SetSampleTime method is not used because I want the sample time to be the minimum (arduino cycle)
   /*
