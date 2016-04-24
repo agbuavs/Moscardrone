@@ -304,8 +304,10 @@ void loop(){
             PID_Y_angle.SetITerm(0);
             first_angle_computation = 0;
           }
-          SetpointX = OutputX_angle/4;
-          SetpointY = OutputY_angle/4;
+          //SetpointX = OutputX_angle/4;
+          //SetpointY = OutputY_angle/4;
+          SetpointX = 0;
+          SetpointY = 0;
           PID_X.Compute();
           PID_Y.Compute();
           PID_Z.Compute();                  

@@ -36,7 +36,7 @@
 #define MAX_PITCH_ANGLE 200
 #define MIN_ROLL_ANGLE MIN_PITCH_ANGLE
 #define MAX_ROLL_ANGLE MAX_PITCH_ANGLE
-#define LIMIT_GYRO_XY_RATE 100
+#define LIMIT_GYRO_XY_RATE 200
 #define LIMIT_GYRO_Z_RATE 100
 
 
@@ -65,8 +65,8 @@
 #define MAX_PWM_PID_OUTPUT -MIN_PWM_PID_OUTPUT  // (== MAX_PWM_THROTTLE - MAX_HORIZ_THROTTLE)
 
 // Gyro rate limits given by PID_angle to gyro rate PIDs
-#define MAX_ANGLE_PID_OUTPUT LIMIT_GYRO_XY_RATE //maximum rate physically reachable is +-250.
-#define MIN_ANGLE_PID_OUTPUT -MAX_ANGLE_PID_OUTPUT
+#define MAX_ANGLE_PID_OUTPUT MIN_PWM_PID_OUTPUT //maximum rate physically reachable is +-250.
+#define MIN_ANGLE_PID_OUTPUT MAX_PWM_PID_OUTPUT
 
 // ****** GYROSCOPE constants ****** //
 #define MAX_ABS_GYRO_RATE 250 //value got from IMU readings and manually moving the quad
