@@ -299,14 +299,11 @@ void loop(){
             first_angle_computation = 0;
           }
           /*
-          OutputX = map(OutputX_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
-          OutputY = map(OutputY_angle,MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT, MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT); //code under test. No nested PID.
-          /*/
           SetpointX = OutputX_angle;
           SetpointY = OutputY_angle;
           PID_X.Compute();
           PID_Y.Compute();
-          //*/
+          */
           PID_Z.Compute();                  
         }
         if (joystickMode == JOY_MODE_RATE) { //Joystick X,Y commands control Gyro Rates 

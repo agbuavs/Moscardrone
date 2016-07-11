@@ -75,7 +75,7 @@ int COM_PORT_id = 0;
 int numberOfPorts = 0;
 String portList [];
 
-int joystickMode = 0; // rate=0 / angle=1
+int joystickMode = 1; // rate=0 / angle=1
 int joystickMode_ack = 0; // rate=0 / angle=1 (used to save ack received from Arduino)
 
 //PID calibration widgets
@@ -134,7 +134,7 @@ void setup() {
   cp5.addToggle("PID_mode")
      .setPosition(X_commands + PIDboxSizeX + margin, margin)
      .setSize(40,20)
-     .setValue(true)
+     .setValue(false)
      .setMode(ControlP5.SWITCH)
      ;
   

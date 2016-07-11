@@ -4,7 +4,7 @@
 //#define GUI_CONF_OVER_SERIAL
 #define JOY_MODE_RATE 0
 #define JOY_MODE_ANGLE 1
-#define DEFAULT_JOY_MODE JOY_MODE_RATE
+#define DEFAULT_JOY_MODE JOY_MODE_ANGLE
 #define KALMAN_FILTERING //comment this line to use complementary filtering.
 
 // ****** Debugging options ****** //
@@ -12,7 +12,7 @@
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_IMU //Uncomment to use "Sketch for IMU visualization". Change code to select IMU data to see.
 //#define DEBUG_RX
-//#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
+#define DEBUG_PID //Uncomment to use "Sketch for PID calibration"
 //#define DEBUG_TELEMETRY
 //#define DEBUG_TIMING
 
@@ -73,7 +73,7 @@
 
 
 // ****** PID definitions ****** //
-#define RATE_SAMPLES_X_ANGLE_SAMPLE 8 //How many iterations of inner loop to follow 1 outter loop sample?
+#define RATE_SAMPLES_X_ANGLE_SAMPLE 1 //How many iterations of inner loop to follow 1 outter loop sample?
 #define PID_IS_CAL 10 //It could be any number different from 0. Used for ROM saving/loading
 /*
 //Time (ms) left between two computations of PID. It should be computed in almost every loop execution.

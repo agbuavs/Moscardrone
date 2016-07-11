@@ -28,8 +28,8 @@ void initializePIDs() {
   PID_Z.SetMode(AUTOMATIC);
   
   //Constrain PID outputs to be within preconfigured limits
-  PID_X_angle.SetOutputLimits(MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT);
-  PID_Y_angle.SetOutputLimits(MIN_ANGLE_PID_OUTPUT,MAX_ANGLE_PID_OUTPUT);
+  PID_X_angle.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
+  PID_Y_angle.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   PID_X.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   PID_Y.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
   PID_Z.SetOutputLimits(MIN_PWM_PID_OUTPUT,MAX_PWM_PID_OUTPUT);
@@ -38,15 +38,6 @@ void initializePIDs() {
   //rate PIDs are set at 1 loop cycle per sample by default (PID library)
   PID_X_angle.SetLoopsPerSample(RATE_SAMPLES_X_ANGLE_SAMPLE);
   PID_Y_angle.SetLoopsPerSample(RATE_SAMPLES_X_ANGLE_SAMPLE);
-  
-  //SetSampleTime method is not used because I want the sample time to be the minimum (arduino cycle)
-  /*
-  PID_X_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
-  PID_Y_angle.SetSampleTime(PID_SAMPLETIME_ANGLE);
-  PID_X.SetSampleTime(PID_SAMPLETIME);
-  PID_Y.SetSampleTime(PID_SAMPLETIME);
-  PID_Z.SetSampleTime(PID_SAMPLETIME);
-  */
   
   PID_X_angle.SetITerm(X_angle_ITerm);
   PID_Y_angle.SetITerm(Y_angle_ITerm);
@@ -159,6 +150,7 @@ int computeOutputs() {
   int correction = 1; // might be necessary to increase mean throttle to keep its vertical component constant
   meanT = meanT * correction;
   
+  if (joystickMode == JOY_MODE_RATE) {  
   /* Distribute throttle
     X-Wing configuration    M4   M1       
                                X     
@@ -187,7 +179,40 @@ int computeOutputs() {
     Mot2 = meanT + kY*OutputY + kZ*OutputZ;
     Mot3 = meanT - kX*OutputX - kZ*OutputZ;
     Mot4 = meanT - kY*OutputY + kZ*OutputZ;   
-  #endif 
+  #endif
+  } 
+  
+  if (joystickMode == JOY_MODE_ANGLE) {  
+  /* Distribute throttle
+    X-Wing configuration    M4   M1       
+                               X     
+                            M3   M2 
+  */
+  #ifdef QUADX  
+    kX = 0.45;
+    kY = kX;
+    kZ = 1 - 2*kX;
+    Mot1 = meanT + kX*OutputX_angle + kY*OutputY_angle - kZ*OutputZ;
+    Mot2 = meanT - kX*OutputX_angle + kY*OutputY_angle + kZ*OutputZ;
+    Mot3 = meanT - kX*OutputX_angle - kY*OutputY_angle - kZ*OutputZ;
+    Mot4 = meanT + kX*OutputX_angle - kY*OutputY_angle + kZ*OutputZ;
+  #endif
+  
+  /* Distribute throttle
+    P-Wing configuration      M1     
+                           M4 + M2
+                              M4
+  */
+  #ifdef QUADP
+    kX = 0.9;
+    kY = kX;
+    kZ = 1 - kX;
+    Mot1 = meanT + kX*OutputX_angle - kZ*OutputZ;
+    Mot2 = meanT + kY*OutputY_angle + kZ*OutputZ;
+    Mot3 = meanT - kX*OutputX_angle - kZ*OutputZ;
+    Mot4 = meanT - kY*OutputY_angle + kZ*OutputZ;   
+  #endif
+  }
   
   return(0);
 }
