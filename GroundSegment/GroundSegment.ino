@@ -111,6 +111,11 @@ byte addMSG_data = 0;
 byte addMSG_type_ACK = 0;
 byte addMSG_data_ACK = 0;
 
+//Variables to perform automatic testing (no manual use of joystick)
+int csvTable[CSV_TABLE_MAX_ROWS][3];
+int autoTest_step;
+unsigned long autoTest_start = 0;
+int autoTest_on = 0;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -149,8 +154,14 @@ void setup(){
 
 void loop(){
   
-  //Read values from potentiometers
-  readPotValues();
+  #ifdef AUTO_TEST   
+  if (autoTest_on == 1)
+    //Simulate potentiometers using CSV autotest values received from GUI.
+    readAutoTestValues();  
+  else    
+  #endif 
+    //Read values from potentiometers
+    readPotValues(); 
   
   //Joystick calibration (never finishes unless you code some more)
   if (!JOY_calibrated) {
@@ -159,15 +170,13 @@ void loop(){
   
   //Joystick pot measures transformed to ignore little movements around the center
   transformJoystickValues();
+
   
   //Read PID tuning commands from serial. 
   #ifdef GUI_CONF //Processing GUI is used to calibrate PIDs. Float values can be used
-
-    //if (((millis()-lastGUIpacket) > 500) && (Serial.available()>5)) {
     if ((millis()-lastGUIpacket) > 500)  {
       receiveDataFromGUI();   
-    }  
-    
+    }      
   #endif
   
   //Prepare payload for transmission to quadcopter
@@ -177,14 +186,12 @@ void loop(){
   sendData(data_tx);
   
   #ifdef DEBUG_POTS //These values can be monitored with Graph (Processing sketch)
-
       //print the results to the serial monitor: 
       Serial.print(joy_x); Serial.print("\t");        
       Serial.print(joy_y); Serial.print("\t");
       Serial.print(joy_z); Serial.print("\t");
       Serial.print(joy_t); Serial.print("\t");
       Serial.print("\r\n");
-
   #endif
   
   //Receive data (if there is anything in buffer) from remote control

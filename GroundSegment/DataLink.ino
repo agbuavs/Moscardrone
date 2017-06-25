@@ -51,7 +51,7 @@ int receiveData(byte* data) {
     addMSG_type_ACK = data[22];
     addMSG_data_ACK = data[23];
     
-    sendAckToGUI(11, 0, 0);
+    forwardAckToGUI(11, 0, 0);
     
     switch (PID_id_ACK) {
       case 1: //Pitch PID_angle tuning
@@ -59,35 +59,35 @@ int receiveData(byte* data) {
         PID_value_ACK.asBytes[1] = data[19];
         PID_value_ACK.asBytes[2] = data[20];
         PID_value_ACK.asBytes[3] = data[21];
-        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        forwardAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
       case 2: //Roll PID_angle tuning
         PID_value_ACK.asBytes[0] = data[18];
         PID_value_ACK.asBytes[1] = data[19];
         PID_value_ACK.asBytes[2] = data[20];
         PID_value_ACK.asBytes[3] = data[21];
-        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        forwardAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
       case 3: //Pitch rate PID tuning
         PID_value_ACK.asBytes[0] = data[18];
         PID_value_ACK.asBytes[1] = data[19];
         PID_value_ACK.asBytes[2] = data[20];
         PID_value_ACK.asBytes[3] = data[21];
-        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        forwardAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
       case 4: //Roll rate PID tuning
         PID_value_ACK.asBytes[0] = data[18];
         PID_value_ACK.asBytes[1] = data[19];
         PID_value_ACK.asBytes[2] = data[20];
         PID_value_ACK.asBytes[3] = data[21];
-        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        forwardAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
       case 5: //Yaw rate PID tuning
         PID_value_ACK.asBytes[0] = data[18];
         PID_value_ACK.asBytes[1] = data[19];
         PID_value_ACK.asBytes[2] = data[20];
         PID_value_ACK.asBytes[3] = data[21];
-        sendAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
+        forwardAckToGUI(PID_id_ACK, PID_term_ACK, (float)PID_value_ACK.asDouble);
         break;
     } 
     

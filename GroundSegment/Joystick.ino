@@ -5,6 +5,35 @@ void readPotValues() {
   joy_t = analogRead(A3);
 }
 
+void readAutoTestValues() {
+  Serial.print("autoTest_start: ");
+  Serial.print(autoTest_start);
+  Serial.print("\ttime: ");
+  Serial.print(csvTable[autoTest_step][0]);
+  Serial.print("\tmillis()= ");
+  Serial.print(millis());
+  Serial.print("\tStep: ");
+  Serial.println(autoTest_step);
+
+  if ((unsigned long)1000*csvTable[autoTest_step][0] < millis() - autoTest_start) {
+    switch (csvTable[autoTest_step][1]) {      
+      case 1:  
+        joy_x = csvTable[autoTest_step][2];
+        break;
+      case 2:  
+        joy_y = csvTable[autoTest_step][2];
+        break;
+      case 3:  
+        joy_z = csvTable[autoTest_step][2];
+        break;
+      case 4:  
+        joy_t = csvTable[autoTest_step][2];
+        break;
+    }
+    autoTest_step++;
+  }  
+}
+
 
 
 int calibrateJoystick () {
@@ -45,7 +74,8 @@ int calibrateJoystick () {
 
 void transformJoystickValues() {
    
-  if ( abs( joy_x - (joy_x_max + joy_x_min)/2 ) < MIN_JOY_DETECTABLE_SHIFT ) joy_x = (joy_x_max + joy_x_min)/2;
+  if ( abs( joy_x - (joy_x_max + joy_x_min)/2 ) < MIN_JOY_DETECTABLE_SHIFT ) 
+    joy_x = (joy_x_max + joy_x_min)/2;
   else {
    if (joy_x > (joy_x_max + joy_x_min)/2) joy_x = joy_x - MIN_JOY_DETECTABLE_SHIFT;
    if (joy_x < (joy_x_max + joy_x_min)/2) joy_x = joy_x + MIN_JOY_DETECTABLE_SHIFT;

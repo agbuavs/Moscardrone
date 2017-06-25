@@ -297,13 +297,11 @@ void loop(){
             PID_X_angle.SetITerm(0);
             PID_Y_angle.SetITerm(0);
             first_angle_computation = 0;
-          }
-          /*
+          }          
           SetpointX = OutputX_angle;
           SetpointY = OutputY_angle;
           PID_X.Compute();
-          PID_Y.Compute();
-          */
+          PID_Y.Compute();          
           PID_Z.Compute();                  
         }
         if (joystickMode == JOY_MODE_RATE) { //Joystick X,Y commands control Gyro Rates 

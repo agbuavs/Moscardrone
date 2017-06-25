@@ -13,7 +13,6 @@ color BLUE = color(0,0,255);
 color GREEN = color(0,255,0);
 color RED = color(255,0,0);
 
-
 //Define packet types between ConfGUI and Arduino
 int PT_PID_CHANGE = 100;
 int PT_JOY_MODE = 101;
@@ -22,6 +21,8 @@ int PT_JOY_CAL_CLEAR = 103;
 int PT_PID_CAL_SAVE = 104;
 int PT_PID_CAL_CLEAR = 105;
 int PT_ABORT = 106;
+int PT_PID_AUTOTEST_SET = 107;
+int PT_PID_AUTOTEST_MODE = 108;
 
 //Set to false when you only want to see the GUI format.
 boolean CONNECTED = false;
@@ -75,22 +76,26 @@ int COM_PORT_id = 0;
 int numberOfPorts = 0;
 String portList [];
 
-int joystickMode = 1; // rate=0 / angle=1
+int joystickMode = 0; // rate=0 / angle=1
 int joystickMode_ack = 0; // rate=0 / angle=1 (used to save ack received from Arduino)
 
 //PID calibration widgets
 byte PID_id = 0;
 byte PID_term = 0;
 
-//PID calibratio step by step:
+//PID calibration step by step:
 float PID_STEP_P = 0.1;
 float PID_STEP_I = 0.0001;
 float PID_STEP_D = 0.1;
 
-
+//PID autotest variables:
+int autotestMode = 0; //OFF by default. Activated once a CSV autotest def.file is selected.
+int autotestMode_ack = 0; // OFF=0 / ON=1 (used to save ack received from Arduino)
+controlP5.Toggle AutoTestMode_Toggle;
 
 
 void setup() {
+  
   println(Serial.list());     
   portList = Serial.list();
   
@@ -134,7 +139,7 @@ void setup() {
   cp5.addToggle("PID_mode")
      .setPosition(X_commands + PIDboxSizeX + margin, margin)
      .setSize(40,20)
-     .setValue(false)
+     .setValue(true)
      .setMode(ControlP5.SWITCH)
      ;
   
@@ -263,6 +268,23 @@ void setup() {
      .setAutoClear(false)
      ;  
      
+  cp5.addButton("Auto_Test")
+    .setValue(1)
+      .setPosition(X_commands + PIDboxSizeX + 5*PIDackboxSizeX + 2*margin ,margin)   //posición del botón
+        .setSize(PIDboxSizeX, PIDboxSizeY)              //tamaño del botón
+          .setColorActive(#40BF44)     //color del botón cuando es pulsado
+            .setColorBackground(#AEAEAE)//color de fondo con botón en reposo
+              .setColorForeground(#6A6A6A)  //color cuando deslizamos el puntero sobre el botón
+                .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
+                ;   
+
+  // create a toggle to control autotest mode on/off
+  AutoTestMode_Toggle = cp5.addToggle("Autotest_mode")
+     .setPosition(X_commands + PIDboxSizeX + 5*PIDackboxSizeX + 2*margin, 2*margin + PIDboxSizeY)
+     .setSize(40,20)
+     .setValue(false)
+     .setMode(ControlP5.SWITCH)
+     ;
      
   cp5.addButton("Clear_PID")
     .setValue(1)
@@ -407,6 +429,7 @@ void draw() {
   text(textInstructions, X_commands + PIDboxSizeX + 4*PIDackboxSizeX + margin + 100, 180);
   text("To Quad",X_commands,Y_commands);
   text("From Quad",X_feedback,Y_feedback);
+  
   text("Joystick RC commands",margin, graphYpos - margin);
   if (joystickMode==0)
     text("Rate Mode", X_commands + PIDboxSizeX + 100, margin + PIDboxSizeY);
@@ -416,6 +439,16 @@ void draw() {
     text("OK", X_commands + PIDboxSizeX + 220, margin + PIDboxSizeY); 
   else
     text("......", X_commands + PIDboxSizeX + 200, margin + PIDboxSizeY);
+    
+    
+  if (autotestMode==0)
+    text("OFF", X_commands + PIDboxSizeX + 6*PIDackboxSizeX + 2*margin, 50);
+  else
+    text("ON", X_commands + PIDboxSizeX + 6*PIDackboxSizeX + 2*margin, 50);
+  if (autotestMode == autotestMode_ack)
+    text("OK", X_commands + PIDboxSizeX + 6*PIDackboxSizeX + 2*margin, 2*margin + 2*PIDboxSizeY);
+  else
+    text("...", X_commands + PIDboxSizeX + 6*PIDackboxSizeX + 2*margin, 2*margin + 2*PIDboxSizeY);
     
   //Joystick visualization 
   convert();

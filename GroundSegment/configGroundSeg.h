@@ -5,8 +5,12 @@
 //At most, one of them can be uncommented. The rest must be commented.
 //They must be commented if we are using ConfGUI.
 //#define DEBUG_POTS
-//#define DEBUG_RC_COMMANDS
+//#define DEBUG_RC_COMMANDS 
 //#define DEBUG_TELEMETRY
+
+// ****** PID Auto Test configuration ***** //
+#define AUTO_TEST //Comment this if you prefer to use real joystick to calibrate PIDs
+#define CSV_TABLE_MAX_ROWS 10
 
 // ****** Joystick setup ***** //
 #define MIN_JOY_DETECTABLE_SHIFT 80 //lower shift from center in pot measurements are ignored

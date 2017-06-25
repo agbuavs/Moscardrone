@@ -199,6 +199,8 @@ public void copy() {
   copyPID_parameters();
 }
 
+
+
 //clear PID calibration
 public void Clear_PID () {
   if (CONNECTED) {
@@ -252,7 +254,13 @@ void serialEvent(Serial arduino)
   if (parseInt(s[0]) == 11) {
     if (parseInt(s[3]) == PT_JOY_MODE)
        joystickMode_ack = parseInt(s[4]);
+  } 
+ 
+ //Manage Autotest mode changes acknowledgement
+  if (parseInt(s[0]) == PT_PID_AUTOTEST_MODE) {
+       autotestMode_ack = parseInt(s[1]);
   }
+  
 
   //Manage PID changes acknowledgements
   switch (parseInt(s[0])) {

@@ -90,14 +90,16 @@ int computeInputs() {
     InputX_angle = kalAngleX; //using Kalman filter
     InputY_angle = kalAngleY;
   #endif
+  /*
   InputX = gyroXrate_comp - gyroXoffset;
   InputY = gyroYrate_comp - gyroYoffset;
   InputZ = gyroZrate_comp - gyroZoffset;
-  /*
+  */
+  ///*
   InputX = gyroXrate - gyroXoffset;
   InputY = gyroYrate - gyroYoffset;
   InputZ = gyroZrate - gyroZoffset;
-  */
+  //*/
   return(0);
 }
 
@@ -204,7 +206,7 @@ int computeOutputs() {
                               M4
   */
   #ifdef QUADP
-    kX = 0.9;
+    kX = 1;
     kY = kX;
     kZ = 1 - kX;
     Mot1 = meanT + kX*OutputX_angle - kZ*OutputZ;
